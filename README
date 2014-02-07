@@ -1,6 +1,14 @@
-Welcome to your Appcelerator Titanium Mobile Project
+YoCaddy Mobile is a stand alone golf tracking application for personal use.  Yo Caddy can be used entirely on
+it's own to update:
+- Walking Paths
+- Club Selections
+- Round Scores
+- Basic Round Statistics
+- Sharing Round information with friends via Facebook, Foursquare, etc.
 
-This is a single window application with a single view - a mostly blank canvas. Requires Titanium Mobile SDK 1.8.0+
+or can be used in combination with YoCaddy Web (http://www.yocaddy.com) to track more detailed round statistics, as 
+well as creating a comprehensive tournament score/reference book.  Integration with YoCaddy Web requires a user 
+account to be created.
 
 ----------------------------------
 Stuff our legal folk make us say:
