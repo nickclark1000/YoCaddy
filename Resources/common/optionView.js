@@ -50,7 +50,7 @@ var OptionView = function(_args) {
 	optionView.add(optionName);
 	optionView.add(optionValue);
 
-	Ti.API.info(oSelected + ' - ' + JSON.stringify(oOptions));
+	Ti.API.debug(oSelected + ' - ' + JSON.stringify(oOptions));
 
 	// Private Methods
 	//////////////////////////////////////////////////////////////////////////
@@ -61,13 +61,10 @@ var OptionView = function(_args) {
 	};
 
 	// Event handler for when the View is clicked, will rotate through options
-	rotateOption = function(e) {
-		oSelected++;
-		
+	var rotateOption = function(e) {
+		oSelected++;		
 		oSelected = (oSelected == oLen) ? 0 : oSelected;
-		
-		Ti.API.info(oSelected + ' - ' + JSON.stringify(oOptions));
-		
+		Ti.API.debug(oSelected + ' - ' + JSON.stringify(oOptions[oSelected]));
 		setSelected();
 	};
 	

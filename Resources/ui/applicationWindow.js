@@ -11,43 +11,20 @@
 			orientationModes:[Ti.UI.PORTRAIT]
 		}));
 		
-		var header = yc.ui.createHeaderView({
-			title: 'yoCaddy',
-			leftbutton: {
-				show: true,
-				callback: function() { Ti.API.info('left button clicked'); }
-			}
+		var viewStack = yc.ui.createStackView({
+			views: [yc.ui.createNewsFeedView()]
 		});
-
-		win.add(header);
 		
-		// Body view creation
-		var body = Ti.UI.createScrollView(yc.combine($$.bodyView, {
-			contentWidth: Ti.UI.FILL,
-			contentHeight: 'auto',
-			scrollType: 'vertical',
-			layout: 'vertical'			
-		}));	
+		win.addEventListener('addView', function(e){
+			Ti.API.info('Adding View: ' + JSON.stringify(e.viewIdx));
+			viewStack.fireEvent('pushView', e);
+		});
 		
-		var content1 = Ti.UI.createView(yc.combine($$.bodyContent,{
-			height: 100
-		}));
+		win.addEventListener('androidback', function(e){
+			viewStack.fireEvent('popView', {});
+		});
 		
-		var content2 = Ti.UI.createView(yc.combine($$.bodyContent,{
-			height: 100
-		}));		
-
-		var content3 = Ti.UI.createView(yc.combine($$.bodyContent,{
-			height: 100
-		}));
-			
-		//body.add(content1);
-		//body.add(content2);
-		//body.add(content3);
-		//win.add(body);
-		
-		var settingsView = yc.ui.createSettingsView();
-		win.add(settingsView);
+		win.add(viewStack);		
 				
 		return win;
 	};

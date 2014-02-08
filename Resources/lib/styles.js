@@ -4,8 +4,8 @@
 	
 	yc.style.colors = yc.combine({	
 		// Will be replaced by properties later
-		mainColor:	'#007FFF',
-		highlightColor:	'#002AFF',
+		mainColor:	'#0000AA',
+		highlightColor:	'#007FFF',
 		lowlightColor: '#AAD4FF',
 		}, {
 		textColor:	'#000000',
@@ -75,27 +75,29 @@
 				fontFamily: yc.style.fonts.headerFont
 			}			
 		},		
-		hbutton: {
-			backgroundColor: 'transparent',
-			backgroundImage: '/images/elipsis_white.png',
-			backgroundSelectedImage: '/images/elipsis_grey.png'			
-		},
 		
 		// Common body properties
-		bodyView: {
+		bodyScrollView: {
 			top: 50, bottom: 0,
 			left: 0, right: 0,
+			layout: 'vertical',
 			backgroundColor: 'transparent',
 			contentWidth: Ti.UI.FILL,
 			contentHeight: 'auto',
-			scrollType: 'vertical',
-			layout: 'vertical'					
+			scrollType: 'vertical'		
 		},
+		
+		bodyView: {
+			top: 50, bottom: 0,
+			left: 0, right: 0,
+			backgroundColor: 'transparent'		
+		},		
 		
 		bodyContent: {
 			backgroundImage: '/images/backgrounds/modalBodyBg.png',
-			bottom: 5, top: 5,
+			top: 5,
 			left: 5, right: 5,
+			height: Ti.UI.SIZE,
 			borderWidth: 1,
 			borderColor: yc.style.colors.lowlightColor,
 			borderRadius: 10,

@@ -1,18 +1,19 @@
-//Use the UI namespace for all UI component creation. A few common components will be defined in this file,
-//but the bigger ones get their own file (along with styles)
+// Create the settings view
+// Pushed and popped from the ApplicationWindow.Stack when requested
 
 (function(){
 	
 	// create the main application window
 	yc.ui.createSettingsView = function(_args) {
 		
+		// Create the layout view elements
 		var view = Ti.UI.createView($$.stretch);
 		
-		var header = yc.ui.createHeaderView({
+		var header = new yc.ui.headerView({
 			title: 'yoSettings',
 			leftbutton: {
 				show: true,
-				callback: function() { Ti.API.info('back event'); }
+				callback: function() { yc.app.applicationWindow.fireEvent('androidback', {}); }
 			},
 			rightbutton: {
 				show: true,
@@ -20,19 +21,20 @@
 				image: '/images/button_save.png'
 			}
 		});
-
 		view.add(header);
 		
-		// Body view creation
-		var body = Ti.UI.createScrollView($$.bodyView);			
+		var body = Ti.UI.createScrollView($$.bodyScrollView);			
 		var content = Ti.UI.createView($$.bodyContent);
-					
+
+		body.add(content);
+		view.add(body);
+							
 		///////////////////////////////////////  End of Common Window Section ////////////////////////////////////////
 		
 		// Create Headers and Section titles
 		var appLabel = Ti.UI.createLabel(yc.combine($$.infoText, {
 			top: 5, left: 10, right: 10,
-			text: 'Changing applications settings could affect battery life, as they could increase the GPS usage.'
+			text: 'Changing applications settings could affect battery life, if settings are increased to their maximum accuracy option.'
 		}));
 		
 		var appSection = Ti.UI.createLabel(yc.combine($$.sectionTitle, {
@@ -42,13 +44,23 @@
 		
 		var syncLabel = Ti.UI.createLabel(yc.combine($$.infoText, {
 			top: 5, left: 10, right: 10,
-			text: 'Changing synchronization settings could increase wireless usage and increase charges if enabled.'
+			text: 'Changing synchronization settings could increase wireless usage.  On limited wireless plans only sync over wifi.'
 		}));
 				
 		var syncSection = Ti.UI.createLabel(yc.combine($$.sectionTitle, {
 			top: 10, left: 5, botton: 5,
 			text: 'Sync Settings'
 		}));
+		
+		var themeLabel = Ti.UI.createLabel(yc.combine($$.infoText, {
+			top: 5, left: 10, right: 10,
+			text: 'Application requires a restart before theme changes will take affect.'
+		}));
+				
+		var themeSection = Ti.UI.createLabel(yc.combine($$.sectionTitle, {
+			top: 10, left: 5, botton: 5,
+			text: 'Theme Settings'
+		}));		
 		
 		// Create setting views
 		var optionView = require('/common/optionView');
@@ -112,7 +124,8 @@
 		var syncNetOptions = [
 			{ text: 'Off', value: 'off' },
 			{ text: 'Wifi Only', value: 'wifi' },
-			{ text: 'Wireless', value: 'wireless' }
+			{ text: 'Wireless', value: 'wireless' },
+			{ text: 'Both', value: 'Both' }
 		];	
 		var syncNetSetting = new optionView({
 			desc: 'Sync Network',
@@ -142,23 +155,17 @@
 		content.add(distanceSetting.getView());
 		content.add(autoshotSetting.getView());
 		content.add(gpsdistanceSetting.getView());
-		content.add(themeSetting.getView());
 		
 		// Sync section
 		content.add(syncSection);	
 		content.add(syncLabel);	
 		content.add(syncNetSetting.getView());
 		content.add(syncSetting.getView());
-
-		var labelextra = Ti.UI.createLabel(yc.combine($$.infoText, {
-			top: 0, left: 5, right: 10, bottom: 10,
-			text: 'sadgasdg asdg asdg asdgasghas asdgasdashasd sad ashg asd ahsda hsasd asghsa asdgasdghashgashgashas d dsa asdsa  asadgsadgasdgh sa.'
-		}));
-				
-		content.add(labelextra);
 		
-		body.add(content);
-		view.add(body);
+		// Theme section
+		content.add(themeSection);
+		content.add(themeLabel);
+		content.add(themeSetting.getView());	
 		
 		// Save Button Event handler
 		// Will save selected items back to the Ti.App.Properties
@@ -167,6 +174,7 @@
 			Ti.API.info(autoshotSetting.getSelectedValue());
 			Ti.API.info(gpsdistanceSetting.getSelectedValue());
 			Ti.API.info(themeSetting.getSelectedValue());
+			Ti.API.info(syncNetSetting.getSelectedValue());
 			Ti.API.info(syncSetting.getSelectedValue());
 		}
 		
