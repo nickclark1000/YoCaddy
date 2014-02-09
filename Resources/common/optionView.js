@@ -10,6 +10,8 @@ var OptionView = function(_args) {
 	var oParent = _args.parent;
 	var oLen = oOptions.length;
 	
+	Ti.API.debug(oSelected + ' - ' + JSON.stringify(oOptions));
+	
 	// Private View
 	var optionView = Ti.UI.createView({
 		top: _args.top, bottom: _args.bottom,
@@ -49,8 +51,6 @@ var OptionView = function(_args) {
 	
 	optionView.add(optionName);
 	optionView.add(optionValue);
-
-	Ti.API.debug(oSelected + ' - ' + JSON.stringify(oOptions));
 
 	// Private Methods
 	//////////////////////////////////////////////////////////////////////////

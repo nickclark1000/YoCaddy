@@ -41,18 +41,23 @@
 		//grab platform dimensions only once to save a trip over the bridge
 		width: yc.os({
 			iphone: Ti.Platform.displayCaps.platformWidth,
-			android: Ti.Platform.displayCaps.platformWidth/Ti.Platform.displayCaps.logicalDensityFactor
+			android:yc.pixelstodp(Ti.Platform.displayCaps.platformWidth)
 		}),
 		height: yc.os({
 			iphone: Ti.Platform.displayCaps.platformHeight,
-			android: Ti.Platform.displayCaps.platformHeight/Ti.Platform.displayCaps.logicalDensityFactor
-		}),			
+			android: yc.pixelstodp(Ti.Platform.displayCaps.platformHeight)/1.044
+		})			
 	};
 		
 	// create sub-namespace for view properties
 	yc.style.properties = {
 
 		stretch: { top: 0, bottom: 0, left: 0, right: 0 },
+		
+		screensize: { 
+			width: yc.style.platform.width, 
+			height: yc.style.platform.height
+		},
 		
 		Window: {
 			backgroundColor: yc.style.colors.mainColor,
@@ -87,6 +92,12 @@
 			scrollType: 'vertical'		
 		},
 		
+		bodyNoScrollView: {
+			top: 55, bottom: 5,
+			left: 5, right: 5,	
+			backgroundColor: 'transparent'		
+		},
+		
 		bodyView: {
 			top: 50, bottom: 0,
 			left: 0, right: 0,
@@ -99,7 +110,8 @@
 			left: 5, right: 5,
 			height: Ti.UI.SIZE,
 			borderWidth: 1,
-			borderColor: yc.style.colors.lowlightColor,
+			//borderColor: yc.style.colors.lowlightColor,
+			borderColor: '#E0E0E0',
 			borderRadius: 10,
 			layout: 'vertical'
 		},
@@ -127,21 +139,25 @@
 		},
 		
 		// Common Menu Buttons
-		menuButton: {
-			top: 0, bottom: 1,
-			left: 1, right: 1,
-			height: 35,
-			textAlign: Titanium.UI.TEXT_ALIGNMENT_LEFT,
-			color: '#000',
-			backgroundColor: '#FFF',
+		menubutton: {
+			top: 0, bottom: 0,
+			left: 0, right: 0,
+			color: 'transparent',
+			backgroundColor: 'transparent',
 			backgroundImage: '/images/MenuItemBg.png',
-			backgroundSelectedColor: yc.style.colors.highlightColor,
-			font: {
-				fontSize: 14,
-				fontFamily: yc.style.fonts.buttonFont
-			}		
+			backgroundSelectedColor: yc.style.colors.lowlightColor		
 		},
 		
+		menulabel: {
+			color: '#5A5A5A',
+			touchEnabled: false,
+			font: {
+				fontSize: 16,
+				fontFamily: yc.style.fonts.optionFont
+			}			
+		},
+		
+		// Common Content Styles
 		sectionTitle: {
 			color: yc.style.colors.black,
 			font: {

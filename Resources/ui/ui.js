@@ -9,7 +9,8 @@
 		viewrounds: 2,
 		mapround: 3,
 		mapviewround: 4,
-		settings: 5
+		settings: 5,
+		maponly: 6
 	};
 	
 	// Header View
@@ -78,16 +79,22 @@
 				case yc.ui.viewids.viewrounds:
 					break;
 				case yc.ui.viewids.mapround:
+					Ti.API.info('Adding View: MapRound');
+					v = yc.ui.createRoundMapView();
 					break;
 				case yc.ui.viewids.mapviewround:
 					break;
+				case yc.ui.viewids.maponly:
+					Ti.API.info('Adding View: Map Only');
+					v = yc.ui.createMapOnlyView();				
+					break;					
 				case yc.ui.viewids.settings:
 					Ti.API.info('Adding View: Settings');
 					v = yc.ui.createSettingsView();
 					break;
 			}
 
-			for (var k = 0; k <= stack.currentIndex; k++) {
+			for (var k = 1; k <= stack.currentIndex; k++) {
 				stack.children[k].setVisible(false);
 			}
 			
@@ -106,12 +113,21 @@
 		}).show();
 	};	
 	
+	yc.ui.separator = function(){
+		return Ti.UI.createView({
+			width: Ti.UI.FILL, height: 1,
+			backgroundColor: yc.style.colors.lowlightColor,
+			opacity: 0.5
+		});
+	};
 })();
 
 // Include all major UI components
 // Minor componetns are added by commonJS
 Ti.include(
+	'/ui/mapOnlyView.js',
 	'/ui/settingsView.js',
 	'/ui/newsfeedView.js',
+	'/ui/appMenuView.js',
 	'/ui/applicationWindow.js'
 );

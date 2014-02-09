@@ -24,9 +24,13 @@
 		view.add(header);
 		
 		var body = Ti.UI.createScrollView($$.bodyScrollView);			
-		var content = Ti.UI.createView($$.bodyContent);
+		var appContent = Ti.UI.createView($$.bodyContent);
+		var syncContent = Ti.UI.createView($$.bodyContent);
+		var themeContent = Ti.UI.createView($$.bodyContent);
 
-		body.add(content);
+		body.add(appContent);
+		body.add(syncContent);
+		body.add(themeContent);
 		view.add(body);
 							
 		///////////////////////////////////////  End of Common Window Section ////////////////////////////////////////
@@ -65,117 +69,91 @@
 		// Create setting views
 		var optionView = require('/common/optionView');
 		
-		var distOptions = [
-			{ text: 'Yards', value: 'yards' },
-			{ text: 'Meters', value: 'meters' },
-			{ text: 'Feet', value: 'feet' }
-		];
 		var distanceSetting = new optionView({
-			desc: 'Distance Units',
-			selected: 0,
-			options: distOptions,
+			desc: yc.settings.settingNames.distanceSettings.desc,
+			selected: yc.settings.settingsSaved.distanceSettings,
+			options: yc.settings.settingOptions.distanceSettings,
 			parent: view,
 			top: '0dp', height: '40dp'
 		});	
 		
-		var autoOptions = [
-			{ text: 'Disabled', value: -1 },
-			{ text: '15s', value: 15 },
-			{ text: '30s', value: 30 },
-			{ text: '45s', value: 45 },
-			{ text: '60s', value: 60 },
-			{ text: '120s', value: 120 }			
-		];
 		var autoshotSetting = new optionView({
-			desc: 'Auto Shot Timer',
-			selected: 0,
-			options: autoOptions,
-			parent: view,
-			top: '0dp', height: '40dp'
-		});	
-				
-		var gpsOptions = [
-			{ text: '5m', value: 5 },
-			{ text: '10m', value: 10 },
-			{ text: '20m', value: 20 }
-		];				
-		var gpsdistanceSetting = new optionView({
-			desc: 'GPS Min Distance',
-			selected: 0,
-			options: gpsOptions,
+			desc: yc.settings.settingNames.autoshotSettings.desc,
+			selected: yc.settings.settingsSaved.autoshotSettings,
+			options: yc.settings.settingOptions.autoshotSettings,
 			parent: view,
 			top: '0dp', height: '40dp'
 		});	
 							
-		var themeOptions = [
-			{ text: 'Blue', value: 'blue' },
-			{ text: 'Grey', value: 'grey' },
-			{ text: 'Orange', value: 'orange' },
-			{ text: 'Pink', value: 'pink' }
-		];										
-		var themeSetting = new optionView({
-			desc: 'Application Theme',
-			selected: 0,
-			options: themeOptions,
+		var gpsdistanceSetting = new optionView({
+			desc: yc.settings.settingNames.gpsdistSettings.desc,
+			selected: yc.settings.settingsSaved.gpsdistSettings,
+			options: yc.settings.settingOptions.gpsdistSettings,
 			parent: view,
 			top: '0dp', height: '40dp'
-		});			
+		});																
 
-		var syncNetOptions = [
-			{ text: 'Off', value: 'off' },
-			{ text: 'Wifi Only', value: 'wifi' },
-			{ text: 'Wireless', value: 'wireless' },
-			{ text: 'Both', value: 'Both' }
-		];	
 		var syncNetSetting = new optionView({
-			desc: 'Sync Network',
-			selected: 0,
-			options: syncNetOptions,
+			desc: yc.settings.settingNames.syncnetSettings.desc,
+			selected: yc.settings.settingsSaved.syncnetSettings,
+			options: yc.settings.settingOptions.syncnetSettings,
 			parent: view,
 			top: '0dp', height: '40dp'
 		});		
 
-		var syncOptions = [
-			{ text: 'Off', value: 'off' },
-			{ text: 'Mobile', value: 'mobile' },
-			{ text: 'Desktop', value: 'desktop' },
-			{ text: 'Web', value: 'web' }
-		];	
 		var syncSetting = new optionView({
-			desc: 'Sync Data Override',
-			selected: 0,
-			options: syncOptions,
+			desc: yc.settings.settingNames.syncdataSettings.desc,
+			selected: yc.settings.settingsSaved.syncdataSettings,
+			options: yc.settings.settingOptions.syncdataSettings,
 			parent: view,
 			top: '0dp', height: '40dp'
 		});			
 		
+		var themeSetting = new optionView({
+			desc: yc.settings.settingNames.themeSettings.desc,
+			selected: yc.settings.settingsSaved.themeSettings,
+			options: yc.settings.settingOptions.themeSettings,
+			parent: view,
+			top: '0dp', height: '40dp'
+		});				
+		
 		// Setting information
-		content.add(appSection);
-		content.add(appLabel);		
-		content.add(distanceSetting.getView());
-		content.add(autoshotSetting.getView());
-		content.add(gpsdistanceSetting.getView());
+		appContent.add(appSection);
+		appContent.add(appLabel);		
+		appContent.add(distanceSetting.getView());
+		appContent.add(autoshotSetting.getView());
+		appContent.add(gpsdistanceSetting.getView());
 		
 		// Sync section
-		content.add(syncSection);	
-		content.add(syncLabel);	
-		content.add(syncNetSetting.getView());
-		content.add(syncSetting.getView());
+		syncContent.add(syncSection);	
+		syncContent.add(syncLabel);	
+		syncContent.add(syncNetSetting.getView());
+		syncContent.add(syncSetting.getView());
 		
 		// Theme section
-		content.add(themeSection);
-		content.add(themeLabel);
-		content.add(themeSetting.getView());	
+		themeContent.add(themeSection);
+		themeContent.add(themeLabel);
+		themeContent.add(themeSetting.getView());	
 		
 		// Save Button Event handler
 		// Will save selected items back to the Ti.App.Properties
 		function saveSettings() {
-			Ti.API.info(distanceSetting.getSelectedValue());
-			Ti.API.info(autoshotSetting.getSelectedValue());
-			Ti.API.info(gpsdistanceSetting.getSelectedValue());
-			Ti.API.info(themeSetting.getSelectedValue());
-			Ti.API.info(syncNetSetting.getSelectedValue());
-			Ti.API.info(syncSetting.getSelectedValue());
+			Ti.API.debug(distanceSetting.getSelectedIndex());
+			Ti.API.debug(autoshotSetting.getSelectedIndex());
+			Ti.API.debug(gpsdistanceSetting.getSelectedIndex());
+			Ti.API.debug(syncNetSetting.getSelectedIndex());
+			Ti.API.debug(syncSetting.getSelectedIndex());
+			Ti.API.debug(themeSetting.getSelectedIndex());
+						
+			Ti.App.Properties.setInt(yc.settings.settingNames.distanceSettings.name, distanceSetting.getSelectedIndex());
+			Ti.App.Properties.setInt(yc.settings.settingNames.autoshotSettings.name, autoshotSetting.getSelectedIndex());
+			Ti.App.Properties.setInt(yc.settings.settingNames.gpsdistSettings.name, gpsdistanceSetting.getSelectedIndex());
+			Ti.App.Properties.setInt(yc.settings.settingNames.syncnetSettings.name, syncNetSetting.getSelectedIndex());
+			Ti.App.Properties.setInt(yc.settings.settingNames.syncdataSettings.name, syncSetting.getSelectedIndex());
+			Ti.App.Properties.setInt(yc.settings.settingNames.themeSettings.name, themeSetting.getSelectedIndex());	
+			
+			yc.settings.refreshSettings();			
+			yc.app.applicationWindow.fireEvent('androidback', {});
 		}
 		
 		return view;

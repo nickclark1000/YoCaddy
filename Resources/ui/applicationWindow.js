@@ -11,21 +11,51 @@
 			orientationModes:[Ti.UI.PORTRAIT]
 		}));
 		
+		var menu = yc.ui.createAppMenuView();
 		var viewStack = yc.ui.createStackView({
 			views: [yc.ui.createNewsFeedView()]
 		});
+						
+		win.add(viewStack);	
+		win.add(menu);	
 		
-		win.addEventListener('addView', function(e){
+		win.addEventListener('addview', function(e){
 			Ti.API.info('Adding View: ' + JSON.stringify(e.viewIdx));
 			viewStack.fireEvent('pushView', e);
 		});
 		
 		win.addEventListener('androidback', function(e){
-			viewStack.fireEvent('popView', {});
+			if (yc.app.menushown)
+				win.fireEvent('hidemenu', {});
+			else
+				viewStack.fireEvent('popView', {});
 		});
 		
-		win.add(viewStack);		
-				
+		win.addEventListener('showmenu', function(e){
+			menu.animate({
+				left: 0,
+				duration: 200
+			}, function() {
+				// do nothing at this point
+			});
+			
+			yc.app.menushown = true;
+		});
+		
+		win.addEventListener('hidemenu', function(e){
+			var origLeft = yc.style.platform.width * -1;
+			
+			menu.animate({
+				left: origLeft,
+				duration: 200
+			}, function() {
+				// do nothing at this point
+			});
+			
+			yc.app.menushown = false;		
+		});
+		
+		yc.app.menushown = false;				
 		return win;
 	};
 	

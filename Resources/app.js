@@ -16,6 +16,7 @@ yc.empty = {};
 
 // Include important updates
 Ti.include(
+	'/lib/settings.js',
 	'/lib/utility.js',
 	'/lib/styles.js'
 );
@@ -27,10 +28,13 @@ Ti.include(
 
 // This is a single context application with multiple windows in a stack
 (function() {
-		Ti.API.info(Ti.Platform.displayCaps.platformWidth);
-		Ti.API.info(Ti.Platform.displayCaps.logicalDensityFactor);
-		Ti.API.info(Ti.Platform.displayCaps.density);
-		Ti.API.info(Ti.Platform.displayCaps.dpi);
+	Ti.API.info(Ti.Platform.displayCaps.platformWidth);
+	Ti.API.info(Ti.Platform.displayCaps.platformHeight);
+	Ti.API.info(yc.style.platform.width);
+	Ti.API.info(yc.style.platform.height);
+	Ti.API.info(Ti.Platform.displayCaps.logicalDensityFactor);
+	Ti.API.info(Ti.Platform.displayCaps.density);
+	Ti.API.info(Ti.Platform.displayCaps.dpi);
 			
 	// Create and start the main application
 	yc.app.applicationWindow = yc.ui.createApplicationWindow();

@@ -12,7 +12,7 @@
 			title: 'yoCaddy Home',
 			leftbutton: {
 				show: true,
-				callback: function(){ yc.app.applicationWindow.fireEvent('addView', { viewIdx: yc.ui.viewids.settings }); },
+				callback: function(){ yc.app.applicationWindow.fireEvent('showmenu',  {}); },
 				image: '/images/button_menu.png'
 			}
 		});
@@ -22,22 +22,22 @@
 		// Body view creation
 		var body = Ti.UI.createScrollView($$.bodyScrollView);	
 				
-		var content1 = Ti.UI.createView(yc.combine($$.bodyContent, { }));
-		var content2 = Ti.UI.createView(yc.combine($$.bodyContent, { }));
-		var content3 = Ti.UI.createView(yc.combine($$.bodyContent, { }));
+		var content1 = Ti.UI.createView(yc.combine($$.bodyContent, { height: 300 }));
+		var content2 = Ti.UI.createView(yc.combine($$.bodyContent, { height: 450 }));
+		var content3 = Ti.UI.createView(yc.combine($$.bodyContent, { height: 200, bottom: 10 }));
 		
 		var label1 = Ti.UI.createLabel(yc.combine($$.infoText, {
-			text: 'This is sample text for a content. This is sample text for a content. This is sample text for a content. This is sample text for a content. This is sample text for a content. This is sample text for a content.',	
+			text: 'Display Primary Statistics and information?',	
 			top: 5, bottom: 5, left: 5, right: 5
 		}));
 		
 		var label2 = Ti.UI.createLabel(yc.combine($$.infoText, {
-			text: 'This is sample text for a content. This is sample text for a content. This is sample text for a content. This is sample text for a content. This is sample text for a content. This is sample text for a content.',	
+			text: 'Display last X rounds?',	
 			top: 5, bottom: 5, left: 5, right: 5	
 		}));
 						
 		var label3 = Ti.UI.createLabel(yc.combine($$.infoText, {
-			text: 'This is sample text for a content. This is sample text for a content. This is sample text for a content. This is sample text for a content. This is sample text for a content. This is sample text for a content.',	
+			text: 'Display social stuff?',	
 			top: 5, bottom: 5, left: 5, right: 5	
 		}));
 		

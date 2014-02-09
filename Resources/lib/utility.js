@@ -61,4 +61,23 @@
 			else { return def; }
 		}
 	};
+	
+	// Converting DP to Pixels for the platform
+	yc.pixelstodp = function(ThePixels) {
+		var dpi = Ti.Platform.displayCaps.dpi;
+
+	    if (dpi > 160)
+	        return (ThePixels / (dpi / 160));
+	    else 
+	        return ThePixels;
+	};
+	
+	// Converting Pixels to DP
+	yc.dptopixels = function(TheDPUnits) {
+	    if ( Titanium.Platform.displayCaps.dpi > 160 )
+	          return (TheDPUnits * (Titanium.Platform.displayCaps.dpi / 160));
+	    else 
+	        return TheDPUnits;
+	};
+		
 })();
