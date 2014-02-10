@@ -3,6 +3,7 @@
 
 (function(){
 	
+	// Create the list of nearby courses
 	var courseListView = function(courseList) {
 		var selectionWindow = Titanium.UI.createView({
 			zIndex: 99,
@@ -19,7 +20,8 @@
 				text: courseList[i].name,
 				color: '#000',
 				font: {
-					fontSize: '18dp'
+					fontSize: yc.style.fontsize.normaltext,
+					fontFamily: yc.style.fonts.infoFont
 				}
 			});
 			
@@ -55,16 +57,10 @@
 			separatorColor: yc.style.colors.lowlightColor
 		});	
 		
-		var cancelButton = Titanium.UI.createButton({
+		var cancelButton = Titanium.UI.createButton(yc.combine($$.modalButton,{
 			title: 'Cancel / Clear Course', 
-			bottom: '5dp', width: '80%',
-			height: '40dp',
-			color: '#000',
-			font: {
-				fontSize: yc.style.fontsize.medium,
-				fontFamily: yc.style.fonts.buttonFont
-			}
-		});
+			bottom: '5dp', width: '80%'
+		}));
 		
 		fillerView.add(selectionTableView);
 		fillerView.add(cancelButton);
@@ -129,7 +125,7 @@
 		}));				
 		
 		var startLabel = Ti.UI.createLabel(yc.combine($$.infoText, {
-			text: 'There are two ways to begin a round:\n1) Enter a course name and description.\n2) Select a nearby course and/or enter a description.\n\nStarting a round will initiate the GPS functionality of your device.  To stop the GPS, the round must be paused or ended.',
+			text: 'There are two ways to begin a round:\n1) Enter a course name and description.\n2) Select a nearby course and enter a description.\n\nStarting a round will initiate the GPS functionality of your device.  To stop the GPS, the round must be paused or ended.',
 			top: 5, bottom: 5, width: '95%'
 		}));		
 		
@@ -148,7 +144,15 @@
 		
 		var courseDescText = Ti.UI.createTextArea(yc.combine($$.textfield, {
 			hintText: '[Course or Round Description]',
-			height: 90
+			height: 90, 
+			autocapitalization: Ti.UI.TEXT_AUTOCAPITALIZATION_SENTENCES,
+			layout: 'horizontal',
+			verticalAlign: Ti.UI.TEXT_VERTICAL_ALIGNMENT_TOP,
+			maxLength: 200,
+			horizontalWrap: true,
+			enableReturnKey: true,
+			suppressReturn:false,
+			textAlign: 'left'
 		}));
 		
 		var dateText = Ti.UI.createTextField(yc.combine($$.textfield,{
@@ -220,7 +224,11 @@
 			if (e.success) {
 				fs.findNearbyCourses(e.coords.longitude, e.coords.latitude, displayCourseList);
 			} else {
-				Ti.API.debug(JSON.stringify(e));
+				Ti.UI.createAlertDialog({
+					title: 'Location unavailable',
+					message: 'Unable to get current location from your device.',
+					ok: 'Close'
+				}).show();
 			}
 		};
 		
