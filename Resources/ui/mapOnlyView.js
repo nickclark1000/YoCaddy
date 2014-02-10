@@ -10,15 +10,10 @@
 		var view = Ti.UI.createView($$.stretch);
 		
 		var header = new yc.ui.headerView({
-			title: 'yoRound',
+			title: 'yoMap Only',
 			leftbutton: {
 				show: true,
 				callback: function() { yc.app.applicationWindow.fireEvent('androidback', {}); }
-			},
-			rightbutton: {
-				show: true,
-				callback: function() { Ti.API.info('Exit Round'); },
-				image: '/images/button_cancel.png'
 			}
 		});
 		view.add(header);
@@ -34,9 +29,16 @@
 		///////////////////////////////////////  End of Common Window Section ////////////////////////////////////////
 		
 		var yoMap = require('/common/mapView');
-		map = new yoMap();
-		
+		map = new yoMap({
+			userlocation: true,
+			zoomcontrols: true
+		});
 		content.add(map);
+		
+		if (map.valid) {
+			
+		}
+		
 		return view;
 	};
 	

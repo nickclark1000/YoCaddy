@@ -37,6 +37,13 @@
 		}) 
 	};
 	
+	yc.style.fontsize = {
+		normaltext: 16,
+		smalltext: 12,
+		largetext:20,
+		titletext: 32
+	};
+	
 	yc.style.platform = {
 		//grab platform dimensions only once to save a trip over the bridge
 		width: yc.os({
@@ -52,6 +59,7 @@
 	// create sub-namespace for view properties
 	yc.style.properties = {
 
+		// Common View/Window based Style Properties
 		stretch: { top: 0, bottom: 0, left: 0, right: 0 },
 		
 		screensize: { 
@@ -126,15 +134,15 @@
 		// Common Modal Buttons
 		// Modal buttons are displayed within the footer, width varies depending on number of buttons
 		modalButton: {
-			height: 50,
+			height: 40,
 			color: yc.style.colors.white,
-			borderRadius: 10,
-			backgroundColor: yc.style.colors.mainColor,
-			backgroundSelectedColor: yc.style.colors.highlightColor,
+			borderRadius: 5,
+			backgroundColor: yc.style.colors.highlightColor,
+			backgroundSelectedColor: yc.style.colors.mainColor,
 			backgroundImage: '/images/buttonBackground.png',
 			font: {
-				fontSize: 20,
-				fontFamily: yc.style.fonts.sectionFont
+				fontSize: yc.style.fontsize.normal,
+				fontFamily: yc.style.fonts.buttonFont
 			}
 		},
 		
@@ -172,6 +180,28 @@
 				fontSize: 14,
 				fontFamily: yc.style.fonts.infoFont
 			}			
+		},
+		
+		textfield: {
+			top: '10dp', width: '95%', height: 40,
+			maxLength: 80,
+			keyboardType:Titanium.UI.KEYBOARD_DEFAULT,
+			returnKeyType:Titanium.UI.RETURNKEY_DONE,
+			borderStyle:Titanium.UI.INPUT_BORDERSTYLE_ROUNDED,
+			enableReturnKey: true,
+			color: '#000',
+			backgroundColor: '#FFF',
+			borderWidth: 1,
+			borderRadius: 5,
+			borderColor: yc.style.colors.lowlightColor,
+			font: {
+				fontSize: 16,
+				fontFamily: yc.style.fonts.infoFont
+			}	
+		},
+		
+		textarea: {
+			
 		}
 	};
 })();

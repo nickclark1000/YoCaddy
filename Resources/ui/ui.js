@@ -5,7 +5,7 @@
 	// Create the yc.ui namespace, will contain all the create*Window and create*View functions
 	yc.ui = {};
 	yc.ui.viewids = {
-		addround: 1,
+		startround: 1,
 		viewrounds: 2,
 		mapround: 3,
 		mapviewround: 4,
@@ -62,11 +62,22 @@
 			} else {
 				// What to do when we attempt to pop the last view
 				// Possibly exit the application
-				Ti.UI.createAlertDialog({
-					title: 'exiting',
-					message: 'exiting',
-					ok: 'OK'
-				}).show();
+				var closeDialog = Ti.UI.createAlertDialog({
+					title: 'Exit yoCaddy?',
+					message: 'Are you sure you want to exit yoCaddy?',
+					buttonNames: ['No', 'Yes'],
+					cancel: 0
+				});
+				
+				closeDialog.addEventListener('click', function(e){
+				    if (e.index === e.source.cancel){
+				    	return;
+				    } else {
+				    	yc.app.applicationWindow.close();
+				    }		
+				});
+				
+				closeDialog.show();
 			}
 		});
 		
@@ -74,7 +85,9 @@
 		stack.addEventListener('pushView', function(e){		
 			var v;
 			switch(e.viewIdx) {
-				case yc.ui.viewids.addround:
+				case yc.ui.viewids.startround:
+					Ti.API.info('Adding View: Start Round');
+					v = yc.ui.createStartRoundView();
 					break;
 				case yc.ui.viewids.viewrounds:
 					break;
@@ -94,11 +107,12 @@
 					break;
 			}
 
+			stack.add(v);
+
 			for (var k = 1; k <= stack.currentIndex; k++) {
 				stack.children[k].setVisible(false);
 			}
 			
-			stack.add(v);
 			stack.currentIndex++;
 		});
 		
@@ -117,14 +131,23 @@
 		return Ti.UI.createView({
 			width: Ti.UI.FILL, height: 1,
 			backgroundColor: yc.style.colors.lowlightColor,
-			opacity: 0.5
+			opacity: 0.4
 		});
 	};
+})();
+
+(function(){
+	
+	// Model time
+	yc.models = {};
+	
+	yc.models.Round = require('/models/RoundModel');
 })();
 
 // Include all major UI components
 // Minor componetns are added by commonJS
 Ti.include(
+	'/ui/startRoundView.js',
 	'/ui/mapOnlyView.js',
 	'/ui/settingsView.js',
 	'/ui/newsfeedView.js',

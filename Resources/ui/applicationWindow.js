@@ -31,28 +31,32 @@
 				viewStack.fireEvent('popView', {});
 		});
 		
-		win.addEventListener('showmenu', function(e){
-			menu.animate({
-				left: 0,
-				duration: 200
-			}, function() {
-				// do nothing at this point
-			});
-			
-			yc.app.menushown = true;
+		win.addEventListener('showmenu', function(e){			
+			if (!yc.app.menushown) {
+				menu.animate({
+					left: 0,
+					duration: 200
+				}, function() {
+					// do nothing at this point
+				});
+				
+				yc.app.menushown = true;
+			}
 		});
 		
 		win.addEventListener('hidemenu', function(e){
-			var origLeft = yc.style.platform.width * -1;
-			
-			menu.animate({
-				left: origLeft,
-				duration: 200
-			}, function() {
-				// do nothing at this point
-			});
-			
-			yc.app.menushown = false;		
+			if (yc.app.menushown) {
+				var origLeft = (yc.style.platform.width * -1) + 10;
+				
+				menu.animate({
+					left: origLeft,
+					duration: 200
+				}, function() {
+					// do nothing at this point
+				});
+				
+				yc.app.menushown = false;	
+			}		
 		});
 		
 		yc.app.menushown = false;				

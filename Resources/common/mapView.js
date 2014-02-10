@@ -28,7 +28,16 @@ var mapView = function(_args) {
 			    top: 0, left: 0,
 			    bottom: 0, right: 0			 
 		    });
-	                
+		    
+		    if (_args.zoomcontrols) {
+		    	view.setEnableZoomControls(true);
+		    }
+		    
+		    if (_args.userlocation) {
+		    	view.setUserLocation(true);
+		    	view.setUserLocationButton(true);
+		    }
+		    
 	        break;
 	    case tiMapView.SERVICE_MISSING:
 	        Ti.API.debug('Google Play services is missing. Please install Google Play services from the Google Play store.');
@@ -67,6 +76,9 @@ var mapView = function(_args) {
 			backgroundColor: '#000000'
 		}));
 		view.add(messageLabel);
+		view.valid = false;
+	} else {
+		view.valid = true;
 	}
 		
 	return view;

@@ -6,7 +6,7 @@
 	// create the main application window
 	yc.ui.createAppMenuView = function(_args) {
 		
-		var origLeft = yc.style.platform.width * -1;
+		var origLeft = (yc.style.platform.width * -1) + 10;
 		
 		// Create the app menu
 		var view = Ti.UI.createView(yc.combine($$.screensize, {
@@ -19,8 +19,14 @@
 		        colors: [ { color: 'black', offset: 0.0}, { color: 'transparent', offset: 0.65 } ],
 		    }	
 		}));
-		view.addEventListener('click', function() { yc.app.applicationWindow.fireEvent('hidemenu', {}); });
-
+		view.addEventListener('click', function(e) { yc.app.applicationWindow.fireEvent('hidemenu', {}); });
+		view.addEventListener('swipe', function(e){
+			if (e.direction === 'right')
+				yc.app.applicationWindow.fireEvent('showmenu', {});
+			else if (e.direction === 'left')
+				yc.app.applicationWindow.fireEvent('hidemenu', {});
+		});
+		
 		var dropshadow = Ti.UI.createView({
 			left: 0, top: 0, bottom: 0, right: '20%',
 			backgroundColor: '#696969',			
@@ -89,7 +95,9 @@
 		menuHolder.add(new item({
 			image: '/images/button_newround_dark.png',
 			text: 'Start New Round',
-			callback: function() { Ti.API.debug('New Round'); }
+			callback: function() { 
+				yc.app.applicationWindow.fireEvent('addview', { viewIdx: yc.ui.viewids.startround });
+			}
 		}));		
 	 	menuHolder.add(new yc.ui.separator());
 	 	
@@ -110,7 +118,9 @@
 		menuHolder.add(new item({
 			image: '/images/button_map_dark.png',
 			text: 'Show Map Only',
-			callback: function() { Ti.API.debug('Show Map Only'); }
+			callback: function() { 
+				yc.app.applicationWindow.fireEvent('addview', { viewIdx: yc.ui.viewids.maponly }); 
+			}
 		}));
 		menuHolder.add(new yc.ui.separator());
 		
@@ -118,10 +128,16 @@
 			image: '/images/button_settings_dark.png',
 			text: 'Settings',
 			callback: function() { 
-				Ti.API.debug('Firing settings event');
 				yc.app.applicationWindow.fireEvent('addview', { viewIdx: yc.ui.viewids.settings }); 
 			}
-		}));		
+		}));
+		menuHolder.add(new yc.ui.separator());
+		
+		menuHolder.add(new item({
+			image: '/images/button_about_dark.png',
+			text: 'About yoCaddy',
+			callback: function() { Ti.API.debug('Help and About'); }
+		}));				
 		
 		menuHead.add(sig);
 		return view;

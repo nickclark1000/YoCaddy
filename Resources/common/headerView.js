@@ -15,7 +15,7 @@ function headerView(_args) {
 		
 		var hbutton = Ti.UI.createButton({
 			left: margin,
-			width: 30, height: 30,
+			width: 32, height: 32,
 			backgroundImage: _args.leftbutton.image
 		});
 		
