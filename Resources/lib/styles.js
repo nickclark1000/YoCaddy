@@ -120,7 +120,7 @@
 			borderWidth: 1,
 			//borderColor: yc.style.colors.lowlightColor,
 			borderColor: '#E0E0E0',
-			borderRadius: 10,
+			borderRadius: 5,
 			layout: 'vertical'
 		},
 		

@@ -6,7 +6,7 @@
 	yc.ui = {};
 	yc.ui.viewids = {
 		startround: 1,
-		viewrounds: 2,
+		listrounds: 2,
 		mapround: 3,
 		mapviewround: 4,
 		settings: 5,
@@ -89,7 +89,9 @@
 					Ti.API.info('Adding View: Start Round');
 					v = yc.ui.createStartRoundView();
 					break;
-				case yc.ui.viewids.viewrounds:
+				case yc.ui.viewids.listrounds:
+					Ti.API.info('Adding View: List Rounds');
+					v = yc.ui.createListRoundsView();
 					break;
 				case yc.ui.viewids.mapround:
 					Ti.API.info('Adding View: MapRound');
@@ -148,6 +150,7 @@
 // Minor componetns are added by commonJS
 Ti.include(
 	'/ui/startRoundView.js',
+	'/ui/listRoundsView.js',
 	'/ui/mapOnlyView.js',
 	'/ui/settingsView.js',
 	'/ui/newsfeedView.js',

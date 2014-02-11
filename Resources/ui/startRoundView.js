@@ -101,7 +101,8 @@
 							lon: currentCourseLon,
 							lat: currentCourseLat,
 							fsid: currentCourseFSID,
-							date: dateText.getValue()
+							date: dateText.getValue(),
+							trace: saveTrace.isChecked()
 						});
 						
 						Ti.API.info('Start Round:' + JSON.stringify(round));

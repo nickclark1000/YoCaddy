@@ -9,6 +9,7 @@ var RoundModel = function(_args) {
 	this.lat = _args.lat;
 	this.fsid = _args.fsid;
 	this.date = _args.date || yc.getCurrentDate('mm/dd/yyyy');
+	this.trace = _args.trace;
 	
 	// Creation / sync related details
 	// When syncs happen, we need to determine if the platform is 'web' or 'mobile'

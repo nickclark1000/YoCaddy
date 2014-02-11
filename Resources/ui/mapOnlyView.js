@@ -10,7 +10,7 @@
 		var view = Ti.UI.createView($$.stretch);
 		
 		var header = new yc.ui.headerView({
-			title: 'yoMap Only',
+			title: 'Map Only',
 			leftbutton: {
 				show: true,
 				callback: function() { yc.app.applicationWindow.fireEvent('androidback', {}); }

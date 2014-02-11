@@ -105,7 +105,9 @@
 		menuHolder.add(new item({
 			image: '/images/button_save_dark.png',
 			text: 'View Saved Rounds',
-			callback: function() { Ti.API.debug('Saved Rounds'); }
+			callback: function() { 
+				yc.app.applicationWindow.fireEvent('addview', { viewIdx: yc.ui.viewids.listrounds });
+			}
 		}));		
 	 	menuHolder.add(new yc.ui.separator());
 	 	

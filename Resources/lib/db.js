@@ -25,6 +25,7 @@ var Database = function(_name) {
 		 					+ ' lat REAL,'
 		 					+ ' fsid TEXT,'
 		 					+ ' date TEXT NOT NULL,'
+		 					+ ' trace INTEGER,'
 		 					+ ' createdPlatform TEXT,'
 		 					+ ' createdId INTEGER'
 		 					+ ')';
@@ -61,6 +62,7 @@ Database.prototype.saveRound = function(/*Round Object*/ _r) {
 				if (_r.lat) str += " lat="+ _r.lat;
 				if (_r.fsid) str += " fsid='"+ _r.fsid+"'";
 				if (_r.date) str += " date='"+ _r.date+"'";
+				if (_r.trace) str += " trace='"+ _r.trace+"'";
 				if (_r.createPlatform) str += " createdPlatform='"+ _r.createdPlatform+"'";
 				if (_r.createId) str += " createdId="+ _r.createdId;
 			str += " WHERE id="+_r.id;
@@ -72,6 +74,7 @@ Database.prototype.saveRound = function(/*Round Object*/ _r) {
 				if (_r.lat) str += " ,lat";
 				if (_r.fsid) str += ",fsid";
 				if (_r.date) str += ",date";
+				if (_r.trace) str += ",trace";
 				if (_r.createPlatform) str += ",createdPlatform";
 				if (_r.createId) str += ",createdId";
 			str += ") VALUES (";
@@ -81,6 +84,7 @@ Database.prototype.saveRound = function(/*Round Object*/ _r) {
 				if (_r.lat) str += ","+ _r.lat;
 				if (_r.fsid) str += ",'"+ _r.fsid+"'";
 				if (_r.date) str += ",'"+ _r.date+"'";
+				if (_r.trace) str += ",'"+ _r.trace+"'";
 				if (_r.createPlatform) str += ",'"+ _r.createdPlatform+"'";
 				if (_r.createId) str += ","+ _r.createdId;			
 			str += ")";	
@@ -95,5 +99,28 @@ Database.prototype.saveRound = function(/*Round Object*/ _r) {
 	} finally {
 		db.close();
 		return success;
+	}	
+};
+
+/**
+ * listRounds is called to return a list of all the rounds in the database that 
+ * are valid in relation to the where clause
+ * @param {Object} where
+ * @return {Rounds[]} rounds 
+ */
+Database.prototype.listRounds = function(where) {
+	var str;
+	var success = [];
+	var db = Ti.Database.open(this.dbname);	
+		
+	try {
+
+	 	// Execute the Create statements
+	 	db.execute(str);		 
+	} catch (err) {		
+		Ti.API.error('Datbase Error: ' + JSON.stringify(err));
+	} finally {
+	 	//Close the DB
+	 	db.close();		 	
 	}	
 };
