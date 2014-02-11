@@ -36,6 +36,10 @@ Ti.include(
 	Ti.API.info(Ti.Platform.displayCaps.density);
 	Ti.API.info(Ti.Platform.displayCaps.dpi);
 			
+	// Create and check the database
+	var Database = require('/lib/db'); 
+	yc.db = new Database('yocaddydb');
+			
 	// Create and start the main application
 	yc.app.applicationWindow = yc.ui.createApplicationWindow();
 	yc.app.applicationWindow.open();

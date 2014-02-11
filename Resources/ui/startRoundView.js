@@ -3,7 +3,10 @@
 
 (function(){
 	
-	// Create the list of nearby courses
+	/**
+	 * courseListView is used to create a new CourseListView
+	 * @param {object}[] - list of courses found by foursquare 
+	 */
 	var courseListView = function(courseList) {
 		var selectionWindow = Titanium.UI.createView({
 			zIndex: 99,
@@ -69,7 +72,10 @@
 		return selectionWindow;	
 	};
 	
-	// create the main application window
+	/**
+	 * yc.ui.createStartRoundView is used to create the full start round View
+	 * Users enter the information about the round they are going to play then accept to start round tracking 
+	 */
 	yc.ui.createStartRoundView = function(_args) {
 		// Create the layout view elements
 		var currentCourseLon, currentCourseLat, currentCourseFSID;
@@ -80,22 +86,36 @@
 			leftbutton: {
 				show: true,
 				callback: function() { 
-					yc.app.applicationWindow.fireEvent('androidback', {}); 
+					yc.app.applicationWindow.fireEvent('androidback', { sourceView: yc.ui.viewids.startround }); 
 				}
 			},
 			rightbutton: {
 				show: true,
 				callback: function() { 
-					yc.app.currentRound = new yc.models.Round({
-						course: courseNameText.getValue(),
-						desc: courseDescText.getValue(),
-						lon: currentCourseLon,
-						lat: currentCourseLat,
-						fsid: currentCourseFSID,
-						date: dateText.getValue()
-					});
-					
-					Ti.API.info('Start Round:' + JSON.stringify(yc.app.currentRound)); 					
+					if (courseNameText.getValue().length > 0) {
+						Ti.API.debug('creating round');
+						// Saving the Round to the DB and firing off the new round window
+						var round = new yc.models.Round({
+							course: courseNameText.getValue(),
+							desc: courseDescText.getValue(),
+							lon: currentCourseLon,
+							lat: currentCourseLat,
+							fsid: currentCourseFSID,
+							date: dateText.getValue()
+						});
+						
+						Ti.API.info('Start Round:' + JSON.stringify(round));
+						yc.db.saveRound(round);
+						yc.app.currentRound = round;
+						yc.app.applicationWindow.fireEvent('androidback', { sourceView: yc.ui.viewids.startround });
+					} else {
+						Ti.API.debug('No course was entered/selected');
+						Ti.UI.createAlertDialog({
+							title: 'Missing Information',
+							message: 'Please enter or select a course to continue.',
+							ok: 'Ok'							
+						}).show();
+					}				
 				},
 				image: '/images/button_accept.png'
 			}
@@ -126,7 +146,7 @@
 		
 		var startLabel = Ti.UI.createLabel(yc.combine($$.infoText, {
 			text: 'There are two ways to begin a round:\n1) Enter a course name and description.\n2) Select a nearby course and enter a description.\n\nStarting a round will initiate the GPS functionality of your device.  To stop the GPS, the round must be paused or ended.',
-			top: 5, bottom: 5, width: '95%'
+			top: 5, bottom: 10, width: '95%'
 		}));		
 		
 		var courseNameText = Ti.UI.createTextField(yc.combine($$.textfield, {
@@ -186,7 +206,11 @@
 		
 		////////////////////////////////////// Private Functions //////////////////////////////////////////////
 		
-		// Display the course list and deal with the response
+		/**
+		 * displayCourseList creates a new instance of CourseListView and handles the user events
+		 * Canceling/Clearing will empty the currentRound information
+		 * Selecting a round will update the currentRound information 
+		 */
 		var displayCourseList = function(courses) {
 			var clv = new courseListView (courses);
 			
@@ -216,7 +240,9 @@
 			view.add(clv);
 		};
 		
-		// CurrentLocationFound is the callback fired when the GeoLocation service finds a location
+		/**
+		 * currentLocationFound is the event handler call back passed into the Geolocation object 
+		 */
 		var currentLocationFound = function(e) {
 			var FourSquare = require('/lib/foursquare');
 			var fs = new FourSquare();
@@ -232,31 +258,19 @@
 			}
 		};
 		
-		// createCourseList is called when the Find Course List button is clicked
+		/**
+		 * createCourseList is called when the Search Nearby button is clicked
+ 		 * @param {Object} _args
+		 */
 		var createCourseList = function(_args) {
-			if (Titanium.Geolocation.locationServicesEnabled) {
-				if (Titanium.Platform.osname == 'android') { // Setup android related GPS listeners
-					Titanium.API.debug('Configuring Geolocation for Android');
-					Ti.Geolocation.preferredProvider = "gps";		
-					Ti.Geolocation.accuracy = Ti.Geolocation.ACCURACY_HIGH;
-					Ti.Geolocation.distanceFilter = yc.settings.settingOptions.gpsdistSettings[yc.settings.settingsSaved.gpsdistSettings].value; 
-					Ti.Geolocation.Android.manualMode = false; 	 					
-				} else if (Titanium.Platform.osname == 'iphone ' || Titanium.Platform.osname == 'ipad') { // Setup ipad and iphone related GPS listeners
-					Titanium.API.debug('Configuring Geolocation for iOS');
-					Ti.Geolocation.preferredProvider = "gps";
-					Ti.Geolocation.purpose = "yoCaddy requires access to GPS services";
-				    Ti.Geolocation.accuracy = Ti.Geolocation.ACCURACY_HIGH;
-				    Ti.Geolocation.distanceFilter = yc.settings.settingOptions.gpsdistSettings[yc.settings.settingsSaved.gpsdistSettings].value;   	
-				}
-				
-				Titanium.Geolocation.getCurrentPosition(currentLocationFound);
-			} else {
-				Ti.UI.createAlertDialog({
-					title: 'Location Service Error',
-					message: 'Location services are not currently available.',
-					ok: 'Ok'
-				}).show();
-			}			
+			var GeoLocation = require('lib/geolocation');
+			var provider = 'gps';
+			var distance = yc.settings.settingOptions.gpsdistSettings[yc.settings.settingsSaved.gpsdistSettings].value;
+			var geo = new GeoLocation(provider, distance);
+			
+			if(geo) {
+				geo.getCurrentLocation(currentLocationFound);
+			}
 		};		
 		
 		courseFindButton.addEventListener('click', createCourseList);

@@ -58,11 +58,11 @@
 		});
 		
 		var sig = Ti.UI.createLabel({
-			right: 5,
+			right: 20, top: 10,
 			color: 'black',
-			text: 'Kenneth J Davidson',
+			text: 'Username123',
 			font: {
-				fontSize: 22,
+				fontSize: 25,
 				fontFamily: yc.os({
 					iphone: 'Meddon',
 					android: 'Meddon'
@@ -71,6 +71,7 @@
 		});
 		
 		menuHead.add(logo);
+		menuHead.add(sig);		
 		menuHolder.add(menuHead);
 		menuHolder.add(new yc.ui.separator());
 		
@@ -139,7 +140,6 @@
 			callback: function() { Ti.API.debug('Help and About'); }
 		}));				
 		
-		menuHead.add(sig);
 		return view;
 	};
 	

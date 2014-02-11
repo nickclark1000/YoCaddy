@@ -18,10 +18,18 @@ function FourSquare(_token) {
 	
 	/**
 	 * Authenticate - used to authenticate the user with FourSquare 
-	 * @param {Object} parent
+	 * @param {Object} _args
 	 * @return {Object} token
 	 */
-	this.authenticateUser = function(parent) {
+	this.authenticateUser = function(_args) {
+		
+	};
+	
+	/**
+	 * checkIn checks in under the logged in users name
+	 * @param {Object} _args 
+	 */
+	this.checkIn = function(_args) {
 		
 	};
 	
@@ -44,6 +52,7 @@ function FourSquare(_token) {
 				+ latitude +','+ longitude 
 				+ '&client_id=' + this.config.clientId
 				+ '&client_secret=' + this.config.clientSecret
+				+ '&query=golf'
 				+ '&categoryId=4bf58dd8d48988d1e6941735'			// golfcourses = 4bf58dd8d48988d1e6941735
 				+ '&radius=8000&limit=15'
 				+ '&v=' + yc.getCurrentDate('yyyymmdd');
