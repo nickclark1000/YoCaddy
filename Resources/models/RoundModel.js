@@ -2,14 +2,15 @@
 
 var RoundModel = function(_args) {
 	// Round Specific Details
-	this.id = undefined;
+	this.id = _args.id || undefined;
 	this.course = _args.course;
 	this.desc = _args.desc || '';
-	this.lon = _args.lon;
-	this.lat = _args.lat;
-	this.fsid = _args.fsid;
+	this.lon = _args.lon || 0;
+	this.lat = _args.lat || 0;
+	this.fsid = _args.fsid || '';
 	this.date = _args.date || yc.getCurrentDate('mm/dd/yyyy');
-	this.trace = _args.trace;
+	this.trace = _args.trace || false;
+	this.score = _args.score || -99;
 	
 	// Creation / sync related details
 	// When syncs happen, we need to determine if the platform is 'web' or 'mobile'

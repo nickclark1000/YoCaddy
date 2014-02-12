@@ -113,7 +113,7 @@
 						Ti.API.debug('No course was entered/selected');
 						Ti.UI.createAlertDialog({
 							title: 'Missing Information',
-							message: 'Please enter or select a course to continue.',
+							message: 'Please enter or select a course to start your round.',
 							ok: 'Ok'							
 						}).show();
 					}				

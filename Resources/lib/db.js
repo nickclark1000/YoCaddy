@@ -26,6 +26,7 @@ var Database = function(_name) {
 		 					+ ' fsid TEXT,'
 		 					+ ' date TEXT NOT NULL,'
 		 					+ ' trace INTEGER,'
+		 					+ ' score INTEGER'
 		 					+ ' createdPlatform TEXT,'
 		 					+ ' createdId INTEGER'
 		 					+ ')';
@@ -55,43 +56,29 @@ Database.prototype.saveRound = function(/*Round Object*/ _r) {
 	try {
 
 		if (_r.id) {	// Update
-			str = "UPDATE Rounds SET";
-				if (_r.course) str += " course='"+ _r.course+"'";
-				if (_r.desc) str += " desc='"+ _r.desc+"'";
-				if (_r.lon) str += " lon="+ _r.lon;
-				if (_r.lat) str += " lat="+ _r.lat;
-				if (_r.fsid) str += " fsid='"+ _r.fsid+"'";
-				if (_r.date) str += " date='"+ _r.date+"'";
-				if (_r.trace) str += " trace='"+ _r.trace+"'";
-				if (_r.createPlatform) str += " createdPlatform='"+ _r.createdPlatform+"'";
-				if (_r.createId) str += " createdId="+ _r.createdId;
-			str += " WHERE id="+_r.id;
+			str = 'UPDATE Rounds SET'
+				+ ' course=?'
+				+ ' desc=?'
+				+ ' lon=?'
+				+ ' lat=?'
+				+ ' fsid=?'
+				+ ' date=?'
+				+ ' trace=?'
+				+ ' score=?'
+				+ ' createdPlatform=?'
+				+ ' createdId=?'
+			+ ' WHERE id=?';
+			
+			Ti.API.debug('Update: ' + str);
+			db.execute(str, _r.course, _r.desc, _r.lon, _r.lat, _r.fsid, _r.date, _r.trace, _r.score, _r.createdPlatform, _r.createdid, _r.id);			
 		} else {		// Insert
-			str = "INSERT INTO Rounds (";
-				if (_r.course) str += "course";
-				if (_r.desc) str += ",desc";
-				if (_r.lon) str += " ,lon";
-				if (_r.lat) str += " ,lat";
-				if (_r.fsid) str += ",fsid";
-				if (_r.date) str += ",date";
-				if (_r.trace) str += ",trace";
-				if (_r.createPlatform) str += ",createdPlatform";
-				if (_r.createId) str += ",createdId";
-			str += ") VALUES (";
-				if (_r.course) str += "'"+_r.course+"'";
-				if (_r.desc) str += ",'"+ _r.desc+"'";
-				if (_r.lon) str += ","+ _r.lon;
-				if (_r.lat) str += ","+ _r.lat;
-				if (_r.fsid) str += ",'"+ _r.fsid+"'";
-				if (_r.date) str += ",'"+ _r.date+"'";
-				if (_r.trace) str += ",'"+ _r.trace+"'";
-				if (_r.createPlatform) str += ",'"+ _r.createdPlatform+"'";
-				if (_r.createId) str += ","+ _r.createdId;			
-			str += ")";	
+			str = 'INSERT INTO Rounds (course, desc, lon, lat, fsid, date, trace, score, createdPlatform, createdid)'
+			+ ' VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';	
+			
+			Ti.API.debug('Insert: ' + str);
+			db.execute(str, _r.course, _r.desc, _r.lon, _r.lat, _r.fsid, _r.date, _r.trace, _r.score, _r.createdPlatform, _r.createdid);
 		}
 		
-		Ti.API.debug('Execute: ' + str);
-		db.execute(str);
 		success = true;	
 	} catch (err) {
 		Ti.API.error('Datbase Error: ' + JSON.stringify(err));
@@ -109,18 +96,44 @@ Database.prototype.saveRound = function(/*Round Object*/ _r) {
  * @return {Rounds[]} rounds 
  */
 Database.prototype.listRounds = function(where) {
-	var str;
+	var str, resultSet;
 	var success = [];
-	var db = Ti.Database.open(this.dbname);	
+	var db = Ti.Database.open(this.dbname);
+	var Round = require('/models/RoundModel');	
 		
 	try {
-
-	 	// Execute the Create statements
-	 	db.execute(str);		 
+		str = 'SELECT * FROM Rounds';
+		
+		if (where) {
+			str += ' WHERE ' + where;		
+		}
+		
+	 	resultSet = db.execute(str);		// Execute the Create statements
+	 	
+	 	// Create array of Rounds
+	 	while (resultSet.isValidRow()) {
+	 		
+	 		success.push(new Round({
+	 			id: resultSet.fieldByName('id'),
+				course: resultSet.fieldByName('course'),
+				desc: resultSet.fieldByName('desc'),
+				lon: resultSet.fieldByName('lon'),
+				lat: resultSet.fieldByName('lat'),
+				fsid: resultSet.fieldByName('fsid'),
+				date: resultSet.fieldByName('date'),
+				trace: resultSet.fieldByName('trace'),
+				score: resultSet.fieldByName('score'),		
+				createdPlatform: resultSet.fieldByName('createdPlatform'),
+				createdId: resultSet.fieldByName('createdId') 			
+	 		}));
+	 		
+	 		resultSet.next();
+	 	}	 
 	} catch (err) {		
 		Ti.API.error('Datbase Error: ' + JSON.stringify(err));
 	} finally {
 	 	//Close the DB
-	 	db.close();		 	
+	 	db.close();	
+	 	return success;	 	
 	}	
 };
