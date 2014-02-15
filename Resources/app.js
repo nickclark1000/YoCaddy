@@ -8,11 +8,13 @@
 
 // yoCaddy Application Namespace
 var yc = {};
+yc.replacedb = false;
 
 // Setup application variables for the namespace
 // Variables and functions will be used throughtou the application
 yc.app = {};
 yc.empty = {};
+yc.db = {};
 
 // Include important updates
 Ti.include(
@@ -37,8 +39,8 @@ Ti.include(
 	Ti.API.info(Ti.Platform.displayCaps.dpi);
 			
 	// Create and check the database
-	var Database = require('/lib/db'); 
-	yc.db = new Database('yocaddydb');
+	var Database = require('/lib/db/rounds'); 
+	yc.db.rounds = new Database('yocaddydb');
 			
 	// Create and start the main application
 	yc.app.applicationWindow = yc.ui.createApplicationWindow();

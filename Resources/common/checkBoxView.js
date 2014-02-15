@@ -20,19 +20,18 @@ var checkBox = function(_args) {
 	var viewFontFamily = yc.style.fonts.optionFont;	
 		
 	// Public functions	
-	this.checked = _args.checked;
-	var viewTitle = (this.checked === true) ? '\u2713' : '';
+	var checked = _args.checked;
+	var viewTitle = (checked === 1) ? '\u2713' : '';
 		
 	// Private functions
 	var clicked = function(){
-		if (viewTitle === '') {
+		if (checked === 0) {
 			viewTitle = '\u2713';
-			this.checked = true;
+			checked = 1;
 		} else {
 			viewTitle = '';
-			this.checked = false;
+			checked = 0;
 		}
-		
 		checkboxButton.setTitle(viewTitle);
 	};
 	
@@ -49,7 +48,7 @@ var checkBox = function(_args) {
 		color: '#000',
 		font: {
 			fontSize: yc.style.fontsize.normaltext,
-			fontFamily: yc.style.fonts.buttonFont
+			fontFamily: yc.style.fonts.optionFont
 		}			
 	});
 	
@@ -74,14 +73,15 @@ var checkBox = function(_args) {
 	checkbox.add(checkboxButton);
 	
 	this.view = checkbox;
-};
-
-checkBox.prototype.isChecked = function() {
-	return this.checked;	
-};
-
-checkBox.prototype.getView = function() {
-	return this.view;
+	
+	this.isChecked = function() {
+		return checked;	
+	};
+	
+	this.getView = function() {
+		return checkbox;
+	};	
+			
 };
 
 module.exports = checkBox;

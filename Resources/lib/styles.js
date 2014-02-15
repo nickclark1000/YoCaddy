@@ -2,14 +2,9 @@
 (function(){
 	yc.style = {};
 	
-	yc.style.colors = yc.combine({	
-		// Will be replaced by properties later
-		mainColor:	'#0000AA',
-		highlightColor:	'#007FFF',
-		lowlightColor: '#AAD4FF',
-		}, {
+	yc.style.colors = yc.combine(yc.settings.app.propvalues[yc.settings.app.propids.theme][yc.settings.app.selected[yc.settings.app.propids.theme]].value, {
 		textColor:	'#000000',
-		greyTextColor:	'#888888',		
+		greyTextColor:	'#4B4B4B',		
 		black: '#000000',
 		white: '#FFFFFF',		
 	});
@@ -38,9 +33,11 @@
 	};
 	
 	yc.style.fontsize = {
+		tinytext: 10,
 		normaltext: 16,
 		smalltext: 12,
 		largetext:20,
+		xlargetext:24,
 		titletext: 32
 	};
 	
@@ -101,9 +98,13 @@
 		},
 		
 		bodyNoScrollView: {
+			backgroundImage: '/images/backgrounds/modalBodyBg.png',
 			top: 55, bottom: 5,
 			left: 5, right: 5,	
-			backgroundColor: 'transparent'		
+			backgroundColor: 'transparent',
+			borderWidth: 1,
+			borderColor: '#E0E0E0',
+			borderRadius: 5,				
 		},
 		
 		bodyView: {
@@ -118,11 +119,19 @@
 			left: 5, right: 5,
 			height: Ti.UI.SIZE,
 			borderWidth: 1,
-			//borderColor: yc.style.colors.lowlightColor,
 			borderColor: '#E0E0E0',
 			borderRadius: 5,
 			layout: 'vertical'
-		},
+		},	
+		
+		bodyScrollContent: {
+			top: 0, bottom: 0,
+			left: 0, right: 0,
+			contentWidth: Ti.UI.FILL,
+			contentHeight: 'auto',
+			scrollType: 'vertical',			
+			layout: 'vertical'
+		},			
 		
 		// Common footer properties
 		footerView: {

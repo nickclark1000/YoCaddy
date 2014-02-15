@@ -20,7 +20,6 @@
 		win.add(menu);	
 		
 		win.addEventListener('addview', function(e){
-			Ti.API.info('Adding View: ' + JSON.stringify(e.viewIdx));
 			viewStack.fireEvent('pushView', e);
 		});
 		

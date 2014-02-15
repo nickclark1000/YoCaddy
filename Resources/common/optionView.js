@@ -4,20 +4,24 @@
  */
 var OptionView = function(_args) {
 	// Private instance Variables
-	var oOptions = _args.options || {};
+	var oOptions = [];
 	var oSelected = _args.selected;	
 	var oDesc = _args.desc;
 	var oParent = _args.parent;
-	var oLen = oOptions.length;
 	
-	Ti.API.debug(oSelected + ' - ' + JSON.stringify(oOptions));
+	for (var i=0; i < _args.options.length; i++) {
+		Ti.API.debug(JSON.stringify(_args.options[i]));
+		oOptions.push(_args.options[i]);
+	}
+	
+	var oLen = oOptions.length;
 	
 	// Private View
 	var optionView = Ti.UI.createView({
 		top: _args.top, bottom: _args.bottom,
 		width: '95%', height: _args.height,
-		options: _args.options,
-		selected: _args.selected
+		options: oOptions,
+		selected: oSelected
 	});
 	// Private Name
 	var optionName = Ti.UI.createLabel({
@@ -56,8 +60,6 @@ var OptionView = function(_args) {
 	//////////////////////////////////////////////////////////////////////////
 	var setSelected = function() {
 		optionValue.setText(oOptions[oSelected].text);
-		this.selectedIndex = oSelected;
-		this.options = oOptions;
 	};
 
 	// Event handler for when the View is clicked, will rotate through options
@@ -72,15 +74,12 @@ var OptionView = function(_args) {
 	
 	// Public Instance Variables and Methods
 	//////////////////////////////////////////////////////////////////////////
-	this.selectedIndex = oSelected;
-	this.options = oOptions;
-	this.view = optionView;
 	
 	// Public Instance Method - getSelectedValue
 	this.getSelectedValue = function() {
 		for (var i=0, j=oLen; i<j; i++) {
 			if (i== oSelected) {
-				return  oOptions[i].value;
+				return oOptions[i].value;
 			}
 		} 
 		

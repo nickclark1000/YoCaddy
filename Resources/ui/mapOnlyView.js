@@ -35,10 +35,6 @@
 		});
 		content.add(map);
 		
-		if (map.valid) {
-			
-		}
-		
 		return view;
 	};
 	

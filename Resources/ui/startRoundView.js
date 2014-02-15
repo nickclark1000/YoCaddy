@@ -14,7 +14,7 @@
 			width: Titanium.UI.FILL,
 			height: Titanium.UI.FILL
 		});
-	
+
 		var tableData = [];
 		for (var i = 0; i < courseList.length; i++) {
 			var row = Titanium.UI.createTableViewRow();
@@ -78,7 +78,7 @@
 	 */
 	yc.ui.createStartRoundView = function(_args) {
 		// Create the layout view elements
-		var currentCourseLon, currentCourseLat, currentCourseFSID;
+		var currentCourseLon = 0, currentCourseLat = 0, currentCourseFSID = '';
 		var view = Ti.UI.createView($$.stretch);
 		
 		var header = new yc.ui.headerView({
@@ -92,8 +92,10 @@
 			rightbutton: {
 				show: true,
 				callback: function() { 
+					courseNameText.blur();
+					courseDescText.blur();
+					
 					if (courseNameText.getValue().length > 0) {
-						Ti.API.debug('creating round');
 						// Saving the Round to the DB and firing off the new round window
 						var round = new yc.models.Round({
 							course: courseNameText.getValue(),
@@ -102,11 +104,12 @@
 							lat: currentCourseLat,
 							fsid: currentCourseFSID,
 							date: dateText.getValue(),
-							trace: saveTrace.isChecked()
+							trace: saveTrace.isChecked(),
+							showTrace: showTrace.isChecked()
 						});
 						
 						Ti.API.info('Start Round:' + JSON.stringify(round));
-						yc.db.saveRound(round);
+						yc.db.rounds.saveRound(round);
 						yc.app.currentRound = round;
 						yc.app.applicationWindow.fireEvent('androidback', { sourceView: yc.ui.viewids.startround });
 					} else {
@@ -123,14 +126,10 @@
 		});
 		view.add(header);
 		
-		var body = Ti.UI.createScrollView($$.bodyScrollView);			
-		var appContent = Ti.UI.createView(yc.combine($$.bodyContent, {}));
-		var infoContent = Ti.UI.createView(yc.combine($$.bodyContent, {
-			bottom: 10
-		}));		
+		var body = Ti.UI.createView($$.bodyNoScrollView);			
+		var content = Ti.UI.createScrollView(yc.combine($$.bodyScrollContent, {}));		
 
-		body.add(appContent);
-		body.add(infoContent);
+		body.add(content);
 		view.add(body);
 							
 		///////////////////////////////////////  End of Common Window Section //////////////////////////////////////
@@ -186,24 +185,24 @@
 		var saveTrace = new CheckBox({
 			top: 10, width: '95%', height: 40,
 			text: 'Save Walking Trace',
-			checked: true
+			checked: 1
 		});
 		
 		var showTrace = new CheckBox({
 			top: 10, bottom: 10, width: '95%', height: 40,
 			text: 'Show Walking Trace',
-			checked: true
+			checked: 1
 		});		
 		
-		appContent.add(startSection);
-		appContent.add(courseNameText);
-		appContent.add(courseFindButton);
-		appContent.add(courseDescText);
-		appContent.add(dateText);
-		appContent.add(saveTrace.getView());
-		appContent.add(showTrace.getView());
-		infoContent.add(infoSection);
-		infoContent.add(startLabel);
+		content.add(startSection);
+		content.add(courseNameText);
+		content.add(courseFindButton);
+		content.add(courseDescText);
+		content.add(dateText);
+		content.add(saveTrace.getView());
+		content.add(showTrace.getView());
+		content.add(infoSection);
+		content.add(startLabel);
 		
 		////////////////////////////////////// Private Functions //////////////////////////////////////////////
 		
@@ -222,9 +221,9 @@
 					// Blank out the course name 
 					courseNameText.setValue('');
 					courseNameText.setEditable(true);
-					currentCourseFSID = undefined;
-					currentCourseLat = undefined;
-					currentCourseLon = undefined;
+					currentCourseFSID = 'undefined';
+					currentCourseLat = 0;
+					currentCourseLon = 0;
 				} else {
 					Ti.API.debug(JSON.stringify(courses[e.index]));
 					
@@ -266,12 +265,20 @@
 		var createCourseList = function(_args) {
 			var GeoLocation = require('lib/geolocation');
 			var provider = 'gps';
-			var distance = yc.settings.settingOptions.gpsdistSettings[yc.settings.settingsSaved.gpsdistSettings].value;
+			var distance = yc.settings.app.propvalues[yc.settings.app.propids.gpsDistance][yc.settings.app.selected[yc.settings.app.propids.gpsDistance]].value;
 			var geo = new GeoLocation(provider, distance);
 			
-			if(geo) {
-				geo.getCurrentLocation(currentLocationFound);
-			}
+			try {
+				if(geo) {
+					geo.getCurrentLocation(currentLocationFound);
+				}
+			} catch (err) {
+				Ti.ui.error('Geolocation Error: Unable to get current position');
+				Ti.UI.createAlertDialog({
+					title: 'Geolocation Error',
+					message: 'A geolocation error was thrown.  Please check GPS status.'
+				}).show();
+			}	
 		};		
 		
 		courseFindButton.addEventListener('click', createCourseList);

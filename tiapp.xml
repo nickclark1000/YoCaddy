@@ -50,6 +50,7 @@
             <permission
                 android:name="com.klueless.yocaddy.permission.MAPS_RECEIVE" android:protectionLevel="signature"/>
             <application>
+            	
                 <!-- Replace "PASTE YOUR GOOGLE MAPS API KEY HERE" with the Google API key you obtained -->
                 <meta-data
                     android:name="com.google.android.maps.v2.API_KEY" android:value="AIzaSyA4h4GSJjUILHDHGKXbAI-kXjHg-W2d7B0"/>

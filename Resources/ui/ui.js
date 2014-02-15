@@ -10,7 +10,8 @@
 		mapround: 3,
 		mapviewround: 4,
 		settings: 5,
-		maponly: 6
+		maponly: 6,
+		about: 7
 	};
 	
 	// Header View
@@ -107,9 +108,14 @@
 					Ti.API.info('Adding View: Settings');
 					v = yc.ui.createSettingsView();
 					break;
+				case yc.ui.viewids.about:
+					Ti.API.info('Adding View: About');
+					v = yc.ui.createInformationView();
+					break;					
 			}
 
-			stack.add(v);
+			if (v)
+				stack.add(v);
 
 			for (var k = 1; k <= stack.currentIndex; k++) {
 				stack.children[k].setVisible(false);
@@ -152,6 +158,7 @@ Ti.include(
 	'/ui/startRoundView.js',
 	'/ui/listRoundsView.js',
 	'/ui/mapOnlyView.js',
+	'/ui/informationView.js',
 	'/ui/settingsView.js',
 	'/ui/newsfeedView.js',
 	'/ui/appMenuView.js',

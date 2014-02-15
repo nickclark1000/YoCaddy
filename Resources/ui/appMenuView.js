@@ -58,7 +58,7 @@
 		});
 		
 		var sig = Ti.UI.createLabel({
-			right: 20, top: 10,
+			right: 20, top: -10,
 			color: 'black',
 			text: 'Username123',
 			font: {
@@ -139,7 +139,9 @@
 		menuHolder.add(new item({
 			image: '/images/button_about_dark.png',
 			text: 'About yoCaddy',
-			callback: function() { Ti.API.debug('Help and About'); }
+			callback: function() { 
+				yc.app.applicationWindow.fireEvent('addview', { viewIdx: yc.ui.viewids.about }); 
+			}
 		}));				
 		
 		return view;

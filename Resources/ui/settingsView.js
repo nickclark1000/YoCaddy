@@ -6,7 +6,7 @@
 	// create the main application window
 	yc.ui.createSettingsView = function(_args) {
 		
-		// Create the layout view elements
+		///////////////////////////////////////  Start of Common Window Section ////////////////////////////////////////
 		var view = Ti.UI.createView($$.stretch);
 		
 		var header = new yc.ui.headerView({
@@ -23,136 +23,96 @@
 		});
 		view.add(header);
 		
-		var body = Ti.UI.createScrollView($$.bodyScrollView);			
-		var appContent = Ti.UI.createView($$.bodyContent);
-		var syncContent = Ti.UI.createView($$.bodyContent);
-		var themeContent = Ti.UI.createView($$.bodyContent);
+		var body = Ti.UI.createScrollView($$.bodyNoScrollView);			
+		var content = Ti.UI.createScrollView($$.bodyScrollContent);
 
-		body.add(appContent);
-		body.add(syncContent);
-		body.add(themeContent);
+		body.add(content);
 		view.add(body);
 							
 		///////////////////////////////////////  End of Common Window Section ////////////////////////////////////////
 		
-		// Create Headers and Section titles
-		var appLabel = Ti.UI.createLabel(yc.combine($$.infoText, {
-			top: 5, left: 10, right: 10,
-			text: 'Changing applications settings could affect battery life, if settings are increased to their maximum accuracy option.'
-		}));
+		var OptionView = require('/common/optionView');
 		
+		// Create Headers and Section titles
+		var settingLabel = Ti.UI.createLabel(yc.combine($$.infoText, {
+			top: 5, left: 10, right: 10,
+			text: 'Application requires a restart before setting changes will take affect.'
+		}));
+		content.add(settingLabel);
+
 		var appSection = Ti.UI.createLabel(yc.combine($$.sectionTitle, {
 			top: '5dp', left: '5dp',
 			text: 'Application Settings'
 		}));
+		content.add(appSection);
+						
+		var appLabel = Ti.UI.createLabel(yc.combine($$.infoText, {
+			top: 5, left: 10, right: 10,
+			text: 'Changing applications settings could affect battery life, if settings are increased to their maximum accuracy option.'
+		}));
+		content.add(appLabel);
+		
+		/// Loop through yc.settings.app.propnames
+		/// Create all the check boxes dynamically
+		var appSettings = [];
+		for (var i=0,j=yc.settings.app.propnames.length; i<j; i++) {
+			Ti.API.debug(yc.settings.app.propnames[i].name + ' ' + yc.settings.app.propnames[i].desc);
+			
+			appSettings.push(new OptionView({
+				desc: yc.settings.app.propnames[i].desc,
+				selected: yc.settings.app.selected[i],
+				options: yc.settings.app.propvalues[i],
+				parent: view,
+				top: '0dp', height: '40dp'				
+			}));
+			
+			content.add(appSettings[i].getView());
+		}
+			
+		var syncSection = Ti.UI.createLabel(yc.combine($$.sectionTitle, {
+			top: 10, left: 5, botton: 5,
+			text: 'Sync Settings'
+		}));
+		content.add(syncSection);	
 		
 		var syncLabel = Ti.UI.createLabel(yc.combine($$.infoText, {
 			top: 5, left: 10, right: 10,
 			text: 'Changing synchronization settings could increase wireless usage.  On limited wireless plans only sync over wifi.'
 		}));
+		content.add(syncLabel);
+		
+		/// Loop through yc.settings.sync.propnames
+		/// Create all the check boxes dynamically
+		var syncSettings = [];
+		for (var i=0,j=yc.settings.sync.propnames.length; i<j; i++) {
+			Ti.API.debug(yc.settings.sync.propnames[i].name + ' ' + yc.settings.sync.propnames[i].desc);
+			
+			syncSettings.push(new OptionView({
+				desc: yc.settings.sync.propnames[i].desc,
+				selected: yc.settings.sync.selected[i],
+				options: yc.settings.sync.propvalues[i],
+				parent: view,
+				top: '0dp', height: '40dp'				
+			}));
+			
+			content.add(syncSettings[i].getView());
+		}		
 				
-		var syncSection = Ti.UI.createLabel(yc.combine($$.sectionTitle, {
-			top: 10, left: 5, botton: 5,
-			text: 'Sync Settings'
-		}));
-		
-		var themeLabel = Ti.UI.createLabel(yc.combine($$.infoText, {
-			top: 5, left: 10, right: 10,
-			text: 'Application requires a restart before theme changes will take affect.'
-		}));
-				
-		var themeSection = Ti.UI.createLabel(yc.combine($$.sectionTitle, {
-			top: 10, left: 5, botton: 5,
-			text: 'Theme Settings'
-		}));		
-		
-		// Create setting views
-		var optionView = require('/common/optionView');
-		
-		var distanceSetting = new optionView({
-			desc: yc.settings.settingNames.distanceSettings.desc,
-			selected: yc.settings.settingsSaved.distanceSettings,
-			options: yc.settings.settingOptions.distanceSettings,
-			parent: view,
-			top: '0dp', height: '40dp'
-		});	
-		
-		var autoshotSetting = new optionView({
-			desc: yc.settings.settingNames.autoshotSettings.desc,
-			selected: yc.settings.settingsSaved.autoshotSettings,
-			options: yc.settings.settingOptions.autoshotSettings,
-			parent: view,
-			top: '0dp', height: '40dp'
-		});	
-							
-		var gpsdistanceSetting = new optionView({
-			desc: yc.settings.settingNames.gpsdistSettings.desc,
-			selected: yc.settings.settingsSaved.gpsdistSettings,
-			options: yc.settings.settingOptions.gpsdistSettings,
-			parent: view,
-			top: '0dp', height: '40dp'
-		});																
-
-		var syncNetSetting = new optionView({
-			desc: yc.settings.settingNames.syncnetSettings.desc,
-			selected: yc.settings.settingsSaved.syncnetSettings,
-			options: yc.settings.settingOptions.syncnetSettings,
-			parent: view,
-			top: '0dp', height: '40dp'
-		});		
-
-		var syncSetting = new optionView({
-			desc: yc.settings.settingNames.syncdataSettings.desc,
-			selected: yc.settings.settingsSaved.syncdataSettings,
-			options: yc.settings.settingOptions.syncdataSettings,
-			parent: view,
-			top: '0dp', height: '40dp'
-		});			
-		
-		var themeSetting = new optionView({
-			desc: yc.settings.settingNames.themeSettings.desc,
-			selected: yc.settings.settingsSaved.themeSettings,
-			options: yc.settings.settingOptions.themeSettings,
-			parent: view,
-			top: '0dp', height: '40dp'
-		});				
-		
-		// Setting information
-		appContent.add(appSection);
-		appContent.add(appLabel);		
-		appContent.add(distanceSetting.getView());
-		appContent.add(autoshotSetting.getView());
-		appContent.add(gpsdistanceSetting.getView());
-		
-		// Sync section
-		syncContent.add(syncSection);	
-		syncContent.add(syncLabel);	
-		syncContent.add(syncNetSetting.getView());
-		syncContent.add(syncSetting.getView());
-		
-		// Theme section
-		themeContent.add(themeSection);
-		themeContent.add(themeLabel);
-		themeContent.add(themeSetting.getView());	
-		
 		// Save Button Event handler
 		// Will save selected items back to the Ti.App.Properties
 		function saveSettings() {
-			Ti.API.debug(distanceSetting.getSelectedIndex());
-			Ti.API.debug(autoshotSetting.getSelectedIndex());
-			Ti.API.debug(gpsdistanceSetting.getSelectedIndex());
-			Ti.API.debug(syncNetSetting.getSelectedIndex());
-			Ti.API.debug(syncSetting.getSelectedIndex());
-			Ti.API.debug(themeSetting.getSelectedIndex());
-						
-			Ti.App.Properties.setInt(yc.settings.settingNames.distanceSettings.name, distanceSetting.getSelectedIndex());
-			Ti.App.Properties.setInt(yc.settings.settingNames.autoshotSettings.name, autoshotSetting.getSelectedIndex());
-			Ti.App.Properties.setInt(yc.settings.settingNames.gpsdistSettings.name, gpsdistanceSetting.getSelectedIndex());
-			Ti.App.Properties.setInt(yc.settings.settingNames.syncnetSettings.name, syncNetSetting.getSelectedIndex());
-			Ti.App.Properties.setInt(yc.settings.settingNames.syncdataSettings.name, syncSetting.getSelectedIndex());
-			Ti.App.Properties.setInt(yc.settings.settingNames.themeSettings.name, themeSetting.getSelectedIndex());	
 			
-			yc.settings.refreshSettings();			
+			// Save AppSettings Array
+			for(var i=0, j=appSettings.length; i<j; i++) {
+				Ti.App.Properties.setInt(yc.settings.app.propnames[i].name, appSettings[i].getSelectedIndex());
+			}
+			
+			// Save syncSettings Array
+			for(var i=0, j=syncSettings.length; i<j; i++) {
+				Ti.App.Properties.setInt(yc.settings.sync.propnames[i].name, syncSettings[i].getSelectedIndex());
+			}
+						
+			//yc.settings.refreshSettings();			
 			yc.app.applicationWindow.fireEvent('androidback', {});
 		}
 		
