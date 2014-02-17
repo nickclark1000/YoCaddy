@@ -22,7 +22,7 @@
 		var header = new yc.ui.headerView({
 			title: 'yoCaddy Mobile'
 		});
-		var stack = Ti.UI.createView(yc.combine($$.stretch,_args.props||{}));
+		var stack = Ti.UI.createView(_args.props);
 		stack.add(header);			// stack.children[0]
 		
 		stack.currentIndex = _args.currentIndex || 0;	
@@ -161,6 +161,13 @@ Ti.include(
 	'/ui/informationView.js',
 	'/ui/settingsView.js',
 	'/ui/newsfeedView.js',
-	'/ui/appMenuView.js',
-	'/ui/applicationWindow.js'
+	'/ui/appMenuView.js'
 );
+
+if(yc.checkTablet()) {
+	Ti.API.debug('Loading Tablet Layout');
+	Ti.include('/ui/tablet/applicationWindow.js');
+} else {
+	Ti.API.debug('Loading Handheld Layout');
+	Ti.include('/ui/applicationWindow.js');
+}

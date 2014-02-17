@@ -49,7 +49,7 @@
 		}),
 		height: yc.os({
 			iphone: Ti.Platform.displayCaps.platformHeight,
-			android: yc.pixelstodp(Ti.Platform.displayCaps.platformHeight)/1.044
+			android: yc.pixelstodp(Ti.Platform.displayCaps.platformHeight)/1.035
 		})			
 	};
 		
@@ -74,7 +74,7 @@
 		// Common header properties
 		header: {
 			top: 0, left: 0,
-			width: yc.style.platform.width, height: 50,
+			width: Ti.UI.FILL, height: 50,
 			backgroundColor: yc.style.colors.mainColor,
 			backgroundImage: '/images/buttonBackground.png'			
 		},		

@@ -8,14 +8,21 @@
 		
 		var view = Ti.UI.createView($$.stretch);
 		
-		var header = new yc.ui.headerView({
-			title: 'yoCaddy Home',
-			leftbutton: {
-				show: true,
-				callback: function(){ yc.app.applicationWindow.fireEvent('showmenu',  {}); },
-				image: '/images/button_menu.png'
-			}
-		});
+		var header;
+		if (!yc.checkTablet()){
+			header = new yc.ui.headerView({
+				title: 'yoCaddy Home',
+				leftbutton: {
+					show: true,
+					callback: function(){ yc.app.applicationWindow.fireEvent('showmenu',  {}); },
+					image: '/images/button_menu.png'
+				}
+			});
+		} else {
+			header = new yc.ui.headerView({
+				title: 'yoCaddy Home'
+			});			
+		}
 
 		view.add(header);
 		

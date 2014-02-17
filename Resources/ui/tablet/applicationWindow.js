@@ -8,21 +8,24 @@
 		
 		var win = Ti.UI.createWindow(yc.combine($$.Window,{
 			exitOnClose: true,
-			orientationModes:[Ti.UI.PORTRAIT]
+			orientationModes:[Ti.UI.LANDSCAPE_LEFT]
 		}));
 		
-		var origLeft = (yc.style.platform.width * -1) + 10;
 		var menu = yc.ui.createAppMenuView({
-			shadowWidth: '20%',
+			shadowWidth: 0,
 			props: { 
-				width: yc.style.platform.width,
-				height: yc.style.platform.height,
-				left: origLeft
-			}	
+				top: 0, left: 0,
+				width: '25%',
+				height: yc.style.platform.height
+			}
 		});
 		var viewStack = yc.ui.createStackView({
 			views: [yc.ui.createNewsFeedView()],
-			props: $$.stretch
+			props: {
+				top: 0, right: 0,
+				width: '75%',
+				height: yc.style.platform.height
+			}
 		});
 						
 		win.add(viewStack);	
@@ -37,33 +40,6 @@
 				win.fireEvent('hidemenu', {});
 			else
 				viewStack.fireEvent('popView', {});
-		});
-		
-		win.addEventListener('showmenu', function(e){			
-			if (!yc.app.menushown) {
-				menu.animate({
-					left: 0,
-					duration: 200
-				}, function() {
-					// do nothing at this point
-				});
-				
-				yc.app.menushown = true;
-			}
-		});
-		
-		win.addEventListener('hidemenu', function(e){
-			if (yc.app.menushown) {
-				
-				menu.animate({
-					left: origLeft,
-					duration: 200
-				}, function() {
-					// do nothing at this point
-				});
-				
-				yc.app.menushown = false;	
-			}		
 		});
 		
 		yc.app.menushown = false;				

@@ -20,14 +20,12 @@ var mapView = function(_args) {
 	switch (playAvailable) {
 	    case tiMapView.SUCCESS:
 	    	Ti.API.debug('Google Play services are available; creating MapView');
-	        view = tiMapView.createView({
+	        view = tiMapView.createView(yc.combine(_args.props, {
 			    userLocation: false,
 			    enableZoomControls: false,
 			    mapType: tiMapView.SATELLITE_TYPE,
-			    animate: true,
-			    top: 0, left: 0,
-			    bottom: 0, right: 0			 
-		    });
+			    animate: true			 
+		    }));
 		    
 		    if (_args.zoomcontrols) {
 		    	view.setEnableZoomControls(true);

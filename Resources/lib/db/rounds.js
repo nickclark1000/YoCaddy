@@ -119,6 +119,8 @@ Database.prototype.listRounds = function(where) {
 			str += ' WHERE ' + where;		
 		}
 		
+		str += ' ORDER BY id DESC';
+		
 	 	resultSet = db.execute(str);		// Execute the Create statements
 	 	Ti.API.debug(str);
 	 	

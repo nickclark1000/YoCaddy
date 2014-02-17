@@ -177,7 +177,7 @@
 		
 		var dateText = Ti.UI.createTextField(yc.combine($$.textfield,{
 			editable: false,
-			value: yc.getCurrentDate('mm/dd/yyyy')
+			value: yc.getCurrentDate('yyyy/mm/dd')
 		}));
 		
 		var CheckBox = require('/common/checkBoxView');

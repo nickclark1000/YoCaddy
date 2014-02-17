@@ -94,9 +94,30 @@
 			today = yyyy +''+ mm +''+ dd;	
 		} else if (format == 'mm/dd/yyyy') {
 			today = mm+'/'+dd+'/'+yyyy;
+		} else if (format == 'yyyy/mm/dd') {
+			today = yyyy+'/'+mm+'/'+dd;
 		}
 		
 		return today;	
 	};	
+	
+	// Get whether this is a tablet
+  	yc.checkTablet = function() {
+    	var platform = Ti.Platform.osname;
+
+    	switch (platform) {
+      		case 'ipad':
+    			return true;
+  			case 'android':
+        		var psc = Ti.Platform.Android.physicalSizeCategory;
+        		var tiAndroid = Ti.Platform.Android;
+        		return psc === tiAndroid.PHYSICAL_SIZE_CATEGORY_LARGE || psc === tiAndroid.PHYSICAL_SIZE_CATEGORY_XLARGE;
+      		default:
+        		return Math.min(
+          			Ti.Platform.displayCaps.platformHeight,
+          			Ti.Platform.displayCaps.platformWidth
+        			) >= 400;
+    	}		
+  	};	
 		
 })();

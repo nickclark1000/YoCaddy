@@ -18,6 +18,11 @@
 			leftbutton: {
 				show: true,
 				callback: function() { yc.app.applicationWindow.fireEvent('androidback', {}); }
+			},
+			rightbutton: {
+				show: true,
+				callback: showSearch,
+				image: '/images/button_search.png'
 			}
 		});
 		view.add(header);
@@ -112,7 +117,7 @@
 				var fairwayLabel = Ti.UI.createLabel({ 
 					color: yc.style.colors.greyTextColor,
 					font: {
-						fontSize: yc.style.fontsize.smalltext,
+						fontSize: yc.style.fontsize.tinytext,
 						fontFamily: yc.style.fonts.infoFont
 					},			
 					top: 2,			
@@ -122,7 +127,7 @@
 				var greenLabel = Ti.UI.createLabel({ 
 					color: yc.style.colors.greyTextColor,
 					font: {
-						fontSize: yc.style.fontsize.smalltext,
+						fontSize: yc.style.fontsize.tinytext,
 						fontFamily: yc.style.fonts.infoFont
 					},						
 					bottom: 2, 
@@ -144,9 +149,32 @@
 			return roundsTableData;
 		};	// End of createRoundRows
 
+		var searchView;
+		var searchAsChild = true;
+		
+		if (Ti.Platform.name == 'android' && Ti.Platform.Android.API_LEVEL >= 11) {
+		    // Use action bar search view
+		    searchView = Ti.UI.Android.createSearchView({
+		    	color: yc.style.colors.greyTextColor,
+		    	font: {
+		    		fontFamily: yc.style.fonts.optionFont
+		    	},
+		        hintText: 'By Course',
+		        iconified: false,
+		        iconifiedByDefault: false
+		    });
+		} else {
+		    // Use search bar
+		    searchView = Ti.UI.createSearchBar({
+		        hintText: 'Search by Course'
+		    });
+		}			
+
 		var roundsTableView = Ti.UI.createTableView(yc.combine($$.bodyScrollContent,{		
 			separatorColor: yc.style.colors.zebraColor,
-			filterAttribute: 'filterCourse'
+			filterAttribute: 'filterCourse',
+			search: searchView,
+			searchAsChild: searchAsChild
 		}));
 		
 		roundsTableView.addEventListener('click', function(e){
@@ -190,7 +218,6 @@
 			}, 2000);
 		});		
 		
-		
 		body.add(roundsTableView);
 		
 		var roundsList;
@@ -201,6 +228,75 @@
 		});
 
 		view.fireEvent('updatelist', {});
+		
+		// Add the search menu to the list
+		// Eventually this will open a window and let you choose what attribute to use as a search
+		function showSearch(e) {
+			var searchByView = Ti.UI.createView(yc.combine($$.stretch, {
+				backgroundImage: '/images/backgrounds/fullWindowBg.png'
+			}));
+			
+			searchByView.addEventListener('click', function(e) {
+				view.remove(searchByView);
+			});
+			
+			var buttonList = Ti.UI.createView({
+				backgroundColor: yc.style.colors.white,
+				width: '60%', height: Ti.UI.SIZE,
+				layout: 'vertical'
+			});
+			
+			searchByView.add(buttonList);
+			
+			var courseSearch = Ti.UI.createButton(yc.combine($$.modalButton, {
+				width: Ti.UI.FILL,
+				title: 'Search By Course Name',
+				bottom: 5, top: 5,
+				left: 5, right: 5
+			}));
+			
+			var descSearch = Ti.UI.createButton(yc.combine($$.modalButton, {
+				width: Ti.UI.FILL,
+				title: 'Search By Description',
+				bottom: 5, left: 5, right: 5
+			}));
+			
+			var dateSearch = Ti.UI.createButton(yc.combine($$.modalButton, {
+				width: Ti.UI.FILL,
+				title: 'Search By Date',
+				bottom: 5, left: 5, right: 5
+			}));
+			
+			// open a modal screen and let the user pick which item to seach by
+			var searchByChange = function(e) {
+				switch (e.source) {
+					case courseSearch:
+						roundsTableView.setFilterAttribute('filterCourse');
+						searchView.setHintText('By Course');
+						break;
+					case descSearch:
+						roundsTableView.setFilterAttribute('filterDesc');
+						searchView.setHintText('By Description');
+						break;
+					case dateSearch:
+						roundsTableView.setFilterAttribute('filterDate');
+						searchView.setHintText('By Date [YYYY/MM/DD]');
+						break;
+				}
+				
+				view.remove(searchByView);
+			};
+			
+			courseSearch.addEventListener('click', searchByChange);
+			descSearch.addEventListener('click', searchByChange);
+			dateSearch.addEventListener('click', searchByChange);
+			
+			buttonList.add(courseSearch);
+			buttonList.add(descSearch);
+			buttonList.add(dateSearch);
+			
+			view.add(searchByView);
+		} // End of Seach By Event Listener
 						
 		return view;
 	};

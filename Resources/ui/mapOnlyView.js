@@ -18,22 +18,20 @@
 		});
 		view.add(header);
 		
-		var body = Ti.UI.createView($$.bodyNoScrollView);		
-		var content = Ti.UI.createView(yc.combine($$.stretch, {
-			borderWidth: 1,
-			borderColor: '#E0E0E0'
-		}))	;
-		body.add(content);
-		view.add(body);
-		
 		///////////////////////////////////////  End of Common Window Section ////////////////////////////////////////
 		
 		var yoMap = require('/common/mapView');
 		map = new yoMap({
 			userlocation: true,
-			zoomcontrols: true
+			zoomcontrols: true,
+			props: {
+				top: 55, bottom: 5,
+				left: 5, right: 5,
+				borderWidth: 1,
+				borderColor: '#E0E0E0',				
+			}
 		});
-		content.add(map);
+		view.add(map);
 		
 		return view;
 	};

@@ -6,12 +6,9 @@
 	// create the main application window
 	yc.ui.createAppMenuView = function(_args) {
 		
-		var origLeft = (yc.style.platform.width * -1) + 10;
-		
 		// Create the app menu
-		var view = Ti.UI.createView(yc.combine($$.screensize, {
+		var view = Ti.UI.createView(yc.combine(_args.props, {
 			zIndex: 99,
-			left: origLeft,
 			backgroundGradient: {
 		        type: 'linear',
 		        startPoint: { x: '50%', y: '50%' },
@@ -28,7 +25,7 @@
 		});
 		
 		var dropshadow = Ti.UI.createView({
-			left: 0, top: 0, bottom: 0, right: '20%',
+			left: 0, top: 0, bottom: 0, right: _args.shadowWidth,
 			backgroundColor: '#696969',			
 		});			
 		view.add(dropshadow);
