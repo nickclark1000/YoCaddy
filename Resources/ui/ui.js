@@ -5,14 +5,47 @@
 	// Create the yc.ui namespace, will contain all the create*Window and create*View functions
 	yc.ui = {};
 	yc.ui.viewids = {
-		startround: 1,
-		listrounds: 2,
-		mapround: 3,
-		mapviewround: 4,
-		settings: 5,
-		maponly: 6,
-		about: 7
+		newsfeed: 1,
+		profile: 2,
+		social: 3,
+		startround: 4,
+		listrounds: 5,
+		mapround: 6,
+		mapviewround: 7,
+		settings: 8,
+		maponly: 9,
+		about: 10
 	};
+	
+	// Create a default separator
+	yc.ui.separator = function(){
+		return Ti.UI.createView({
+			width: Ti.UI.FILL, height: 1,
+			backgroundColor: yc.style.colors.lowlightColor,
+			opacity: 0.4
+		});
+	};
+		
+	// Create status indicator with specified text
+	yc.ui.createActivityStatus = function(text) {
+		var statusView = Ti.UI.createView(yc.combine($$.stretch, {
+			backgroundImage: '/images/backgrounds/fullWindowBg.png',
+			zIndex: 99
+		}));
+		
+		var indy = Ti.UI.createLabel({
+			text: text,
+			width: Ti.UI.SIZE, height: Ti.UI.SIZE,
+			color: 'white',
+			font: {
+				fontSize: yc.style.fontsize.largetext,
+				fontFamily: yc.style.fonts.buttonFont
+			}
+		});
+		
+		statusView.add(indy);
+		return statusView;
+	};	
 	
 	// Header View
 	yc.ui.headerView = require('/common/headerView');
@@ -24,7 +57,6 @@
 		});
 		var stack = Ti.UI.createView(_args.props);
 		stack.add(header);			// stack.children[0]
-		
 		stack.currentIndex = _args.currentIndex || 0;	
 		
 		// Populate stack
@@ -63,53 +95,55 @@
 			} else {
 				// What to do when we attempt to pop the last view
 				// Possibly exit the application
-				var closeDialog = Ti.UI.createAlertDialog({
-					title: 'Exit yoCaddy?',
-					message: 'Are you sure you want to exit yoCaddy?',
-					buttonNames: ['No', 'Yes'],
-					cancel: 0
-				});
+				var closeDialog = new yc.ui.alert(
+					'Exit yoCaddy?',
+					'Are you sure you want to exit yoCaddy?',
+					['Exit', 'Cancel']
+				);
 				
 				closeDialog.addEventListener('click', function(e){
-				    if (e.index === e.source.cancel){
-				    	return;
-				    } else {
+					yc.app.alertShown = false;
+					yc.app.applicationWindow.remove(closeDialog);
+				    if (e.source.title === 'Exit'){
 				    	yc.app.applicationWindow.close();
-				    }		
+				    } 		
 				});
 				
-				closeDialog.show();
+				yc.app.alertShown = true;
+				yc.app.applicationWindow.add(closeDialog);
 			}
 		});
 		
 		// Add a view to the top of the stack
 		stack.addEventListener('pushView', function(e){		
 			var v;
+			var indicator = yc.ui.createActivityStatus('Loading Screen...');
+			yc.app.applicationWindow.add(indicator);
+			
 			switch(e.viewIdx) {
 				case yc.ui.viewids.startround:
-					Ti.API.info('Adding View: Start Round');
-					v = yc.ui.createStartRoundView();
+					if (yc.app.currentRound === undefined) {
+						v = yc.ui.createStartRoundView();
+					} else {
+						v = yc.ui.createRoundMapView();
+					}	
 					break;
 				case yc.ui.viewids.listrounds:
-					Ti.API.info('Adding View: List Rounds');
 					v = yc.ui.createListRoundsView();
 					break;
 				case yc.ui.viewids.mapround:
-					Ti.API.info('Adding View: MapRound');
+					stack.fireEvent('popView', {});
 					v = yc.ui.createRoundMapView();
 					break;
 				case yc.ui.viewids.mapviewround:
 					break;
 				case yc.ui.viewids.maponly:
-					Ti.API.info('Adding View: Map Only');
 					v = yc.ui.createMapOnlyView();				
 					break;					
 				case yc.ui.viewids.settings:
-					Ti.API.info('Adding View: Settings');
 					v = yc.ui.createSettingsView();
 					break;
 				case yc.ui.viewids.about:
-					Ti.API.info('Adding View: About');
 					v = yc.ui.createInformationView();
 					break;					
 			}
@@ -122,26 +156,63 @@
 			}
 			
 			stack.currentIndex++;
+			yc.app.applicationWindow.remove(indicator);
 		});
 		
 		return stack;
 	};
 	
 	// Alert Dialog
-	yc.ui.alert = function(/*String*/ _title, /*String*/ _message) {
-		Ti.UI.createAlertDialog({
-			title:_title,
-			message:_message
-		}).show();
+	yc.ui.alert = function(/*String*/ _title, /*String*/ _message, /*Object*/ _buttons) {
+		var modalView = Ti.UI.createView(yc.combine($$.stretch, {
+			backgroundImage: '/images/backgrounds/fullWindowBg.png',
+			zIndex: 99
+		}));
+		
+		var container = Ti.UI.createView(yc.combine({
+			width: 300, height: Ti.UI.SIZE,
+			layout: 'vertical',
+			backgroundImage: '/images/backgrounds/modalBodyBg.png',
+			borderColor: yc.style.colors.black,
+			borderRadius: 5,
+			borderWidth: 1
+		},{}));
+		modalView.add(container);
+		
+		container.add(Ti.UI.createLabel({
+			width: '95%', top: 10,
+			color: yc.style.colors.black,
+			text: _title,
+			font: {
+				fontSize: yc.style.fontsize.largetext,
+				fontFamily: yc.style.fonts.buttonFont
+			}
+		}));
+		container.add(new yc.ui.separator());
+		
+		container.add(Ti.UI.createLabel({
+			width: '95%', top: 5,
+			text: _message,
+			color: yc.style.colors.black,
+			font: {
+				fontSize: yc.style.fontsize.normaltext,
+				fontFamily: yc.style.fonts.optionFont
+			}
+		}));
+		
+		for (var i=0; i<_buttons.length; i++) {
+			container.add(Ti.UI.createButton(yc.combine($$.modalButton, {
+				top: 5, width: '80%',
+				title: _buttons[i]
+			})));
+		}
+		
+		container.add(Ti.UI.createView({
+			height: 10
+		}));
+		
+		return modalView;
 	};	
-	
-	yc.ui.separator = function(){
-		return Ti.UI.createView({
-			width: Ti.UI.FILL, height: 1,
-			backgroundColor: yc.style.colors.lowlightColor,
-			opacity: 0.4
-		});
-	};
 })();
 
 (function(){
@@ -156,6 +227,7 @@
 // Minor componetns are added by commonJS
 Ti.include(
 	'/ui/startRoundView.js',
+	'/ui/roundMapView.js',
 	'/ui/listRoundsView.js',
 	'/ui/mapOnlyView.js',
 	'/ui/informationView.js',

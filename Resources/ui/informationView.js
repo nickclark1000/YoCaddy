@@ -8,6 +8,7 @@
 		
 		// Create the layout view elements
 		var view = Ti.UI.createView($$.stretch);
+		view.viewid = yc.ui.viewids.about;
 		
 		var header = new yc.ui.headerView({
 			title: 'About',
@@ -27,12 +28,12 @@
 		///////////////////////////////////////  End of Common Window Section ////////////////////////////////////////
 
 		var aboutSection = Ti.UI.createLabel(yc.combine($$.sectionTitle, {
-			top: '5dp', left: '5dp',
+			top: 5, left: 5,
 			text: 'About yoCaddy'
 		}));
 		
 		var linkSection = Ti.UI.createLabel(yc.combine($$.sectionTitle, {
-			top: '5dp', left: '5dp',
+			top: 5, left: 5,
 			text: 'Links'
 		}));		
 		
@@ -50,53 +51,20 @@
 		
 		var aboutText = Ti.UI.createLabel(yc.combine($$.infoText, {
 			text: aboutString,
-			left: 5, right: 5, bottom: 5
+			bottom: 5, width: '95%'
 		}));
 
 		var linkString = 'http://www.yocaddy.com/faq';
 		
 		var linkText = Ti.UI.createLabel(yc.combine($$.infoText, {
 			text: linkString,
-			left: 5, right: 5, bottom: 5
+			bottom: 5, width: '95%'
 		}));
 		
 		content.add(aboutSection);		
 		content.add(aboutText);
 		content.add(linkSection);
 		content.add(linkText);		
-
-		///////////////////////////////// TESTING SECTION /////////////////////////////
-		var RoundScorer = require('/common/roundScorer');
-		var scorer = new RoundScorer({
-			id: 1,
-			hole: 1
-		}, {
-			top: 65, width: '98%',
-			height: 50
-		});
-		
-		view.add(scorer.getView());	
-		
-		var prevButton = Ti.UI.createButton(yc.combine($$.modalButton,{
-			title: '<<', left: '51%', top: 120
-		}));
-		
-		var nextButton = Ti.UI.createButton(yc.combine($$.modalButton,{
-			title: '>>', right: '51%', top: 120
-		}));
-		
-		prevButton.addEventListener('click', function(e){
-			scorer.holeDown();
-		});
-		
-		nextButton.addEventListener('click', function(e){
-			scorer.holeUp();
-		});
-		
-		view.add(prevButton);
-		view.add(nextButton);
-		
-		///////////////////////////////// TESTING SECTION /////////////////////////////////
 		
 		return view;	
 	};

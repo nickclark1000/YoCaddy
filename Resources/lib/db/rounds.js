@@ -17,6 +17,7 @@ var Database = function(_name) {
 				
 		if (yc.replacedb === true) {
 			db.execute('DROP TABLE IF EXISTS Rounds');
+			db.execute('DROP TABLE IF EXISTS Scores');
 			Ti.API.debug('Dropping Tables');
 		}				
 				
@@ -38,8 +39,19 @@ var Database = function(_name) {
 		 					+ ' greenHit REAL'
 		 					+ ')';
 		 					
+			var createScoresTable = 'CREATE TABLE IF NOT EXISTS Scores'
+		 					+ ' (id INTEGER PRIMARY KEY,'
+		 					+ ' roundId INTEGER NOT NULL,' 	 		
+		 					+ ' holeNumber INTEGER NOT NULL,'
+		 					+ ' par INTEGER,'
+		 					+ ' score INTEGER,'
+		 					+ ' fairway TEXT,'
+		 					+ ' gir TEXT'
+		 					+ ')';		 					
+		 					
 		 	// Execute the Create statements
-		 	db.execute(createRoundsTable);	
+		 	db.execute(createRoundsTable);
+		 	db.execute(createScoresTable);		
 		 	Ti.API.debug('Creating Table Rounds: '+createRoundsTable);	 
 		} catch (err) {		
 			Ti.API.error('Datbase Error: ' + JSON.stringify(err));

@@ -8,6 +8,7 @@
 		
 		// Create the layout view elements
 		var view = Ti.UI.createView($$.stretch);
+		view.viewid = yc.ui.viewids.maponly;
 		
 		var header = new yc.ui.headerView({
 			title: 'Map Only',
@@ -31,7 +32,7 @@
 				borderColor: '#E0E0E0',				
 			}
 		});
-		view.add(map);
+		view.add(map);	
 		
 		return view;
 	};

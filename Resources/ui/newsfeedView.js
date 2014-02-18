@@ -7,6 +7,7 @@
 	yc.ui.createNewsFeedView = function(_args) {
 		
 		var view = Ti.UI.createView($$.stretch);
+		view.viewid = yc.ui.viewids.newsfeed;
 		
 		var header;
 		if (!yc.checkTablet()){

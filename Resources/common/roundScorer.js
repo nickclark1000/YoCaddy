@@ -5,47 +5,80 @@
 
 var RoundScorer = function(_round, _args) {
 	///// Private instance variables
-	var roundinfo = [];
 	var currRoundId = _round.id;
-	var currRoundHole = _round.hole || 1;
-	var parValues = [3,4,5], paridx = -1;
-	var scoreValues = [1,2,3,4,5,6,7,8,9,10], scoreidx = -1;
-	var fhValues = ['No', 'Yes'], fhidx = -1;
-	var girValues = ['No', 'Yes'], giridx = -1;
-	
+	var currRoundHole = _round.hole || 1;	
+	var roundinfo = [];
+	var parIdx = [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1];
+	var scoreIdx = [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1];
+	var fhIdx = [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1];
+	var girIdx = [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1];
+	var parValues = [3,4,5];
+	var scoreValues = [1,2,3,4,5,6,7,8,9,10];
+	var fhValues = ['No', 'Yes'];
+	var girValues = ['No', 'Yes'];
+
+	// Error and return a message view if there is no Round id passed in.
+	if (currRoundId === undefined) {
+		return Ti.UI.createLabel({
+			color: 'red',
+			text: 'Error: RoundId is required',
+			font: {
+				fontSize: yc.style.fontsize.largetext,
+				fontFamily: yc.style.fonts.buttonFont
+			}
+		});
+	}
+
+	// Event Listener for button clicks on this View
 	var buttonClicked = function(e) {
+		var arrIdx = currRoundHole - 1;
+		
 		switch(e.source) {
 			case parButton:
-				if (paridx === 2) { paridx=0; }
-				else { paridx++; }
-				parButton.setTitle(parValues[paridx].toString());
+				if (parIdx[arrIdx] === 2) { parIdx[arrIdx]=0; }
+				else { parIdx[arrIdx]++; }
+				parButton.setTitle(parValues[parIdx[arrIdx]].toString());
 				break;
 			case scoreButton:
-				if (scoreidx === 9) { scoreidx=0; }
-				else { scoreidx++; }
-				scoreButton.setTitle(scoreValues[scoreidx].toString());			
+				if (scoreIdx[arrIdx] === 9) { scoreIdx[arrIdx]=0; }
+				else { scoreIdx[arrIdx]++; }
+				scoreButton.setTitle(scoreValues[scoreIdx[arrIdx]].toString());			
 				break;
 			case fhButton:
-				if (fhidx === 1) { fhidx=0; }
-				else { fhidx++; }
-				fhButton.setTitle(fhValues[fhidx]);			
+				if (fhIdx[arrIdx] === 1) { fhIdx[arrIdx]=0; }
+				else { fhIdx[arrIdx]++; }
+				fhButton.setTitle(fhValues[fhIdx[arrIdx]]);			
 				break;
 			case girButton:
-				if (giridx === 1) { giridx=0; }
-				else { giridx++; }
-				girButton.setTitle(girValues[giridx]);			
+				if (girIdx[arrIdx] === 1) { girIdx[arrIdx]=0; }
+				else { girIdx[arrIdx]++; }
+				girButton.setTitle(girValues[girIdx[arrIdx]]);			
+				break;
+			case prevButton:
+				holeDown();
+				break;
+			case nextButton:
+				holeUp();
 				break;
 		}
 	};
 	
-	///// Private UI Elements
+	//// Private UI Elements
 	var view = Ti.UI.createView(yc.combine(_args, {
+		layout: 'vertical',
+		height: Ti.UI.SIZE
+	}));
+	
+	var mainView = Ti.UI.createView(yc.combine({
 		backgroundImage: '/images/backgrounds/modalBodyBg.png',
 		borderWidth: 1,
 		borderColor: yc.style.colors.zebraColor,
-		borderRadius: 10,
+		borderRadius: 10,		
+		width: Ti.UI.FILL, height: _args.height || 50,
 		layout: 'horizontal'
-	}));
+	},{}));
+	
+	view.add(mainView);
 	
 	// Par View
 	var parView = Ti.UI.createView({
@@ -67,10 +100,10 @@ var RoundScorer = function(_round, _args) {
 		width: '24%', height: Ti.UI.FILL
 	});
 			
-	view.add(parView);
-	view.add(scoreView);
-	view.add(fhView);
-	view.add(girView);	
+	mainView.add(parView);
+	mainView.add(scoreView);
+	mainView.add(fhView);
+	mainView.add(girView);	
 	
 	var parLabel = Ti.UI.createLabel({
 		bottom: 0,
@@ -168,44 +201,77 @@ var RoundScorer = function(_round, _args) {
 	girView.add(girLabel);
 	girView.add(girButton);
 	
+	//// Control View
+	var controlView = Ti.UI.createView(yc.combine({
+		width: Ti.UI.SIZE, height: Ti.UI.SIZE,
+		backgroundImage: '/images/backgrounds/modalBodyBg.png',
+		borderWidth: 1,
+		borderColor: yc.style.colors.zebraColor,
+		borderRadius: 5,		
+		layout: 'horizontal',
+		top: 5
+	},{}));
+	
+	view.add(controlView);
+	
+	var prevButton = Ti.UI.createButton(yc.combine($$.modalButton,{
+		title: '<<'
+	}));
+	
+	var holeNumber = Ti.UI.createLabel({
+		width: 120, left: 5,
+		textAlign: Ti.UI.TEXT_ALIGNMENT_CENTER,
+		color: 'black',
+		font: {
+			fontSize: yc.style.fontsize.xlargetext,
+			fontFamily: yc.style.fonts.buttonFont
+		}			
+	});
+	
+	var nextButton = Ti.UI.createButton(yc.combine($$.modalButton,{
+		title: '>>', left: 5
+	}));	
+	
+	controlView.add(prevButton);
+	controlView.add(holeNumber);
+	controlView.add(nextButton);	
+	
 	parButton.addEventListener('click', buttonClicked);
 	scoreButton.addEventListener('click', buttonClicked);
 	fhButton.addEventListener('click', buttonClicked);
 	girButton.addEventListener('click', buttonClicked);
+	prevButton.addEventListener('click', buttonClicked);
+	nextButton.addEventListener('click', buttonClicked);	
 	
 	///// Public Instance Methods
-	this.setScores = function(){
-		if (roundinfo[currRoundHole] === undefined) {
-			parButton.setTitle('-'); paridx = -1;
-			scoreButton.setTitle('-'); scoreidx = -1;
-			fhButton.setTitle('-'); fhidx = -1;
-			girButton.setTitle('-'); giridx = -1;
+	var setScores = function(){
+		var arrIdx = currRoundHole-1;
+		
+		if (roundinfo[arrIdx] === undefined) {
+			parButton.setTitle('-'); parIdx[arrIdx] = -1;
+			scoreButton.setTitle('-'); scoreIdx[arrIdx] = -1;
+			fhButton.setTitle('-'); fhIdx[arrIdx] = -1;
+			girButton.setTitle('-'); girIdx[arrIdx] = -1;
 		} else {
-			parButton.setTitle(roundinfo[currRoundHole].par);
-			scoreButton.setTitle(roundinfo[currRoundHole].score);
-			fhButton.setTitle(roundinfo[currRoundHole].fairway);
-			girButton.setTitle(roundinfo[currRoundHole].gir);
+			parButton.setTitle(roundinfo[arrIdx].par.toString());
+			scoreButton.setTitle(roundinfo[arrIdx].score.toString());
+			fhButton.setTitle(roundinfo[arrIdx].fairway);
+			girButton.setTitle(roundinfo[arrIdx].gir);
 		}
+		
+		holeNumber.setText('Hole ' + currRoundHole.toString());
 	};
 	
 	// public function to change hole number
-	this.holeUp = function() {
-		Ti.API.debug(JSON.stringify(roundinfo[currRoundHole]));
-		if (roundinfo[currRoundHole] === undefined) {
-			roundinfo.push({
-				par: parValues[paridx],
-				score: scoreValues[scoreidx],
-				fairway: fhValues[fhidx],
-				gir: girValues[giridx]				
-			});			
-		} else {
-			roundinfo[currRoundHole] = {
-				par: parValues[paridx],
-				score: scoreValues[scoreidx],
-				fairway: fhValues[fhidx],
-				gir: girValues[giridx]	
-			};
-		}
+	var holeUp = function() {
+		var arrIdx = currRoundHole-1;
+
+		roundinfo[arrIdx] = {
+			par: (parIdx[arrIdx] === -1) ? '-' : parValues[parIdx[arrIdx]],
+			score: (scoreIdx[arrIdx] === -1) ? '-' : scoreValues[scoreIdx[arrIdx]],
+			fairway: (fhIdx[arrIdx] === -1) ? '-' : fhValues[fhIdx[arrIdx]],
+			gir: (girIdx[arrIdx] === -1) ? '-' : girValues[girIdx[arrIdx]]				
+		};			
 		
 		if (currRoundHole === 18) {
 			currRoundHole = 1;
@@ -213,27 +279,19 @@ var RoundScorer = function(_round, _args) {
 			currRoundHole++;
 		}
 		
-		this.setScores();
+		setScores();
 	};
 	
 	// Public function to change hole number
-	this.holeDown = function() {
-		Ti.API.debug(JSON.stringify(roundinfo[currRoundHole]));
-		if (roundinfo[currRoundHole] === undefined) {
-			roundinfo.push({
-				par: parValues[paridx],
-				score: scoreValues[scoreidx],
-				fairway: fhValues[fhidx],
-				gir: girValues[giridx]				
-			});			
-		} else {
-			roundinfo[currRoundHole] = {
-				par: parValues[paridx],
-				score: scoreValues[scoreidx],
-				fairway: fhValues[fhidx],
-				gir: girValues[giridx]	
-			};
-		}
+	var holeDown = function() {
+		var arrIdx = currRoundHole-1;
+
+		roundinfo[arrIdx] = {
+			par: (parIdx[arrIdx] === -1) ? '-' : parValues[parIdx[arrIdx]],
+			score: (scoreIdx[arrIdx] === -1) ? '-' : scoreValues[scoreIdx[arrIdx]],
+			fairway: (fhIdx[arrIdx] === -1) ? '-' : fhValues[fhIdx[arrIdx]],
+			gir: (girIdx[arrIdx] === -1) ? '-' : girValues[girIdx[arrIdx]]					
+		};	
 				
 		if (currRoundHole === 1) {
 			currRoundHole = 18;
@@ -241,14 +299,18 @@ var RoundScorer = function(_round, _args) {
 			currRoundHole--;
 		}
 		
-		this.setScores();		
+		setScores();		
 	};
 	
+	/**
+	 * Return the view for display purposes 
+	 */
 	this.getView = function() {
 		return view;
 	};
 	
-	this.setScores();
+	// Set the scores for the first time
+	setScores();
 };
 
 module.exports = RoundScorer;

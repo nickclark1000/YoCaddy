@@ -15,6 +15,7 @@ yc.replacedb = false;
 yc.app = {};
 yc.empty = {};
 yc.db = {};
+yc.dbname = 'yocaddydb';
 
 // Include important updates
 Ti.include(
@@ -40,9 +41,10 @@ Ti.include(
 			
 	// Create and check the database
 	var Database = require('/lib/db/rounds'); 
-	yc.db.rounds = new Database('yocaddydb');
+	yc.db.rounds = new Database(yc.dbname);
 			
 	// Create and start the main application
 	yc.app.applicationWindow = yc.ui.createApplicationWindow();
+	yc.app.currentRound = undefined;
 	yc.app.applicationWindow.open();
 })();

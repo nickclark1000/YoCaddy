@@ -80,6 +80,7 @@
 		// Create the layout view elements
 		var currentCourseLon = 0, currentCourseLat = 0, currentCourseFSID = '';
 		var view = Ti.UI.createView($$.stretch);
+		view.viewid = yc.ui.viewids.startround;
 		
 		var header = new yc.ui.headerView({
 			title: 'Start Round',
@@ -111,7 +112,8 @@
 						Ti.API.info('Start Round:' + JSON.stringify(round));
 						yc.db.rounds.saveRound(round);
 						yc.app.currentRound = round;
-						yc.app.applicationWindow.fireEvent('androidback', { sourceView: yc.ui.viewids.startround });
+						yc.app.applicationWindow.fireEvent('addview', { viewIdx: yc.ui.viewids.mapround });
+						//yc.app.applicationWindow.fireEvent('androidback', { sourceView: yc.ui.viewids.startround });
 					} else {
 						Ti.API.debug('No course was entered/selected');
 						Ti.UI.createAlertDialog({

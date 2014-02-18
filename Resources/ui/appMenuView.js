@@ -22,7 +22,7 @@
 				yc.app.applicationWindow.fireEvent('showmenu', {});
 			else if (e.direction === 'left')
 				yc.app.applicationWindow.fireEvent('hidemenu', {});
-		});
+		});		
 		
 		var dropshadow = Ti.UI.createView({
 			left: 0, top: 0, bottom: 0, right: _args.shadowWidth,
@@ -76,70 +76,98 @@
 		
 		var item = require('/common/appMenuItemView');
 
-		menuHolder.add(new item({
+		var profileItem = new item({
+			touchEnabled: false,
 			image: '/images/button_person_dark.png',
 			text: 'Player Profile',
 			callback: function() { Ti.API.debug('Profile'); }
-		}));		
+		});
+		menuHolder.add(profileItem.getView());		
 	 	menuHolder.add(new yc.ui.separator());
 	 	
-		menuHolder.add(new item({
+	 	var socialItem = new item({
+	 		touchEnabled: false,
 			image: '/images/button_social_dark.png',
 			text: 'Link to Social Media',
 			callback: function() { Ti.API.debug('Profile'); }
-		}));		
+		});
+		menuHolder.add(socialItem.getView());		
 	 	menuHolder.add(new yc.ui.separator());	 	
 
-		menuHolder.add(new item({
+		var addroundItem = new item({
+			touchEnabled: false,
 			image: '/images/button_newround_dark.png',
 			text: 'Start New Round',
 			callback: function() { 
 				yc.app.applicationWindow.fireEvent('addview', { viewIdx: yc.ui.viewids.startround });
 			}
-		}));		
+		});
+		menuHolder.add(addroundItem.getView());		
 	 	menuHolder.add(new yc.ui.separator());
 	 	
-		menuHolder.add(new item({
+	 	var listroundsItem = new item({
+	 		touchEnabled: false,
 			image: '/images/button_save_dark.png',
 			text: 'View Saved Rounds',
 			callback: function() { 
 				yc.app.applicationWindow.fireEvent('addview', { viewIdx: yc.ui.viewids.listrounds });
 			}
-		}));		
+		});
+		menuHolder.add(listroundsItem.getView());		
 	 	menuHolder.add(new yc.ui.separator());
 	 	
-	 	menuHolder.add(new item({
+	 	var webroundsItem = new item({
+	 		touchEnabled: false,
 			image: '/images/button_web_dark.png',
 			text: 'View Web Rounds',
 			callback: function() { Ti.API.debug('Web Rounds'); }
-		}));		
+		});
+	 	menuHolder.add(webroundsItem.getView());		
 	 	menuHolder.add(new yc.ui.separator());
 	
-		menuHolder.add(new item({
+		var maponlyItem = new item({
+			touchEnabled: false,
 			image: '/images/button_map_dark.png',
 			text: 'Show Map Only',
 			callback: function() { 
 				yc.app.applicationWindow.fireEvent('addview', { viewIdx: yc.ui.viewids.maponly }); 
 			}
-		}));
+		});
+		menuHolder.add(maponlyItem.getView());
 		menuHolder.add(new yc.ui.separator());
 		
-		menuHolder.add(new item({
+		var settingsItem = new item({
+			touchEnabled: false,
 			image: '/images/button_settings_dark.png',
 			text: 'Settings',
 			callback: function() { 
 				yc.app.applicationWindow.fireEvent('addview', { viewIdx: yc.ui.viewids.settings }); 
 			}
-		}));
+		});
+		menuHolder.add(settingsItem.getView());
 		menuHolder.add(new yc.ui.separator());
 		
-		menuHolder.add(new item({
+		var aboutItem = new item({
+			touchEnabled: false,
 			image: '/images/button_about_dark.png',
 			text: 'About yoCaddy',
 			callback: function() { 
 				yc.app.applicationWindow.fireEvent('addview', { viewIdx: yc.ui.viewids.about }); 
 			}
-		}));				
+		});		 
+		menuHolder.add(aboutItem.getView());		
+		
+		// Check if there is a live round and update menu selections
+		view.addEventListener('checkCurrentRound', function(e){
+			Ti.API.debug('menu event fired');
+			if (yc.app.currentRound === undefined) {
+				Ti.API.debug('undefined');
+				addroundItem.changeText('Start New Round');
+			} else {
+				Ti.API.debug('Round');
+				addroundItem.changeText('Continue Current Round');
+			}
+		});			
 		
 		return view;
 	};

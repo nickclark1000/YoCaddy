@@ -12,6 +12,7 @@
 		///////////////////////////////////////  Start of Common Window Section ////////////////////////////////////////
 
 		var view = Ti.UI.createView($$.stretch);
+		view.viewid = yc.ui.viewids.listrounds;
 		
 		var header = new yc.ui.headerView({
 			title: 'Saved Rounds',
@@ -156,17 +157,18 @@
 		    // Use action bar search view
 		    searchView = Ti.UI.Android.createSearchView({
 		    	color: yc.style.colors.greyTextColor,
+		    	backgroundColor: yc.style.colors.white,
 		    	font: {
 		    		fontFamily: yc.style.fonts.optionFont
 		    	},
-		        hintText: 'By Course',
+		        hintText: 'By Course Name',
 		        iconified: false,
 		        iconifiedByDefault: false
 		    });
 		} else {
 		    // Use search bar
 		    searchView = Ti.UI.createSearchBar({
-		        hintText: 'Search by Course'
+		        hintText: 'By Course Name'
 		    });
 		}			
 
@@ -272,7 +274,7 @@
 				switch (e.source) {
 					case courseSearch:
 						roundsTableView.setFilterAttribute('filterCourse');
-						searchView.setHintText('By Course');
+						searchView.setHintText('By Course Name');
 						break;
 					case descSearch:
 						roundsTableView.setFilterAttribute('filterDesc');

@@ -32,14 +32,20 @@
 		win.add(menu);	
 		
 		win.addEventListener('addview', function(e){
+			menu.fireEvent('checkCurrentRound', e);
 			viewStack.fireEvent('pushView', e);
 		});
 		
 		win.addEventListener('androidback', function(e){
-			if (yc.app.menushown)
-				win.fireEvent('hidemenu', {});
-			else
+			menu.fireEvent('checkCurrentRound', e);
+			
+			if (yc.app.menushown) {
+				win.fireEvent('hidemenu', {});				
+			} else if (yc.app.alertShown) {
+				// Do nothing
+			} else {
 				viewStack.fireEvent('popView', {});
+			}
 		});
 		
 		yc.app.menushown = false;				

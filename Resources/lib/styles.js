@@ -41,15 +41,26 @@
 		titletext: 32
 	};
 	
+	var longerSide, shorterSide;
+	if (Ti.Platform.displayCaps.platformWidth > Ti.Platform.displayCaps.platformHeight) {
+		longerSide = Ti.Platform.displayCaps.platformWidth;
+		shorterSide = Ti.Platform.displayCaps.platformHeight;
+	} else {
+		longerSide = Ti.Platform.displayCaps.platformHeight;
+		shorterSide = Ti.Platform.displayCaps.platformWidth;	
+	}
+	
 	yc.style.platform = {
-		//grab platform dimensions only once to save a trip over the bridge
+		// Tablets are always horizontal and handhelds are always vertical
+		// Grab the width and height accordingly
+		// Do some funky math for handhelds, not sure why its needed but fixes the size issue
 		width: yc.os({
 			iphone: Ti.Platform.displayCaps.platformWidth,
-			android:yc.pixelstodp(Ti.Platform.displayCaps.platformWidth)
+			android: (yc.checkTablet()) ? yc.pixelstodp(longerSide) : yc.pixelstodp(shorterSide)
 		}),
 		height: yc.os({
 			iphone: Ti.Platform.displayCaps.platformHeight,
-			android: yc.pixelstodp(Ti.Platform.displayCaps.platformHeight)/1.035
+			android: (yc.checkTablet()) ? yc.pixelstodp(shorterSide)/1.03 : yc.pixelstodp(longerSide)/1.035 
 		})			
 	};
 		

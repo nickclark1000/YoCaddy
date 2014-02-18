@@ -8,6 +8,7 @@
 		
 		///////////////////////////////////////  Start of Common Window Section ////////////////////////////////////////
 		var view = Ti.UI.createView($$.stretch);
+		view.viewid = yc.ui.viewids.settings;
 		
 		var header = new yc.ui.headerView({
 			title: 'yoSettings',

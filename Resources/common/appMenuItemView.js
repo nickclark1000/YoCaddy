@@ -32,16 +32,21 @@ var appMainMenuView = function(_args) {
 		margin = 40;
 	}
 	
-	// Add the text (which should be provided)
-	if (text) {
-		var l = Ti.UI.createLabel(yc.combine($$.menulabel, {
-			text: text,
-			left: margin
-		}));
-		view.add(l);
-	}
+	var l = Ti.UI.createLabel(yc.combine($$.menulabel, {
+		text: text,
+		left: margin
+	}));
+	view.add(l);
 
-	return view;
+	this.changeText = function(updateText) {
+		l.setText(updateText);
+	};
+	
+	this.getView = function() {
+		return view;
+	};
 };
+
+
 
 module.exports = appMainMenuView;
