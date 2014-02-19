@@ -103,7 +103,10 @@
 					// Make all the current children of Stack invisible
 					for (var i=1,j=stack.children.length; i<j; i++) {
 						stack.children[i].setVisible(false);
-					}						
+					}					
+					
+					if (stack.currentView === yc.ui.viewids.startround) { viewArray[yc.ui.viewids.startround] = undefined; }
+					if (stack.currentView === yc.ui.viewids.mapround) { viewArray[yc.ui.viewids.mapround] = undefined; }
 					
 					// This is a pop, we need to go backwards in the stackIds
 					stack.currentView = stackIds.pop();
@@ -136,7 +139,7 @@
 							viewArray[nextViewId] = yc.ui.createListRoundsView();
 							break;
 						case yc.ui.viewids.mapround:
-							viewArray[yc.ui.viewids.startround].setVisible(false);
+							viewArray[yc.ui.viewids.startround] = undefined;
 							viewArray[nextViewId] = yc.ui.createRoundMapView();
 							break;
 						case yc.ui.viewids.mapviewround:
@@ -225,6 +228,7 @@
 	};	
 })();
 
+// Create and load the Models
 (function(){
 	
 	// Model time
@@ -245,6 +249,7 @@ Ti.include(
 	'/ui/appMenuView.js'
 );
 
+// Check to load tablet or Handheld applicationWindow ui file
 if(yc.checkTablet()) {
 	Ti.API.debug('Loading Tablet Layout');
 	Ti.include('/ui/tablet/applicationWindow.js');

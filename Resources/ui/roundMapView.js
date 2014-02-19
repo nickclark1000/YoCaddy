@@ -15,6 +15,14 @@
 		
 		if (yc.app.currentRound === undefined) {
 			headerString = 'Invalid Round';
+			view.add(new yc.ui.headerView({
+				title:  headerString,
+				leftbutton: {
+					show: true,
+					callback: function() { yc.app.applicationWindow.fireEvent('androidback', {}); }
+				}
+			}));
+			return view;
 		} else {
 			headerString = (yc.app.currentRound.course.length > headerLength) ? yc.app.currentRound.course.substring(0,20)+'...' : yc.app.currentRound.course;
 		}
@@ -30,8 +38,8 @@
 				image: '/images/button_cancel.png',
 				callback: function() {
 					var confirm = new yc.ui.alert(
-						'End Round',
-						'Are you sure you would like to end your round?',
+						'End round',
+						'Are you sure you would like to end your round? Ending the round will save your scores.',
 						['Yes', 'No']
 					);
 					
@@ -39,7 +47,13 @@
 						yc.app.alertShown = false;
 						yc.app.applicationWindow.remove(confirm);
 						if (e.source.title === 'Yes') {
-							Ti.API.debug(JSON.stringify(e));
+							var toSave = scorer.getScores();
+							
+							var busy = yc.ui.createActivityStatus('Saving Scores...');
+							yc.app.applicationWindow.add(busy);
+							yc.db.rounds.saveRoundScores(yc.app.currentRound.id, toSave);
+							yc.app.applicationWindow.remove(busy);
+							
 							yc.app.currentRound = undefined;
 							yc.app.applicationWindow.fireEvent('androidback', {});
 						}

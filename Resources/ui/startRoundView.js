@@ -110,8 +110,7 @@
 						});
 						
 						Ti.API.info('Start Round:' + JSON.stringify(round));
-						yc.db.rounds.saveRound(round);
-						yc.app.currentRound = round;
+						yc.app.currentRound = yc.db.rounds.saveRound(round);
 						yc.app.applicationWindow.fireEvent('addview', { viewIdx: yc.ui.viewids.mapround });
 						//yc.app.applicationWindow.fireEvent('androidback', { sourceView: yc.ui.viewids.startround });
 					} else {

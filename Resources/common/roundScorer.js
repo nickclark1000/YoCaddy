@@ -315,6 +315,14 @@ var RoundScorer = function(_round, _args) {
 		return view;
 	};
 	
+	/**
+	 * getScores returns the full roundinfo array 
+	 */
+	this.getScores = function() {
+		holeUp();
+		return roundinfo;
+	};
+	
 	// Set the scores for the first time
 	setScores();
 };

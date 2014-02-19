@@ -73,7 +73,7 @@ module.exports = Database;
  */
 Database.prototype.saveRound = function(/*Round Object*/ _r) {
 	var str;
-	var success;
+	var success = _r;
 	var db = Ti.Database.open(this.dbname);	
 	
 	try {
@@ -100,13 +100,13 @@ Database.prototype.saveRound = function(/*Round Object*/ _r) {
 			+ ' VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';	
 			
 			db.execute(str, _r.course, _r.desc, _r.lon, _r.lat, _r.fsid, _r.date, _r.trace, _r.score, _r.createdPlatform, _r.createdid, _r.fairwayHit, _r.greenHit);
+			success.id = db.lastInsertRowID;
 		}
 		
-		Ti.API.debug(str);
-		success = true;	
+		Ti.API.debug(str);	
 	} catch (err) {
 		Ti.API.error('Datbase Error: ' + JSON.stringify(err));
-		success = false;
+		success = undefined;
 	} finally {
 		db.close();
 		return success;
@@ -179,6 +179,10 @@ Database.prototype.deleteRound = function(id) {
 		str = 'DELETE FROM Rounds WHERE id=?';
 		success = db.execute(str,id);
 		Ti.API.debug(str);
+		
+		str = 'DELETE FROM Scores WHERE roundId=?';
+		success = db.execute(str,id);
+		Ti.API.debug(str);
 	} catch (err) {
 		Ti.API.error('Datbase Error: ' + JSON.stringify(err));
 	} finally {
@@ -188,9 +192,45 @@ Database.prototype.deleteRound = function(id) {
 };
 
 /**
- * 
+ * saveRoundScores
+ * @param {Integer} rId - round id
+ * @param {Array} rScores - round scores
  */
-Database.prototype.saveRoundScores = function(rScores) {
+Database.prototype.saveRoundScores = function(rId, rScores) {
+	var str;
+	var success = false;
+	
+	if (!rId || !rScores) {
+		return success;
+	}
+	
+	var db = Ti.Database.open(this.dbname);
+	
+	try {
+		// First delete all current round scores
+		// Lazy but faster than updating all scores
+		str = 'DELETE FROM Scores WHERE roundid=?';
+		db.execute(str,rId);
+		Ti.API.debug(str);
+		
+		// Create the transaction to install all the scores
+		db.execute('BEGIN');
+		for (var s=0; s<rScores.length; s++) {
+			var par = (rScores[i].par == '-') ? 0 : rScores[i].par;
+ 			var score = (rScores[i].score == '-') ? 0 : rScores[i].score;
+			db.execute('INSERT INTO Scores (roundId, holeNumber, par, score, fairway, gir) VALUES (?,?,?,?,?,?)',
+				rId, rScores[i].hole, par, score, rScores[i].fairway, rScores[i].gir);
+		}
+		
+		db.execute('COMMIT');
+		success = true;
+	} catch (err) {
+		Ti.API.error('Datbase Error: ' + JSON.stringify(err));
+	} finally {
+		db.close();
+		return success;
+	}	
+
 	
 };
 
