@@ -138,11 +138,7 @@
 				
 				leftSide.add(scoreLabel);
 				leftSide.add(fairwayLabel);
-				leftSide.add(greenLabel);				
-				
-				tableRow.addEventListener('longpress', function(e){
-					Ti.API.debug('Row Longpress - RoundId: ' + e.source.roundId);
-				});		
+				leftSide.add(greenLabel);					
 		
 				roundsTableData.push(tableRow);
 			}
@@ -180,12 +176,16 @@
 		}));
 		
 		roundsTableView.addEventListener('click', function(e){
-			if (e.source.apiName === 'Ti.UI.Button') {
-
-			} else if (e.source.apiName === 'Ti.UI.TableViewRow') {
+			if (e.source.apiName === 'Ti.UI.TableViewRow') {
+				var where = 'id='+e.source.roundId;
+				var rounds = yc.db.rounds.listRounds(where);
+				Ti.API.debug(JSON.stringify(rounds));
 				
+				var scores = yc.db.rounds.getRoundScores(e.source.roundId);
+				for(var i=0; i < scores.length; i++) {
+					Ti.API.debug(JSON.stringify(scores[i]));
+				}
 			}
-			Ti.API.debug('Table Click' + JSON.stringify(e.source));
 		});
 		
 		roundsTableView.addEventListener('longpress', function(e){

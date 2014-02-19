@@ -38,39 +38,39 @@ var mapView = function(_args) {
 		    
 	        break;
 	    case tiMapView.SERVICE_MISSING:
-	        Ti.API.debug('Google Play services is missing. Please install Google Play services from the Google Play store.');
-	        messageLabel = Ti.UI.createLabel(yc.combine($$.infoText, {
+	        Ti.API.debug('Google Play services are missing. Please install Google Play services from the Google Play store.');
+	        messageLabel = Ti.UI.createLabel(yc.combine($$.mapErrorText, {
 	        	text: 'Google Play services is missing. Please install Google Play services from the Google Play store.'
 	        }));
 	        break;
 	    case tiMapView.SERVICE_VERSION_UPDATE_REQUIRED:
-	        Ti.API.debug('Google Play services is out of date. Please update Google Play services.');
-	        messageLabel = Ti.UI.createLabel(yc.combine($$.infoText, {
+	        Ti.API.debug('Google Play services are out of date. Please update Google Play services.');
+	        messageLabel = Ti.UI.createLabel(yc.combine($$.mapErrorText, {
 	        	text: 'Google Play services is out of date. Please update Google Play services.'
 	        }));
 	        break;
 	    case tiMapView.SERVICE_DISABLED:
-	        Ti.API.debug('Google Play services is disabled. Please enable Google Play services.');   
-	        messageLabel = Ti.UI.createLabel(yc.combine($$.infoText, {
+	        Ti.API.debug('Google Play services are disabled. Please enable Google Play services.');   
+	        messageLabel = Ti.UI.createLabel(yc.combine($$.mapErrorText, {
 	        	text: 'Google Play services is disabled. Please enable Google Play services.'
 	        }));
 	        break;
 	    case tiMapView.SERVICE_INVALID:
 	        Ti.API.debug('Google Play services cannot be authenticated. Reinstall Google Play services.');
-	        messageLabel = Ti.UI.createLabel(yc.combine($$.infoText, {
+	        messageLabel = Ti.UI.createLabel(yc.combine($$.mapErrorText, {
 	        	text: 'Google Play services cannot be authenticated. Reinstall Google Play services.'
 	        }));
 	        break;
 	    default:
 	        Ti.API.debug('Unknown error.');	          
-	        messageLabel = Ti.UI.createLabel(yc.combine($$.infoText, {
+	        messageLabel = Ti.UI.createLabel(yc.combine($$.mapErrorText, {
 	        	text: 'Unknown error while attempting to create Map.'
 	        }));
 	        break;
 	}	
 	
 	if (messageLabel) {
-		view = 	Ti.UI.createView(yc.combine($$.stretch, {
+		view = 	Ti.UI.createView(yc.combine($$.bodyScrollView, {
 			backgroundColor: '#000000'
 		}));
 		view.add(messageLabel);

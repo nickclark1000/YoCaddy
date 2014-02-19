@@ -48,6 +48,7 @@
 						yc.app.applicationWindow.remove(confirm);
 						if (e.source.title === 'Yes') {
 							var toSave = scorer.getScores();
+							Ti.API.debug('currentROund' + JSON.stringify(yc.app.currentRound));
 							
 							var busy = yc.ui.createActivityStatus('Saving Scores...');
 							yc.app.applicationWindow.add(busy);
@@ -82,6 +83,10 @@
 		});
 		view.add(map);
 		
+		if (!map.valid) {
+			return view;
+		}
+		
 		///////////////////////////////// Scoring View /////////////////////////////
 		var RoundScorer = require('/common/roundScorer');
 		var scorer = new RoundScorer({
@@ -94,7 +99,7 @@
 		
 		view.add(scorer.getView());	
 		///////////////////////////////// Round Scoring View /////////////////////////////////		
-		
+			
 		return view;
 	};
 	

@@ -100,17 +100,16 @@
 					yc.app.alertShown = true;
 					yc.app.applicationWindow.add(closeDialog);						
 				} else {
-					// Make all the current children of Stack invisible
-					for (var i=1,j=stack.children.length; i<j; i++) {
-						stack.children[i].setVisible(false);
-					}					
-					
-					if (stack.currentView === yc.ui.viewids.startround) { viewArray[yc.ui.viewids.startround] = undefined; }
-					if (stack.currentView === yc.ui.viewids.mapround) { viewArray[yc.ui.viewids.mapround] = undefined; }
+					var oldViewId = stack.currentView;
 					
 					// This is a pop, we need to go backwards in the stackIds
 					stack.currentView = stackIds.pop();
 					viewArray[stack.currentView].setVisible(true);
+					viewArray[oldViewId].setVisible(false);
+					
+					if (oldViewId === yc.ui.viewids.startround) { viewArray[yc.ui.viewids.startround] = undefined; }
+					if (oldViewId === yc.ui.viewids.mapround) { viewArray[yc.ui.viewids.mapround] = undefined; }
+										
 				}	
 			} else {
 				if (stack.currentView === nextViewId) {

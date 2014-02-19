@@ -20,7 +20,7 @@
 			}
 		});
 		var viewStack = yc.ui.createStackView({
-			views: [yc.ui.createNewsFeedView()],
+			viewIdx: yc.ui.viewids.newsfeed,
 			props: {
 				top: 0, right: 0,
 				width: '75%',

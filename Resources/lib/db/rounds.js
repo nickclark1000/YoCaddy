@@ -109,6 +109,7 @@ Database.prototype.saveRound = function(/*Round Object*/ _r) {
 		success = undefined;
 	} finally {
 		db.close();
+		Ti.API.debug('round inserted:' + JSON.stringify(success));
 		return success;
 	}	
 };
@@ -200,6 +201,8 @@ Database.prototype.saveRoundScores = function(rId, rScores) {
 	var str;
 	var success = false;
 	
+	Ti.API.debug('rId:'+rId + ' rScores:'+JSON.stringify(rScores));
+	
 	if (!rId || !rScores) {
 		return success;
 	}
@@ -218,8 +221,9 @@ Database.prototype.saveRoundScores = function(rId, rScores) {
 		for (var s=0; s<rScores.length; s++) {
 			var par = (rScores[i].par == '-') ? 0 : rScores[i].par;
  			var score = (rScores[i].score == '-') ? 0 : rScores[i].score;
-			db.execute('INSERT INTO Scores (roundId, holeNumber, par, score, fairway, gir) VALUES (?,?,?,?,?,?)',
-				rId, rScores[i].hole, par, score, rScores[i].fairway, rScores[i].gir);
+ 			str = 'INSERT INTO Scores (roundId, holeNumber, par, score, fairway, gir) VALUES (?,?,?,?,?,?)';
+			db.execute(str, rId, rScores[i].hole, par, score, rScores[i].fairway, rScores[i].gir);
+			Ti.API.debug(str + ' : ' + JSON.stringify(rScores[i]));
 		}
 		
 		db.execute('COMMIT');
@@ -230,8 +234,6 @@ Database.prototype.saveRoundScores = function(rId, rScores) {
 		db.close();
 		return success;
 	}	
-
-	
 };
 
 /**

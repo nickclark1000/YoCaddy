@@ -202,6 +202,14 @@
 			}			
 		},
 		
+		mapErrorText: {
+			color: yc.style.colors.white,
+			font: {
+				fontSize: yc.style.fontsize.xlargetext,
+				fontFamily: yc.style.fonts.buttonFont
+			}			
+		},
+		
 		textfield: {
 			top: '10dp', width: '95%', height: 40,
 			maxLength: 80,
