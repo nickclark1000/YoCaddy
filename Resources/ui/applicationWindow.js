@@ -21,17 +21,16 @@
 			}	
 		});
 		var viewStack = yc.ui.createStackView({
-			views: [yc.ui.createNewsFeedView()],
+			viewIdx: yc.ui.viewids.newsfeed,
 			props: $$.stretch
 		});
 						
 		win.add(viewStack);	
 		win.add(menu);	
 		
-		win.addEventListener('addview', function(e){
-			win.fireEvent('hidemenu', {});			
+		win.addEventListener('addview', function(e){		
 			menu.fireEvent('checkCurrentRound', e);
-			viewStack.fireEvent('pushView', e);
+			viewStack.fireEvent('changeIndex', e);
 		});
 		
 		win.addEventListener('androidback', function(e){
@@ -41,7 +40,7 @@
 			} else if (yc.app.alertShown) {
 				// Do nothing
 			} else {
-				viewStack.fireEvent('popView', {});
+				viewStack.fireEvent('changeIndex', {});
 			}
 		});
 		

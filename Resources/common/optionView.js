@@ -10,7 +10,6 @@ var OptionView = function(_args) {
 	var oParent = _args.parent;
 	
 	for (var i=0; i < _args.options.length; i++) {
-		Ti.API.debug(JSON.stringify(_args.options[i]));
 		oOptions.push(_args.options[i]);
 	}
 	

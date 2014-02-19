@@ -33,7 +33,7 @@
 		
 		win.addEventListener('addview', function(e){
 			menu.fireEvent('checkCurrentRound', e);
-			viewStack.fireEvent('pushView', e);
+			viewStack.fireEvent('changeIndex', e);
 		});
 		
 		win.addEventListener('androidback', function(e){
@@ -44,7 +44,7 @@
 			} else if (yc.app.alertShown) {
 				// Do nothing
 			} else {
-				viewStack.fireEvent('popView', {});
+				viewStack.fireEvent('changeIndex', {});
 			}
 		});
 		

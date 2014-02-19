@@ -99,7 +99,9 @@
 			image: '/images/button_newround_dark.png',
 			text: 'Start New Round',
 			callback: function() { 
-				yc.app.applicationWindow.fireEvent('addview', { viewIdx: yc.ui.viewids.startround });
+				yc.app.applicationWindow.fireEvent('addview', { 
+					viewIdx: (yc.app.currentRound) ? yc.ui.viewids.mapround : yc.ui.viewids.startround 
+				});
 			}
 		});
 		menuHolder.add(addroundItem.getView());		
