@@ -11,7 +11,7 @@
 		view.viewid = yc.ui.viewids.mapround;
 		
 		var headerString;
-		var headerLength = (checkTablet()) ? 25 : 15;
+		var headerLength = (yc.checkTablet()) ? 25 : 15;
 		
 		if (yc.app.currentRound === undefined) {
 			headerString = 'Invalid Round';
@@ -68,7 +68,7 @@
 		});
 		view.add(map);
 		
-		///////////////////////////////// TESTING SECTION /////////////////////////////
+		///////////////////////////////// Scoring View /////////////////////////////
 		var RoundScorer = require('/common/roundScorer');
 		var scorer = new RoundScorer({
 			id: 1,
@@ -79,8 +79,7 @@
 		});
 		
 		view.add(scorer.getView());	
-		
-		///////////////////////////////// TESTING SECTION /////////////////////////////////		
+		///////////////////////////////// Round Scoring View /////////////////////////////////		
 		
 		return view;
 	};

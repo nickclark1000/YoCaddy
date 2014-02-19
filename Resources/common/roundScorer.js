@@ -28,6 +28,10 @@ var RoundScorer = function(_round, _args) {
 			}
 		});
 	}
+	
+	// Grab the scores from the DB
+	roundinfo = yc.db.rounds.getRoundScores(currRoundId);
+	Ti.API.debug(JSON.stringify(roundinfo));
 
 	// Event Listener for button clicks on this View
 	var buttonClicked = function(e) {
@@ -267,6 +271,7 @@ var RoundScorer = function(_round, _args) {
 		var arrIdx = currRoundHole-1;
 
 		roundinfo[arrIdx] = {
+			hole: currRoundHole,
 			par: (parIdx[arrIdx] === -1) ? '-' : parValues[parIdx[arrIdx]],
 			score: (scoreIdx[arrIdx] === -1) ? '-' : scoreValues[scoreIdx[arrIdx]],
 			fairway: (fhIdx[arrIdx] === -1) ? '-' : fhValues[fhIdx[arrIdx]],
@@ -287,6 +292,7 @@ var RoundScorer = function(_round, _args) {
 		var arrIdx = currRoundHole-1;
 
 		roundinfo[arrIdx] = {
+			hole: currRoundHole,
 			par: (parIdx[arrIdx] === -1) ? '-' : parValues[parIdx[arrIdx]],
 			score: (scoreIdx[arrIdx] === -1) ? '-' : scoreValues[scoreIdx[arrIdx]],
 			fairway: (fhIdx[arrIdx] === -1) ? '-' : fhValues[fhIdx[arrIdx]],

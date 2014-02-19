@@ -52,7 +52,8 @@ var Database = function(_name) {
 		 	// Execute the Create statements
 		 	db.execute(createRoundsTable);
 		 	db.execute(createScoresTable);		
-		 	Ti.API.debug('Creating Table Rounds: '+createRoundsTable);	 
+		 	Ti.API.debug('Creating Table Rounds: '+createRoundsTable);
+		 	Ti.API.debug('Creating Table Scores: '+createScoresTable);	 
 		} catch (err) {		
 			Ti.API.error('Datbase Error: ' + JSON.stringify(err));
 		} finally {
@@ -167,55 +168,6 @@ Database.prototype.listRounds = function(where) {
 };
 
 /**
- * listRounds is called to return a list of all the rounds in the database that 
- * are valid in relation to the where clause
- * @param {Object} where
- * @return {ListItemData} rounds - to be used specifically with ListViews
- */
-Database.prototype.listDataItemRounds = function(where) {
-	var str, resultSet;
-	var success = [];
-	var db = Ti.Database.open(this.dbname);
-	var Round = require('/models/RoundModel');	
-		
-	try {
-		str = 'SELECT id, course, desc, date, trace, score, fairwayHit, greenHit FROM Rounds';
-		
-		if (where) {
-			str += ' WHERE ' + where;		
-		}
-		
-	 	resultSet = db.execute(str);		// Execute the Create statements
-	 	Ti.API.debug(str);
-	 	
-	 	// Create array of Rounds
-	 	while (resultSet.isValidRow()) {	 		
-	 		success.push({
-				course: { text: resultSet.fieldByName('course') },
-				desc: { text: resultSet.fieldByName('desc') },
-				date: { text: 'Date: ' + resultSet.fieldByName('date') },
-				trace: { image: '/images/istrace_'+resultSet.fieldByName('trace')+'.png' },
-				score: { text: (resultSet.fieldByName('score') === -99) ? 'NA' : resultSet.fieldByName('score') },						
-				fairwayHit: { text: 'FH: ' + (resultSet.fieldByName('fairwayHit') === -1) ? 'NA' : resultSet.fieldByName('fairwayHit')*100 + '%' },
-				greenHit: { text: 'GIR: ' + (resultSet.fieldByName('greenHit') === -99) ? 'NA' : resultSet.fieldByName('greenHit')*100 + '%' },
-				properties: {
-					roundId: resultSet.fieldByName('id'),
-					accessoryType: Ti.UI.LIST_ACCESSORY_TYPE_NONE
-				}
-	 		});
-	 		
-	 		resultSet.next();
-	 	}	 
-	} catch (err) {		
-		Ti.API.error('Datbase Error: ' + JSON.stringify(err));
-	} finally {
-	 	//Close the DB
-	 	db.close();	
-	 	return success;	 	
-	}	
-};
-
-/**
  * deleteRound takes an ID and removes it
  * @param {Integer} id 
  */
@@ -233,4 +185,52 @@ Database.prototype.deleteRound = function(id) {
 		db.close();
 		return success;
 	}
+};
+
+/**
+ * 
+ */
+Database.prototype.saveRoundScores = function(rScores) {
+	
+};
+
+/**
+ * getRoundScores returns an array of all the scores for a specific round
+ * @param {Integer} roundId
+ * @return {Array} roundScores
+ */
+Database.prototype.getRoundScores = function(rId) {
+	var str, resultSet;
+	var success = [];
+	var db = Ti.Database.open(this.dbname);
+	
+	if (rId === undefined)
+		return null;
+	
+	try {
+		str = 'SELECT * FROM Scores WHERE roundId=?';
+		
+	 	resultSet = db.execute(str, rId);		// Execute the Create statements
+	 	Ti.API.debug(str);
+	 	
+	 	// Create array of Rounds
+	 	var count = 0;
+	 	while (resultSet.isValidRow()) {
+	 		success[count] = {
+	 			hole: resultSet.fieldByName('holeNumber'),
+	 			par: resultSet.fieldByName('par'),
+	 			score: resultSet.fieldByName('score'),
+	 			fairway: resultSet.fieldByName('fairway'),
+	 			gir: resultSet.fieldByName('gir')
+	 		};
+	 		
+	 		resultSet.next();
+	 	}	 
+	} catch (err) {		
+		Ti.API.error('Datbase Error: ' + JSON.stringify(err));
+	} finally {
+	 	//Close the DB
+	 	db.close();	
+	 	return success;	 	
+	}	
 };
