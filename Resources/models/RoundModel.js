@@ -15,6 +15,7 @@ var RoundModel = function(_args) {
 	this.createdId = _args.createId || -1;
 	this.fairwayHit = _args.fairwayHit || -1;
 	this.greenHit = _args.greenHit || -1;
+	this.par = _args.par || 0;
 	
 	// Instance/GUI related data (not saved to DB)
 	this.showTrace = _args.showTrace || this.trace;

@@ -161,7 +161,6 @@
 		
 		// Check if there is a live round and update menu selections
 		view.addEventListener('checkCurrentRound', function(e){
-			Ti.API.debug('menu event fired');
 			if (yc.app.currentRound === undefined) {
 				Ti.API.debug('undefined');
 				addroundItem.changeText('Start New Round');

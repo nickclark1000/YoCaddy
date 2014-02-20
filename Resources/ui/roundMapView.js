@@ -11,7 +11,7 @@
 		view.viewid = yc.ui.viewids.mapround;
 		
 		var headerString;
-		var headerLength = (yc.checkTablet()) ? 25 : 15;
+		var headerLength = (yc.checkTablet()) ? 25 : 12;
 		
 		if (yc.app.currentRound === undefined) {
 			headerString = 'Invalid Round';
@@ -24,8 +24,10 @@
 			}));
 			return view;
 		} else {
-			headerString = (yc.app.currentRound.course.length > headerLength) ? yc.app.currentRound.course.substring(0,20)+'...' : yc.app.currentRound.course;
+			headerString = (yc.app.currentRound.course.length > headerLength) ? yc.app.currentRound.course.substring(0,headerLength)+'...' : yc.app.currentRound.course;
 		}
+		
+		Ti.API.debug('Starting Map for Round: ' + JSON.stringify(yc.app.currentRound));
 		
 		var header = new yc.ui.headerView({
 			title:  headerString,
@@ -48,13 +50,20 @@
 						yc.app.applicationWindow.remove(confirm);
 						if (e.source.title === 'Yes') {
 							var toSave = scorer.getScores();
-							Ti.API.debug('currentROund' + JSON.stringify(yc.app.currentRound));
-							
 							var busy = yc.ui.createActivityStatus('Saving Scores...');
-							yc.app.applicationWindow.add(busy);
-							yc.db.rounds.saveRoundScores(yc.app.currentRound.id, toSave);
-							yc.app.applicationWindow.remove(busy);
+							var scoresSaved, gameUpdated;
 							
+							yc.app.applicationWindow.add(busy);
+							
+							// Do some saving and calculation stuff
+							scoresSaved = yc.db.rounds.saveRoundScores(yc.app.currentRound.id, toSave);
+							yc.app.currentRound.par = scorer.getTotalPar();
+							yc.app.currentRound.score = scorer.getTotalScore();
+							yc.app.currentRound.fairwayHit = scorer.getFairwayPercent();
+							yc.app.currentRound.greenHit = scorer.getGIRPercent();
+							yc.db.rounds.saveRound(yc.app.currentRound);
+							
+							yc.app.applicationWindow.remove(busy);
 							yc.app.currentRound = undefined;
 							yc.app.applicationWindow.fireEvent('androidback', {});
 						}
@@ -90,7 +99,7 @@
 		///////////////////////////////// Scoring View /////////////////////////////
 		var RoundScorer = require('/common/roundScorer');
 		var scorer = new RoundScorer({
-			id: 1,
+			id: yc.app.currentRound.id,
 			hole: 1
 		}, {
 			top: 55, left: 5, right: 5,

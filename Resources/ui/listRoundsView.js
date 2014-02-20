@@ -112,7 +112,7 @@
 						fontSize: yc.style.fontsize.xlargetext,
 						fontFamily: yc.style.fonts.buttonFont
 					},
-					text: (roundList[i].score === -99) ? 'NA' :roundList[i].score,
+					text: (roundList[i].score === -99) ? 'NA' : roundList[i].score+'/'+ roundList[i].par,
 					touchEnabled: false
 				});
 				var fairwayLabel = Ti.UI.createLabel({ 
@@ -122,7 +122,7 @@
 						fontFamily: yc.style.fonts.infoFont
 					},			
 					top: 2,			
-					text: (roundList[i].fairwayHit === -1) ? 'FH: NA' : 'FH:' + roundList[i].fairwayHit*100 + '%',
+					text: (roundList[i].fairwayHit === -1) ? 'FH: NA' : 'FH: ' + roundList[i].fairwayHit*100 + '%',
 					touchEnabled: false
 				});
 				var greenLabel = Ti.UI.createLabel({ 
@@ -132,7 +132,7 @@
 						fontFamily: yc.style.fonts.infoFont
 					},						
 					bottom: 2, 
-					text: (roundList[i].greenHit === -1) ?  'GIR: NA' : 'GIR:' + roundList[i].greenHit*100 + '%',
+					text: (roundList[i].greenHit === -1) ?  'GIR: NA' : 'GIR: ' + roundList[i].greenHit*100 + '%',
 					touchEnabled: false
 				});
 				

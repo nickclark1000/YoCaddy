@@ -323,6 +323,65 @@ var RoundScorer = function(_round, _args) {
 		return roundinfo;
 	};
 	
+	/**
+	 * 
+	 */
+	this.getTotalPar = function() {
+		var total = 0;
+		for (var i=0, j=roundinfo.length; i<j; i++) {
+			if (roundinfo[i].par != '-') {
+				total += roundinfo[i].par;
+			}
+		}
+		return total;
+	};
+	
+	/**
+	 * 
+	 */
+	this.getTotalScore = function() {
+		var total = 0;
+		for (var i=0, j=roundinfo.length; i<j; i++) {
+			if (roundinfo[i].score != '-') {
+				total += roundinfo[i].score;
+			}
+		}
+		return total;		
+	};
+	
+	/**
+	 * 
+	 */
+	this.getFairwayPercent = function() {
+		var validHoles = 0, total = 0;
+		for (var i=0, j=roundinfo.length; i<j; i++) {
+			if (roundinfo[i].fairway != '-' && roundinfo[i].par != 3) {
+				validHoles++;
+				
+				if (roundinfo[i].fairway === 'Yes') {
+					total++;
+				}
+			}
+		}		
+		return (total/validHoles).toFixed(2);		
+	};
+	
+	/**
+	 * 
+	 */
+	this.getGIRPercent = function() {
+		var validHoles = 0, total = 0;
+		for (var i=0, j=roundinfo.length; i<j; i++) {
+			if (roundinfo[i].gir != '-') {
+				validHoles++;
+				
+				if (roundinfo[i].gir === 'Yes') {
+					total++;
+				}
+			}
+		}		
+		return (total/validHoles).toFixed(2);			
+	};
 	// Set the scores for the first time
 	setScores();
 };

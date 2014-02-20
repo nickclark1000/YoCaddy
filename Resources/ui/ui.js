@@ -108,8 +108,7 @@
 					viewArray[oldViewId].setVisible(false);
 					
 					if (oldViewId === yc.ui.viewids.startround) { viewArray[yc.ui.viewids.startround] = undefined; }
-					if (oldViewId === yc.ui.viewids.mapround) { viewArray[yc.ui.viewids.mapround] = undefined; }
-										
+					if (oldViewId === yc.ui.viewids.mapround && yc.app.currentRound === undefined) { viewArray[yc.ui.viewids.mapround] = undefined; }									
 				}	
 			} else {
 				if (stack.currentView === nextViewId) {
@@ -127,6 +126,11 @@
 				if (viewArray[nextViewId]) {
 					// View already exists push the old view and make this view the only visible
 					viewArray[nextViewId].setVisible(true);
+					
+					// If the next View is the list, we need to update the list of rounds
+					if (nextViewid === yc.ui.viewids.listrounds) {
+						viewArray[nextViewId].fireEvent('updatelist', {});
+					}
 				} else {				
 					
 					// View doesn't exist, it must be created and added to the stack
@@ -185,7 +189,7 @@
 			backgroundImage: '/images/backgrounds/modalBodyBg.png',
 			borderColor: yc.style.colors.black,
 			borderRadius: 5,
-			borderWidth: 1
+			borderWidth: 2
 		},{}));
 		
 		container.add(Ti.UI.createLabel({

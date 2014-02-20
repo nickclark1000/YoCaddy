@@ -33,6 +33,7 @@ var Database = function(_name) {
 		 					+ ' date TEXT NOT NULL,'
 		 					+ ' trace INTEGER,'
 		 					+ ' score INTEGER,'
+		 					+ ' par INTEGER,'
 		 					+ ' createdPlatform TEXT,'
 		 					+ ' createdId INTEGER,'
 		 					+ ' fairwayHit REAL,'
@@ -79,28 +80,31 @@ Database.prototype.saveRound = function(/*Round Object*/ _r) {
 	try {
 
 		if (_r.id) {	// Update
+			Ti.API.debug('Updating Round: '+ JSON.stringify(_r));
 			str = 'UPDATE Rounds SET'
-				+ ' course=?'
-				+ ' desc=?'
-				+ ' lon=?'
-				+ ' lat=?'
-				+ ' fsid=?'
-				+ ' date=?'
-				+ ' trace=?'
-				+ ' score=?'
-				+ ' createdPlatform=?'
-				+ ' createdId=?'
-				+ ' fairwayHit=?'
+				+ ' course=?,'
+				+ ' desc=?,'
+				+ ' lon=?,'
+				+ ' lat=?,'
+				+ ' fsid=?,'
+				+ ' date=?,'
+				+ ' trace=?,'
+				+ ' score=?,'
+				+ ' par=?,'
+				+ ' createdPlatform=?,'
+				+ ' createdId=?,'
+				+ ' fairwayHit=?,'
 				+ ' greenHit=?'
 			+ ' WHERE id=?';
 			
-			db.execute(str, _r.course, _r.desc, _r.lon, _r.lat, _r.fsid, _r.date, _r.trace, _r.score, _r.createdPlatform, _r.createdid, _r.fairwayHit, _r.greenHit, _r.id);			
+			db.execute(str, _r.course, _r.desc, _r.lon, _r.lat, _r.fsid, _r.date, _r.trace, _r.score, _r.par, _r.createdPlatform, _r.createdid, _r.fairwayHit, _r.greenHit, _r.id);			
 		} else {		// Insert
-			str = 'INSERT INTO Rounds (course, desc, lon, lat, fsid, date, trace, score, createdPlatform, createdId, fairwayHit, greenHit)'
-			+ ' VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';	
+			Ti.API.debug('Inserting Round: '+ JSON.stringify(_r));
+			str = 'INSERT INTO Rounds (course, desc, lon, lat, fsid, date, trace, score, par, createdPlatform, createdId, fairwayHit, greenHit)'
+			+ ' VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';	
 			
-			db.execute(str, _r.course, _r.desc, _r.lon, _r.lat, _r.fsid, _r.date, _r.trace, _r.score, _r.createdPlatform, _r.createdid, _r.fairwayHit, _r.greenHit);
-			success.id = db.lastInsertRowID;
+			db.execute(str, _r.course, _r.desc, _r.lon, _r.lat, _r.fsid, _r.date, _r.trace, _r.score, _r.par, _r.createdPlatform, _r.createdid, _r.fairwayHit, _r.greenHit);
+			success.id = db.lastInsertRowId;
 		}
 		
 		Ti.API.debug(str);	
@@ -150,7 +154,8 @@ Database.prototype.listRounds = function(where) {
 				fsid: resultSet.fieldByName('fsid'),
 				date: resultSet.fieldByName('date'),
 				trace: resultSet.fieldByName('trace'),
-				score: resultSet.fieldByName('score'),		
+				score: resultSet.fieldByName('score'),	
+				par: resultSet.fieldByName('par'),	
 				createdPlatform: resultSet.fieldByName('createdPlatform'),
 				createdId: resultSet.fieldByName('createdId'),
 				fairwayHit: resultSet.fieldByName('fairwayHit'),
@@ -212,24 +217,26 @@ Database.prototype.saveRoundScores = function(rId, rScores) {
 	try {
 		// First delete all current round scores
 		// Lazy but faster than updating all scores
-		str = 'DELETE FROM Scores WHERE roundid=?';
+		str = 'DELETE FROM Scores WHERE roundId=?';
 		db.execute(str,rId);
-		Ti.API.debug(str);
 		
 		// Create the transaction to install all the scores
-		db.execute('BEGIN');
-		for (var s=0; s<rScores.length; s++) {
-			var par = (rScores[i].par == '-') ? 0 : rScores[i].par;
- 			var score = (rScores[i].score == '-') ? 0 : rScores[i].score;
+		db.execute('BEGIN IMMEDIATE TRANSACTION');
+		
+		for (var s=0; s < rScores.length; s++) {
+			Ti.API.debug('round : ' + JSON.stringify(rScores[s]));
+			var par = (rScores[s].par == '-') ? 0 : rScores[s].par;
+ 			var score = (rScores[s].score == '-') ? 0 : rScores[s].score;
  			str = 'INSERT INTO Scores (roundId, holeNumber, par, score, fairway, gir) VALUES (?,?,?,?,?,?)';
-			db.execute(str, rId, rScores[i].hole, par, score, rScores[i].fairway, rScores[i].gir);
-			Ti.API.debug(str + ' : ' + JSON.stringify(rScores[i]));
+			db.execute(str, rId, rScores[s].hole, par, score, rScores[s].fairway, rScores[s].gir);
 		}
 		
-		db.execute('COMMIT');
+		db.execute('COMMIT TRANSACTION');
+
 		success = true;
 	} catch (err) {
-		Ti.API.error('Datbase Error: ' + JSON.stringify(err));
+		db.execute('ROLLBACK');
+		Ti.API.error('Datbase Error: ' + err);
 	} finally {
 		db.close();
 		return success;
@@ -250,21 +257,19 @@ Database.prototype.getRoundScores = function(rId) {
 		return null;
 	
 	try {
-		str = 'SELECT * FROM Scores WHERE roundId=?';
-		
+		str = 'SELECT * FROM Scores WHERE roundId=?';		
 	 	resultSet = db.execute(str, rId);		// Execute the Create statements
-	 	Ti.API.debug(str);
 	 	
 	 	// Create array of Rounds
-	 	var count = 0;
 	 	while (resultSet.isValidRow()) {
-	 		success[count] = {
+	 		success.push({
+	 			roundId: resultSet.fieldByName('roundId'),
 	 			hole: resultSet.fieldByName('holeNumber'),
 	 			par: resultSet.fieldByName('par'),
 	 			score: resultSet.fieldByName('score'),
 	 			fairway: resultSet.fieldByName('fairway'),
 	 			gir: resultSet.fieldByName('gir')
-	 		};
+	 		});
 	 		
 	 		resultSet.next();
 	 	}	 
