@@ -19,8 +19,10 @@
 		});
 		view.add(header);
 		
-		var body = Ti.UI.createView($$.bodyNoScrollView);	
-		var content = Ti.UI.createScrollView(yc.combine($$.bodyScrollContent, {}));
+		var body = Ti.UI.createScrollView($$.bodyScrollView);	
+		var content = Ti.UI.createScrollView(yc.combine($$.bodyContent, {
+			bottom: 5
+		}));
 		
 		body.add(content);
 		view.add(body);

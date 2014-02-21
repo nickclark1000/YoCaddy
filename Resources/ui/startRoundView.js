@@ -127,8 +127,10 @@
 		});
 		view.add(header);
 		
-		var body = Ti.UI.createView($$.bodyNoScrollView);			
-		var content = Ti.UI.createScrollView(yc.combine($$.bodyScrollContent, {}));		
+		var body = Ti.UI.createScrollView($$.bodyScrollView);			
+		var content = Ti.UI.createScrollView(yc.combine($$.bodyContent, {
+			bottom: 5
+		}));		
 
 		body.add(content);
 		view.add(body);
@@ -147,7 +149,7 @@
 		
 		var startLabel = Ti.UI.createLabel(yc.combine($$.infoText, {
 			text: 'There are two ways to begin a round:\n1) Enter a course name and description.\n2) Select a nearby course and enter a description.\n\nStarting a round will initiate the GPS functionality of your device.  To stop the GPS, the round must be paused or ended.',
-			top: 5, bottom: 10, width: '95%'
+			top: 5, width: '95%'
 		}));		
 		
 		var courseNameText = Ti.UI.createTextField(yc.combine($$.textfield, {
@@ -165,9 +167,8 @@
 		
 		var courseDescText = Ti.UI.createTextArea(yc.combine($$.textfield, {
 			hintText: '[Course or Round Description]',
-			height: 90, 
+			height: 80, 
 			autocapitalization: Ti.UI.TEXT_AUTOCAPITALIZATION_SENTENCES,
-			layout: 'horizontal',
 			verticalAlign: Ti.UI.TEXT_VERTICAL_ALIGNMENT_TOP,
 			maxLength: 200,
 			horizontalWrap: true,

@@ -10,14 +10,16 @@
 		distanceUnit: 0,
 		autoshot: 1,
 		gpsDistance: 2,
-		theme: 3
+		theme: 3,
+		scoredisplay: 4
 	};
 	
 	yc.settings.app.propnames = [
 		{ name: 'app.distanceunit', desc: 'Map Distance Units'},
 		{ name: 'app.autoshot', desc: 'Auto Shot Timer'},
 		{ name: 'app.gpsdistance', desc: 'GPS Min Distance'},
-		{ name: 'app.theme', desc: 'Application Theme'}
+		{ name: 'app.theme', desc: 'Application Theme'},
+		{ name: 'app.scoredisplay', desc: 'Score Display Format'}
 	];
 	
 	yc.settings.sync.propids = {
@@ -78,7 +80,12 @@
 				lowlightColor: '#FFD4FF',
 				zebraColor: '#FFD4FF'
 			 }}			 				 	
-		]
+		],
+		[
+			{ text: 'Score (Par)', value: 1 },
+			{ text: '+/- (Par)', value: 2 },
+			{ text: 'Score (+/-)', value: 3 }			
+		],		
 	];
 	
 	yc.settings.sync.propvalues = [
@@ -101,7 +108,8 @@
 		Ti.App.Properties.getInt(yc.settings.app.propnames[yc.settings.app.propids.distanceUnit].name, 0),
 		Ti.App.Properties.getInt(yc.settings.app.propnames[yc.settings.app.propids.autoshot].name, 0),
 		Ti.App.Properties.getInt(yc.settings.app.propnames[yc.settings.app.propids.gpsDistance].name, 0),
-		Ti.App.Properties.getInt(yc.settings.app.propnames[yc.settings.app.propids.theme].name, 0)
+		Ti.App.Properties.getInt(yc.settings.app.propnames[yc.settings.app.propids.theme].name, 0),
+		Ti.App.Properties.getInt(yc.settings.app.propnames[yc.settings.app.propids.scoredisplay].name, 0)
 	];	
 	
 	yc.settings.sync.selected = [

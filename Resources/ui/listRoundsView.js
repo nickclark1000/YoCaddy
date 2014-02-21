@@ -4,6 +4,35 @@
 (function(){
 	
 	/**
+	 * Format the score and par into a specific format
+	 * @Param {Integer} Score
+	 * @Param {Integer} Par
+	 * @Return {String} result 
+	 *		{ text: 'Score (Par)', value: 1 },
+	 *		{ text: '+/- (Par)', value: 2 },
+	 *		{ text: 'Score (+/-)', value: 3 }	
+	 */
+	var formatScores = function(score, par) {
+		var text = '';
+		var plusminus = (score-par > 0) ? '+' : '-';
+		var displayType = yc.settings.app.propvalues[yc.settings.app.propids.scoredisplay][yc.settings.app.selected[yc.settings.app.propids.scoredisplay]].value;
+		
+		switch (displayType) {
+			case 1:
+				text = score +' ('+par+')';
+				break;
+			case 2:
+				text = plusminus + Math.abs(score-par) + ' ('+par+')';
+				break;				
+			case 3:
+				text = score + ' ('+ plusminus + Math.abs(score-par) + ')';
+				break;
+		}
+		
+		return text;
+	};
+	
+	/**
 	 * Creation of the yc Namespace function to display the list of saved rounds to
 	 * the user.
 	 */
@@ -112,7 +141,7 @@
 						fontSize: yc.style.fontsize.xlargetext,
 						fontFamily: yc.style.fonts.buttonFont
 					},
-					text: (roundList[i].score === -99) ? 'NA' : roundList[i].score+'/'+ roundList[i].par,
+					text: (roundList[i].score === -99) ? 'NA' : formatScores(roundList[i].score, roundList[i].par),
 					touchEnabled: false
 				});
 				var fairwayLabel = Ti.UI.createLabel({ 
@@ -158,8 +187,8 @@
 		    		fontFamily: yc.style.fonts.optionFont
 		    	},
 		        hintText: 'By Course Name',
-		        iconified: false,
-		        iconifiedByDefault: false
+		        iconified: true,
+		        iconifiedByDefault: true
 		    });
 		} else {
 		    // Use search bar
@@ -168,7 +197,7 @@
 		    });
 		}			
 
-		var roundsTableView = Ti.UI.createTableView(yc.combine($$.bodyScrollContent,{		
+		var roundsTableView = Ti.UI.createTableView(yc.combine({ top: 5, bottom: 5, left: 2, right: 2 },{		
 			separatorColor: yc.style.colors.zebraColor,
 			filterAttribute: 'filterCourse',
 			search: searchView,
@@ -181,9 +210,11 @@
 				var rounds = yc.db.rounds.listRounds(where);
 				Ti.API.debug(JSON.stringify(rounds));
 				
-				var scores = yc.db.rounds.getRoundScores(e.source.roundId);
-				for(var i=0; i < scores.length; i++) {
-					Ti.API.debug(JSON.stringify(scores[i]));
+				if (rounds.length == 1) {
+					yc.app.editviewRound = rounds[0];
+					yc.app.applicationWindow.fireEvent('addview', { viewIdx: yc.ui.viewids.editviewround });
+				} else {
+					Ti.API.debug('Received back More or Less than 1 specific round');
 				}
 			}
 		});

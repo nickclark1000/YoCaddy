@@ -11,7 +11,7 @@
 		view.viewid = yc.ui.viewids.mapround;
 		
 		var headerString;
-		var headerLength = (yc.checkTablet()) ? 25 : 12;
+		var headerLength = (yc.checkTablet()) ? 25 : 15;
 		
 		if (yc.app.currentRound === undefined) {
 			headerString = 'Invalid Round';
@@ -83,12 +83,7 @@
 		map = new yoMap({
 			userlocation: false,
 			zoomcontrols: false,
-			props: {
-				top: 110, bottom: 5,
-				left: 5, right: 5,
-				borderWidth: 1,
-				borderColor: '#E0E0E0',				
-			}
+			props: $$.bodyNoScrollView
 		});
 		view.add(map);
 		

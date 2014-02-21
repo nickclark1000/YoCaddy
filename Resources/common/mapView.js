@@ -71,7 +71,7 @@ var mapView = function(_args) {
 	
 	if (messageLabel) {
 		view = 	Ti.UI.createView(yc.combine($$.bodyScrollView, {
-			backgroundColor: '#000000'
+			backgroundColor: 'transparent'
 		}));
 		view.add(messageLabel);
 		view.valid = false;

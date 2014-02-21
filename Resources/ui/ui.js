@@ -12,7 +12,7 @@
 		startround: 4,
 		listrounds: 5,
 		mapround: 6,
-		mapviewround: 7,
+		editviewround: 7,
 		settings: 8,
 		maponly: 9,
 		about: 10
@@ -108,6 +108,7 @@
 					viewArray[oldViewId].setVisible(false);
 					
 					if (oldViewId === yc.ui.viewids.startround) { viewArray[yc.ui.viewids.startround] = undefined; }
+					if (oldViewId === yc.ui.viewids.editviewround) { viewArray[yc.ui.viewids.editviewround] = undefined; }
 					if (oldViewId === yc.ui.viewids.mapround && yc.app.currentRound === undefined) { viewArray[yc.ui.viewids.mapround] = undefined; }									
 				}	
 			} else {
@@ -128,7 +129,7 @@
 					viewArray[nextViewId].setVisible(true);
 					
 					// If the next View is the list, we need to update the list of rounds
-					if (nextViewid === yc.ui.viewids.listrounds) {
+					if (nextViewId === yc.ui.viewids.listrounds) {
 						viewArray[nextViewId].fireEvent('updatelist', {});
 					}
 				} else {				
@@ -145,7 +146,8 @@
 							viewArray[yc.ui.viewids.startround] = undefined;
 							viewArray[nextViewId] = yc.ui.createRoundMapView();
 							break;
-						case yc.ui.viewids.mapviewround:
+						case yc.ui.viewids.editviewround:
+							viewArray[yc.ui.viewids.editviewround] = yc.ui.createEditViewRoundView();
 							break;
 						case yc.ui.viewids.maponly:
 							viewArray[nextViewId] = yc.ui.createMapOnlyView();				
@@ -199,7 +201,7 @@
 			text: _title,
 			font: {
 				fontSize: yc.style.fontsize.largetext,
-				fontFamily: yc.style.fonts.buttonFont
+				fontFamily: yc.style.fonts.optionFont
 			}
 		}));
 		container.add(new yc.ui.separator());
@@ -211,7 +213,7 @@
 			color: yc.style.colors.black,
 			font: {
 				fontSize: yc.style.fontsize.normaltext,
-				fontFamily: yc.style.fonts.optionFont
+				fontFamily: yc.style.fonts.infoFont
 			}
 		}));
 		
@@ -244,6 +246,7 @@
 Ti.include(
 	'/ui/startRoundView.js',
 	'/ui/roundMapView.js',
+	'/ui/editViewRoundView.js',
 	'/ui/listRoundsView.js',
 	'/ui/mapOnlyView.js',
 	'/ui/informationView.js',

@@ -25,12 +25,7 @@
 		map = new yoMap({
 			userlocation: true,
 			zoomcontrols: true,
-			props: {
-				top: 55, bottom: 5,
-				left: 5, right: 5,
-				borderWidth: 1,
-				borderColor: '#E0E0E0',				
-			}
+			props: $$.bodyNoScrollView
 		});
 		view.add(map);	
 		

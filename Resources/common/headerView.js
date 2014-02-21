@@ -16,7 +16,10 @@ function headerView(_args) {
 		var hbutton = Ti.UI.createButton({
 			left: margin,
 			width: 32, height: 32,
-			backgroundImage: _args.leftbutton.image
+			backgroundImage: _args.leftbutton.image,
+			backgroundColor: 'transparent',
+			backgroundSelectedColor: yc.style.colors.highlightColor,
+			borderRadius: 5
 		});
 		
 		hbutton.addEventListener('click', _args.leftbutton.callback);
@@ -35,7 +38,9 @@ function headerView(_args) {
 			right: margin,
 			width: 30, height: 30,
 			backgroundColor: 'transparent',
-			backgroundImage: _args.rightbutton.image
+			backgroundSelectedColor: yc.style.colors.highlightColor,
+			backgroundImage: _args.rightbutton.image,
+			borderRadius: 5
 		});
 		
 		hrbutton.addEventListener('click', _args.rightbutton.callback);

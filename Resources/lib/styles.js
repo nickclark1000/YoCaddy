@@ -99,6 +99,7 @@
 		
 		// Common body properties
 		bodyScrollView: {
+			backgroundImage: '/images/backgrounds/modalBodyBg.png',
 			top: 50, bottom: 0,
 			left: 0, right: 0,
 			layout: 'vertical',
@@ -110,12 +111,9 @@
 		
 		bodyNoScrollView: {
 			backgroundImage: '/images/backgrounds/modalBodyBg.png',
-			top: 55, bottom: 5,
-			left: 5, right: 5,	
-			backgroundColor: 'transparent',
-			borderWidth: 1,
-			borderColor: '#E0E0E0',
-			borderRadius: 5,				
+			top: 50, bottom: 0,
+			left: 0, right: 0,	
+			layout: 'vertical'	
 		},
 		
 		bodyView: {
@@ -125,13 +123,9 @@
 		},		
 		
 		bodyContent: {
-			backgroundImage: '/images/backgrounds/modalBodyBg.png',
 			top: 5,
 			left: 5, right: 5,
 			height: Ti.UI.SIZE,
-			borderWidth: 1,
-			borderColor: '#E0E0E0',
-			borderRadius: 5,
 			layout: 'vertical'
 		},	
 		
@@ -203,7 +197,8 @@
 		},
 		
 		mapErrorText: {
-			color: yc.style.colors.white,
+			width: '95%',
+			color: yc.style.colors.black,
 			font: {
 				fontSize: yc.style.fontsize.xlargetext,
 				fontFamily: yc.style.fonts.buttonFont
