@@ -11,7 +11,7 @@
 		view.viewid = yc.ui.viewids.mapround;
 		
 		var headerString;
-		var headerLength = (yc.checkTablet()) ? 25 : 15;
+		var headerLength = (yc.checkTablet()) ? 50 : 20;
 		
 		if (yc.app.editviewRound === undefined) {
 			headerString = 'Invalid Round';
@@ -36,44 +36,7 @@
 			leftbutton: {
 				show: true,
 				callback: function() {
-					var confirm = new yc.ui.alert(
-						'Close Round Edit',
-						'Would you like to save round data before closing?  This will overwrite Round, Score and Trace information.',
-						['Save & Close', 'Close', 'Cancel']
-					);
-					
-					// Add a listener for any event on the Alert window
-					confirm.addEventListener('click', function(e){
-						yc.app.alertShown = false;
-						yc.app.applicationWindow.remove(confirm);
-						if (e.source.title === 'Save & Close') {
-							var toSave = scores.getScores();						
-							var busy = yc.ui.createActivityStatus('Saving Scores...');
-							yc.app.applicationWindow.add(busy);
-							yc.db.rounds.saveRoundScores(yc.app.editviewRound.id, toSave);
-							
-							// Update from new scoring
-							yc.app.editviewRound = detail.getRound();
-							yc.db.rounds.saveRound(yc.app.editviewRound);
-							
-							// Exit regardless of what is pressed
-							yc.app.applicationWindow.remove(busy);																		
-							yc.app.editviewRound = undefined;
-							yc.app.applicationWindow.fireEvent('androidback', {});	
-						} else if (e.source.title == 'Close') {						
-							// Exit regardless of what is pressed
-							yc.app.editviewRound = undefined;
-							yc.app.applicationWindow.fireEvent('androidback', {});								
-						} else {
-							// Do nothing
-							
-						}
-					
-	
-					});
-					
-					yc.app.alertShown = true;
-					yc.app.applicationWindow.add(confirm);
+					yc.app.applicationWindow.fireEvent('androidback', {});
 				}
 			},
 			rightbutton: {
@@ -81,7 +44,7 @@
 				image: '/images/button_save.png',
 				callback: function() {
 					var toSave = scores.getScores();
-					var busy = yc.ui.createActivityStatus('Saving Scores...');
+					var busy = yc.ui.createActivityStatus('Saving Round...');
 					var scoresSaved, gameUpdated;
 					
 					yc.app.applicationWindow.add(busy);
@@ -103,7 +66,7 @@
 		
 		var viewHeadings = Ti.UI.createView(yc.combine({},{
 			top: 0, left: 0,
-			width: Ti.UI.FILL, height: 50
+			width: Ti.UI.FILL, height: 40
 		}));
 		body.add(viewHeadings);
 		
@@ -114,17 +77,26 @@
 			backgroundSelectedColor: yc.style.colors.mainColor,
 			backgroundImage: '/images/buttonBackground.png',
 			font: {
-				fontSize: yc.style.fontsize.largetext,
+				fontSize: yc.style.fontsize.normaltext,
 				fontFamily: yc.style.fonts.buttonFont
 			}			
 		};
 		
 		var content = Ti.UI.createScrollableView(yc.combine({},{
-			top: 50, left: 0,
-			bottom: 0, right: 0,
-			showPagingControl: false
+			top: 40, left: 5,
+			bottom: 0, right: 5,
+			showPagingControl: false,
+			scrollingEnabled: false
 		}));	
 		body.add(content);	
+		
+		var selectedHeading = Ti.UI.createView(yc.combine({},{
+			zIndex: 50,
+			width: '33%', height: 3,
+			bottom: 0, left: 0,
+			backgroundColor: yc.style.colors.mainColor
+		}));	
+		viewHeadings.add(selectedHeading);	
 		
 		var detailHeading = Ti.UI.createButton(yc.combine(buttonStyle,{
 			left: 0, width: '33%',
@@ -134,16 +106,24 @@
 		viewHeadings.add(detailHeading);
 		detailHeading.addEventListener('click', function(e){
 			content.setCurrentPage(0);
+			selectedHeading.animate({
+				left: 0,
+				duration: 100
+			}, function(){});
 		});
 
 		var scoreHeading = Ti.UI.createButton(yc.combine(buttonStyle,{
 			left: '33%', width: '34%',
 			height: Ti.UI.FILL,
-			title: 'Scores'
+			title: 'Scorecard'
 		}));
 		viewHeadings.add(scoreHeading);
 		scoreHeading.addEventListener('click', function(e){
 			content.setCurrentPage(1);
+			selectedHeading.animate({
+				left: '33%',
+				duration: 100
+			}, function(){});			
 		});
 				
 		var mapHeading = Ti.UI.createButton(yc.combine(buttonStyle,{
@@ -154,15 +134,19 @@
 		viewHeadings.add(mapHeading);
 		mapHeading.addEventListener('click', function(e){
 			content.setCurrentPage(2);
+			selectedHeading.animate({
+				left: '67%',
+				duration: 100
+			}, function(){});			
 		});
 								
-		///////////////////////////////////////  End of Common Window Section ////////////////////////////////////////
-		
+		// ROund Info Button								
 		var RoundInfo = require('/common/roundInfo');
 		var detail = new RoundInfo({
 			roundId: yc.app.editviewRound.id
 		});
 		
+		// Map Button
 		var yoMap = require('/common/mapView');
 		var map = new yoMap({
 			userlocation: false,
@@ -171,6 +155,7 @@
 			roundId: yc.app.editviewRound.id
 		});
 			
+		// Score Table Data	
 		var ScoreTable = require('/common/scoreTable');
 		var scores = new ScoreTable({
 			props: {},
@@ -180,6 +165,46 @@
 		content.addView(detail.getView());	
 		content.addView(scores.getView());
 		content.addView(map);	
+		
+		// Event listener for when teh back button is pressed.  Before removing the view
+		// the UI controller will fire this event to each view, if it requires action that is available.
+		view.addEventListener('closing', function(e){
+			var confirm = new yc.ui.alert(
+				'Save Round?',
+				'Would you like to save round data before closing?  This will overwrite Round, Score and Trace information.',
+				['Save & Close', 'Close']
+			);
+			
+			// Add a listener for any event on the Alert window
+			confirm.addEventListener('click', function(e){
+				yc.app.alertShown = false;
+				yc.app.applicationWindow.remove(confirm);
+				if (e.source.title === 'Save & Close') {
+					var toSave = scores.getScores();						
+					var busy = yc.ui.createActivityStatus('Saving Scores...');
+					yc.app.applicationWindow.add(busy);
+					yc.db.rounds.saveRoundScores(yc.app.editviewRound.id, toSave);
+					
+					// Update from new scoring
+					yc.app.editviewRound = detail.getRound();
+					yc.db.rounds.saveRound(yc.app.editviewRound);
+					
+					// Exit regardless of what is pressed
+					yc.app.applicationWindow.remove(busy);																		
+					yc.app.editviewRound = undefined;	
+				} else if (e.source.title == 'Close') {						
+					// Exit regardless of what is pressed
+					yc.app.editviewRound = undefined;							
+				} else {
+					// Do nothing
+				}
+				
+				yc.app.applicationWindow.fireEvent('appback', {});		
+			});
+			
+			yc.app.alertShown = true;
+			yc.app.applicationWindow.add(confirm);
+		});	
 					
 		return view;
 	};

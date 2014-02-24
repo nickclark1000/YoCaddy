@@ -50,7 +50,7 @@
             <permission
                 android:name="com.klueless.yocaddy.permission.MAPS_RECEIVE" android:protectionLevel="signature"/>
             <application
-		        android:debuggable="false"
+		        android:debuggable="true"
 		        android:vmSafeMode="true"       
 		        android:allowClearUserData="true"
 		        android:hardwareAccelerated="true">

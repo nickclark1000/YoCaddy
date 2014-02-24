@@ -133,7 +133,7 @@
 		var maponlyItem = new item({
 			touchEnabled: false,
 			image: '/images/button_map_dark.png',
-			text: 'Show Map Only',
+			text: 'Basic Map Tool',
 			callback: function() { 
 				yc.app.applicationWindow.fireEvent('addview', { viewIdx: yc.ui.viewids.maponly }); 
 			}
@@ -155,7 +155,7 @@
 		var aboutItem = new item({
 			touchEnabled: false,
 			image: '/images/button_about_dark.png',
-			text: 'About yoCaddy',
+			text: 'About & Help',
 			callback: function() { 
 				yc.app.applicationWindow.fireEvent('addview', { viewIdx: yc.ui.viewids.about }); 
 			}

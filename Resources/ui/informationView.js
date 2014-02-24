@@ -11,10 +11,12 @@
 		view.viewid = yc.ui.viewids.about;
 		
 		var header = new yc.ui.headerView({
-			title: 'About yoCaddy',
+			title: 'About & Help',
 			leftbutton: {
 				show: true,
-				callback: function() { yc.app.applicationWindow.fireEvent('androidback', {}); }
+				callback: function() {
+					yc.app.applicationWindow.fireEvent('appback', { sourceView: yc.ui.viewids.about });
+				}
 			}
 		});
 		view.add(header);
@@ -81,7 +83,9 @@
 		content.add(listRoundSection);
 		content.add(listRoundText);	
 		
-		
+		view.addEventListener('closing', function(e){
+			yc.app.applicationWindow.fireEvent('appback', { sourceView: yc.ui.viewids.about });
+		});
 		
 		return view;	
 	};

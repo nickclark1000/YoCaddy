@@ -11,10 +11,10 @@
 		view.viewid = yc.ui.viewids.maponly;
 		
 		var header = new yc.ui.headerView({
-			title: 'Map Only',
+			title: 'Basic Map Tool',
 			leftbutton: {
 				show: true,
-				callback: function() { yc.app.applicationWindow.fireEvent('androidback', {}); }
+				callback: function() { yc.app.applicationWindow.fireEvent('appback', {}); }
 			}
 		});
 		view.add(header);
@@ -28,6 +28,10 @@
 			props: $$.bodyNoScrollView
 		});
 		view.add(map);	
+		
+		view.addEventListener('closing', function(e){
+			yc.app.applicationWindow.fireEvent('appback', { sourceView: yc.ui.viewids.about });
+		});		
 		
 		return view;
 	};

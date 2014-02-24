@@ -59,6 +59,10 @@
 		
 		view.add(body);
 		
+		view.addEventListener('closing', function(e){
+			yc.app.applicationWindow.fireEvent('appback', {});
+		});
+		
 		return view;
 	};
 })();

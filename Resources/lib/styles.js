@@ -39,7 +39,7 @@
 		largetext:18,
 		xlargetext:22,
 		sectiontext: 24,
-		titletext: 32
+		titletext: 30
 	};
 	
 	var longerSide, shorterSide;
@@ -93,7 +93,7 @@
 		hlabel: {
 			color: yc.style.colors.white,
 			font: {
-				fontSize: 34,
+				fontSize: yc.style.fontsize.sectiontext,
 				fontFamily: yc.style.fonts.headerFont
 			}			
 		},		

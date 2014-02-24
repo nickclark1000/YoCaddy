@@ -88,6 +88,10 @@
 		}
 		stack.add(viewArray[stack.currentView]);
 		
+		stack.addEventListener('appback', function(e){
+			viewArray[stack.currentView].fireEvent('closing', {});
+		});
+		
 		// Hide all views except the new current
 		stack.addEventListener('changeIndex', function(e) {
 			var nextViewId = e.viewIdx || undefined;
@@ -134,10 +138,7 @@
 			} else {
 				if (stack.currentView === nextViewId) {
 					return;
-				}
-				
-				var busy = new yc.ui.createActivityStatus('Loading ...');
-				yc.app.applicationWindow.add(busy);	
+				}	
 								
 				// Make all the current children of Stack invisible
 				for (var i=1,j=stack.children.length; i<j; i++) {
@@ -154,7 +155,12 @@
 					} else if (nextViewId === yc.ui.viewids.startround) {
 						viewArray[nextViewId].fireEvent('clearscreen', {});
 					}
-				} else {				
+				} else {
+					// Display a loading screen
+					if (nextViewId === yc.ui.viewids.editviewround)	{
+						var busy = new yc.ui.createActivityStatus('Loading Round ...');
+						yc.app.applicationWindow.add(busy);						
+					}			
 					
 					// View doesn't exist, it must be created and added to the stack
 					switch(nextViewId) {
@@ -181,10 +187,15 @@
 							break;					
 					}
 					
-					stack.add(viewArray[nextViewId]);					
+					stack.add(viewArray[nextViewId]);	
+					
+					// Remove the loading screen
+					if (nextViewId === yc.ui.viewids.editviewround)	{
+						yc.app.applicationWindow.remove(busy);						
+					}												
 				}
 				
-				yc.app.applicationWindow.remove(busy);
+				//yc.app.applicationWindow.remove(busy);
 				
 				if ( !(stack.currentView === yc.ui.viewids.startround && nextViewId === yc.ui.viewids.mapround)) {
 					stackIds.push(stack.currentView);

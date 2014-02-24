@@ -83,11 +83,10 @@
 		view.viewid = yc.ui.viewids.startround;
 		
 		var header = new yc.ui.headerView({
-			title: 'Round Details',
+			title: 'Start Round',
 			leftbutton: {
 				show: true,
 				callback: function() { 
-					view.fireEvent('clearscreen', {});
 					yc.app.applicationWindow.fireEvent('androidback', { sourceView: yc.ui.viewids.startround }); 
 				}
 			},
@@ -227,6 +226,9 @@
 		 * Selecting a round will update the currentRound information 
 		 */
 		var displayCourseList = function(courses) {
+			var busy = new yc.ui.createActivityStatus('Finding Nearby Courses ...');
+			yc.app.applicationWindow.add(busy);									
+			
 			var clv = new courseListView (courses);
 			
 			clv.addEventListener('click', function(e){
@@ -253,6 +255,8 @@
 			});
 			
 			view.add(clv);
+			
+			yc.app.applicationWindow.remove(busy);	
 		};
 		
 		/**
@@ -297,6 +301,12 @@
 		};		
 		
 		courseFindButton.addEventListener('click', createCourseList);
+		
+		view.addEventListener('closing', function(e){
+			view.fireEvent('clearscreen', {});
+			yc.app.applicationWindow.fireEvent('appback', { sourceView: yc.ui.viewids.startround });
+		});
+		
 		return view;
 	};
 	

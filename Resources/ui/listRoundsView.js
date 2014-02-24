@@ -44,10 +44,10 @@
 		view.viewid = yc.ui.viewids.listrounds;
 		
 		var header = new yc.ui.headerView({
-			title: 'Saved Rounds',
+			title: 'Round History',
 			leftbutton: {
 				show: true,
-				callback: function() { yc.app.applicationWindow.fireEvent('androidback', {}); }
+				callback: function() { yc.app.applicationWindow.fireEvent('appback', {}); }
 			},
 			rightbutton: [{
 				show: true,
@@ -259,9 +259,14 @@
 		
 		var roundsList;
 		view.addEventListener('updatelist', function(e) {
+			var busy = new yc.ui.createActivityStatus('Loading Round List ...');
+			yc.app.applicationWindow.add(busy);	
+			
 			roundsTableView.setData([]);
 			roundList = yc.db.rounds.listRounds();
 			roundsTableView.setData(createRoundData(roundList));
+			
+			yc.app.applicationWindow.remove(busy);
 		});
 
 		view.fireEvent('updatelist', {});
@@ -287,7 +292,7 @@
 			
 			var courseSearch = Ti.UI.createButton(yc.combine($$.modalButton, {
 				width: Ti.UI.FILL,
-				title: 'Search By Course Name',
+				title: 'Search By Course',
 				bottom: 5, top: 5,
 				left: 5, right: 5
 			}));
@@ -334,6 +339,10 @@
 			
 			view.add(searchByView);
 		} // End of Seach By Event Listener
+
+		view.addEventListener('closing', function() { 
+			yc.app.applicationWindow.fireEvent('appback', {}); 
+		});
 						
 		return view;
 	};

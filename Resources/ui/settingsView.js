@@ -11,10 +11,12 @@
 		view.viewid = yc.ui.viewids.settings;
 		
 		var header = new yc.ui.headerView({
-			title: 'yoSettings',
+			title: 'Settings',
 			leftbutton: {
 				show: true,
-				callback: function() { yc.app.applicationWindow.fireEvent('androidback', {}); }
+				callback: function() {
+					yc.app.applicationWindow.fireEvent('androidback', { sourceView: yc.ui.viewids.settings });
+				}
 			},
 			rightbutton: [{
 				show: true,
@@ -96,10 +98,44 @@
 			}));
 			
 			content.add(syncSettings[i].getView());
+		}						
+				
+		/**
+		 * 
+		 */				
+		function confirmSave() {
+			var confirm = new yc.ui.alert(
+				'Save Settings?',
+				'Would you like to save settings before closing?',
+				['Save & Close', 'Close']
+			);
+			
+			// Add a listener for any event on the Alert window
+			confirm.addEventListener('click', function(e){
+				yc.app.alertShown = false;
+				yc.app.applicationWindow.remove(confirm);
+				if (e.source.title === 'Save & Close') {						
+					var busy = yc.ui.createActivityStatus('Saving Settings...');
+					yc.app.applicationWindow.add(busy);
+
+					saveSettings();
+	
+					// Exit regardless of what is pressed
+					yc.app.applicationWindow.remove(busy);																		
+				} else {
+					// Do nothing
+				}		
+				
+				yc.app.applicationWindow.fireEvent('appback', {});
+			});
+			
+			yc.app.alertShown = true;
+			yc.app.applicationWindow.add(confirm);			
 		}		
 				
-		// Save Button Event handler
-		// Will save selected items back to the Ti.App.Properties
+		/**
+		 * 
+		 */
 		function saveSettings() {
 			
 			// Save AppSettings Array
@@ -110,12 +146,13 @@
 			// Save syncSettings Array
 			for(var i=0, j=syncSettings.length; i<j; i++) {
 				Ti.App.Properties.setInt(yc.settings.sync.propnames[i].name, syncSettings[i].getSelectedIndex());
-			}
-						
-			//yc.settings.refreshSettings();			
-			yc.app.applicationWindow.fireEvent('androidback', {});
+			}						
 		}
 		
+		view.addEventListener('closing', function(e){
+			confirmSave();
+		});		
+				
 		return view;
 	};
 	

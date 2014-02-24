@@ -34,6 +34,10 @@
 		});
 		
 		win.addEventListener('androidback', function(e){
+			viewStack.fireEvent('appback', {});
+		});
+		
+		win.addEventListener('appback', function(e){
 			menu.fireEvent('checkCurrentRound', e);
 			if (yc.app.menushown) {
 				win.fireEvent('hidemenu', {});				
@@ -41,7 +45,7 @@
 				// Do nothing
 			} else {
 				viewStack.fireEvent('changeIndex', {});
-			}
+			}			
 		});
 		
 		win.addEventListener('showmenu', function(e){			
