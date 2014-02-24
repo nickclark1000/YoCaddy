@@ -19,8 +19,8 @@
 			android: 'Exo2-SemiBoldItalic'
 		}),
 		sectionFont: yc.os({
-			iphone: 'Exo2 SemiBold',
-			android: 'Exo2-SemiBold'
+			iphone: 'Playball Regular',
+			android: 'Playball-Regular'
 		}),
 		infoFont: yc.os({
 			iphone: 'Exo2 LightItalic',
@@ -34,10 +34,11 @@
 	
 	yc.style.fontsize = {
 		tinytext: 10,
-		normaltext: 16,
 		smalltext: 12,
-		largetext:20,
-		xlargetext:24,
+		normaltext: 16,
+		largetext:18,
+		xlargetext:22,
+		sectiontext: 24,
 		titletext: 32
 	};
 	
@@ -60,7 +61,7 @@
 		}),
 		height: yc.os({
 			iphone: Ti.Platform.displayCaps.platformHeight,
-			android: (yc.checkTablet()) ? yc.pixelstodp(shorterSide)/1.03 : yc.pixelstodp(longerSide)/1.035 
+			android: (yc.checkTablet()) ? yc.pixelstodp(shorterSide)/1.03 : yc.pixelstodp(longerSide)/1.034 
 		})			
 	};
 		
@@ -112,30 +113,22 @@
 		bodyNoScrollView: {
 			backgroundImage: '/images/backgrounds/modalBodyBg.png',
 			top: 50, bottom: 0,
-			left: 0, right: 0,	
-			layout: 'vertical'	
-		},
-		
-		bodyView: {
-			top: 50, bottom: 0,
-			left: 0, right: 0,
-			backgroundColor: 'transparent'		
+			left: 0, right: 0		
 		},		
-		
+
 		bodyContent: {
-			top: 5,
+			top: 5, bottom: 5,
 			left: 5, right: 5,
 			height: Ti.UI.SIZE,
 			layout: 'vertical'
-		},	
+		},		
 		
-		bodyScrollContent: {
+		bodyNoMarginContent: {
 			top: 0, bottom: 0,
 			left: 0, right: 0,
-			contentWidth: Ti.UI.FILL,
-			contentHeight: 'auto',
-			scrollType: 'vertical',			
-			layout: 'vertical'
+			height: Ti.UI.SIZE,
+			layout: 'vertical',
+			scrollType: 'vertical'
 		},			
 		
 		// Common footer properties
@@ -151,11 +144,12 @@
 			height: 40,
 			color: yc.style.colors.white,
 			borderRadius: 5,
+			borderColor: yc.style.colors.black,
 			backgroundColor: yc.style.colors.highlightColor,
 			backgroundSelectedColor: yc.style.colors.mainColor,
 			backgroundImage: '/images/buttonBackground.png',
 			font: {
-				fontSize: yc.style.fontsize.normal,
+				fontSize: yc.style.fontsize.largetext,
 				fontFamily: yc.style.fonts.buttonFont
 			}
 		},
@@ -181,9 +175,10 @@
 		
 		// Common Content Styles
 		sectionTitle: {
+			width: '98%', top: 5,
 			color: yc.style.colors.black,
 			font: {
-				fontSize: 18,
+				fontSize: yc.style.fontsize.sectiontext,
 				fontFamily: yc.style.fonts.sectionFont
 			}			
 		},
@@ -191,7 +186,7 @@
 		infoText: {
 			color: yc.style.colors.greyTextColor,
 			font: {
-				fontSize: 14,
+				fontSize: yc.style.fontsize.smalltext,
 				fontFamily: yc.style.fonts.infoFont
 			}			
 		},
@@ -206,7 +201,7 @@
 		},
 		
 		textfield: {
-			top: '10dp', width: '95%', height: 40,
+			top: 5, width: '95%', height: 40,
 			maxLength: 80,
 			keyboardType:Titanium.UI.KEYBOARD_DEFAULT,
 			returnKeyType:Titanium.UI.RETURNKEY_DONE,
@@ -223,8 +218,13 @@
 			}	
 		},
 		
-		textarea: {
-			
+		labelfield: {
+			top: 5, width: '95%', height: Ti.UI.SIZE,
+			color: '#000',
+			font: {
+				fontSize: 16,
+				fontFamily: yc.style.fonts.infoFont
+			}				
 		}
 	};
 })();

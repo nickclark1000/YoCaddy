@@ -35,7 +35,7 @@
 				show: true,
 				callback: function() { yc.app.applicationWindow.fireEvent('androidback', {}); }
 			},
-			rightbutton: {
+			rightbutton: [{
 				show: true,
 				image: '/images/button_cancel.png',
 				callback: function() {
@@ -50,6 +50,8 @@
 						yc.app.applicationWindow.remove(confirm);
 						if (e.source.title === 'Yes') {
 							var toSave = scorer.getScores();
+							Ti.API.debug(JSON.stringify(toSave));
+							
 							var busy = yc.ui.createActivityStatus('Saving Scores...');
 							var scoresSaved, gameUpdated;
 							
@@ -73,7 +75,7 @@
 					yc.app.alertShown = true;
 					yc.app.applicationWindow.add(confirm);
 				}
-			}
+			}]
 		});
 		view.add(header);
 		

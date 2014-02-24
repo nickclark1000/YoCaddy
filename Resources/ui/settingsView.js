@@ -16,16 +16,16 @@
 				show: true,
 				callback: function() { yc.app.applicationWindow.fireEvent('androidback', {}); }
 			},
-			rightbutton: {
+			rightbutton: [{
 				show: true,
 				callback: saveSettings,
 				image: '/images/button_save.png'
-			}
+			}]
 		});
 		view.add(header);
 		
-		var body = Ti.UI.createScrollView($$.bodyNoScrollView);			
-		var content = Ti.UI.createScrollView($$.bodyScrollContent);
+		var body = Ti.UI.createScrollView($$.bodyScrollView);			
+		var content = Ti.UI.createScrollView($$.bodyContent);
 
 		body.add(content);
 		view.add(body);
@@ -39,10 +39,8 @@
 			top: 5, left: 10, right: 10,
 			text: 'Application requires a restart before setting changes will take affect.'
 		}));
-		content.add(settingLabel);
 
 		var appSection = Ti.UI.createLabel(yc.combine($$.sectionTitle, {
-			top: '5dp', left: '5dp',
 			text: 'Application Settings'
 		}));
 		content.add(appSection);
@@ -52,6 +50,7 @@
 			text: 'Changing applications settings could affect battery life, if settings are increased to their maximum accuracy option.'
 		}));
 		content.add(appLabel);
+		content.add(settingLabel);
 		
 		/// Loop through yc.settings.app.propnames
 		/// Create all the check boxes dynamically
@@ -71,7 +70,7 @@
 		}
 			
 		var syncSection = Ti.UI.createLabel(yc.combine($$.sectionTitle, {
-			top: 10, left: 5, botton: 5,
+			botton: 5,
 			text: 'Sync Settings'
 		}));
 		content.add(syncSection);	

@@ -13,7 +13,7 @@ var appMainMenuView = function(_args) {
 	var margin = 5;
 	
 	var view = Ti.UI.createView({
-		width: Ti.UI.FILL, height: 40,
+		width: Ti.UI.FILL, height: 45,
 	});
 	
 	var button = Ti.UI.createButton($$.menubutton);

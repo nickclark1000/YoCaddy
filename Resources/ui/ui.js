@@ -19,13 +19,27 @@
 	};
 	
 	// Create a default separator
-	yc.ui.separator = function(){
+	yc.ui.separator = function(w){
+		var wid = (w) ? w : Ti.UI.FILL;
+		
 		return Ti.UI.createView({
-			width: Ti.UI.FILL, height: 1,
+			width: w, height: 1,
 			backgroundColor: yc.style.colors.lowlightColor,
 			opacity: 0.4
 		});
 	};
+	
+	yc.ui.vSpacer = function(h){
+		return Ti.UI.createView({
+			width: Ti.UI.FILL, height: h
+		});
+	};	
+	
+	yc.ui.hSpacer = function(w){
+		return Ti.UI.createView({
+			width: w, height: Ti.UI.FILL
+		});
+	};		
 		
 	// Create status indicator with specified text
 	yc.ui.createActivityStatus = function(text) {
@@ -103,20 +117,26 @@
 					var oldViewId = stack.currentView;
 					
 					// This is a pop, we need to go backwards in the stackIds
-					stack.currentView = stackIds.pop();
+					do {
+						stack.currentView = stackIds.pop();		
+					} while (viewArray[stack.currentView] === undefined);
+					
 					viewArray[stack.currentView].setVisible(true);
 					viewArray[oldViewId].setVisible(false);
 					
-					if (oldViewId === yc.ui.viewids.startround) { viewArray[yc.ui.viewids.startround] = undefined; }
-					if (oldViewId === yc.ui.viewids.editviewround) { viewArray[yc.ui.viewids.editviewround] = undefined; }
-					if (oldViewId === yc.ui.viewids.mapround && yc.app.currentRound === undefined) { viewArray[yc.ui.viewids.mapround] = undefined; }									
+					if (oldViewId === yc.ui.viewids.editviewround && yc.app.editviewRound === undefined) { viewArray[yc.ui.viewids.editviewround] = undefined; }
+					if (oldViewId === yc.ui.viewids.mapround && yc.app.currentRound === undefined) { viewArray[yc.ui.viewids.mapround] = undefined; }
+					
+					if (stack.currentView === yc.ui.viewids.listrounds) {
+						viewArray[stack.currentView].fireEvent('updatelist', {});
+					}									
 				}	
 			} else {
 				if (stack.currentView === nextViewId) {
 					return;
 				}
 				
-				var busy = new yc.ui.createActivityStatus('Loading View...');
+				var busy = new yc.ui.createActivityStatus('Loading ...');
 				yc.app.applicationWindow.add(busy);	
 								
 				// Make all the current children of Stack invisible
@@ -131,6 +151,8 @@
 					// If the next View is the list, we need to update the list of rounds
 					if (nextViewId === yc.ui.viewids.listrounds) {
 						viewArray[nextViewId].fireEvent('updatelist', {});
+					} else if (nextViewId === yc.ui.viewids.startround) {
+						viewArray[nextViewId].fireEvent('clearscreen', {});
 					}
 				} else {				
 					
@@ -143,11 +165,10 @@
 							viewArray[nextViewId] = yc.ui.createListRoundsView();
 							break;
 						case yc.ui.viewids.mapround:
-							viewArray[yc.ui.viewids.startround] = undefined;
 							viewArray[nextViewId] = yc.ui.createRoundMapView();
 							break;
 						case yc.ui.viewids.editviewround:
-							viewArray[yc.ui.viewids.editviewround] = yc.ui.createEditViewRoundView();
+							viewArray[nextViewId] = yc.ui.createEditViewRoundView();
 							break;
 						case yc.ui.viewids.maponly:
 							viewArray[nextViewId] = yc.ui.createMapOnlyView();				
@@ -191,7 +212,7 @@
 			backgroundImage: '/images/backgrounds/modalBodyBg.png',
 			borderColor: yc.style.colors.black,
 			borderRadius: 5,
-			borderWidth: 2
+			borderWidth: 1
 		},{}));
 		
 		container.add(Ti.UI.createLabel({

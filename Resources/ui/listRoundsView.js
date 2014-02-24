@@ -49,15 +49,21 @@
 				show: true,
 				callback: function() { yc.app.applicationWindow.fireEvent('androidback', {}); }
 			},
-			rightbutton: {
+			rightbutton: [{
 				show: true,
 				callback: showSearch,
 				image: '/images/button_search.png'
-			}
+			},{
+				show: true,
+				image: '/images/button_refresh.png',
+				callback: function() {
+					view.fireEvent('updatelist', {});
+				}
+			}]
 		});
 		view.add(header);
 		
-		var body = Ti.UI.createView(yc.combine($$.bodyNoScrollView, {}));		
+		var body = Ti.UI.createView(yc.combine($$.bodyScrollView, {}));		
 		view.add(body);
 		
 		///////////////////////////////////////  End of Common Window Section ////////////////////////////////////////		
@@ -197,7 +203,7 @@
 		    });
 		}			
 
-		var roundsTableView = Ti.UI.createTableView(yc.combine({ top: 5, bottom: 5, left: 2, right: 2 },{		
+		var roundsTableView = Ti.UI.createTableView(yc.combine({ top: 5, bottom: 5, left: 5, right: 5 },{		
 			separatorColor: yc.style.colors.zebraColor,
 			filterAttribute: 'filterCourse',
 			search: searchView,
@@ -206,12 +212,10 @@
 		
 		roundsTableView.addEventListener('click', function(e){
 			if (e.source.apiName === 'Ti.UI.TableViewRow') {
-				var where = 'id='+e.source.roundId;
-				var rounds = yc.db.rounds.listRounds(where);
-				Ti.API.debug(JSON.stringify(rounds));
+				var round = yc.db.rounds.getRound(e.source.roundId);
 				
-				if (rounds.length == 1) {
-					yc.app.editviewRound = rounds[0];
+				if (round) {
+					yc.app.editviewRound = round;
 					yc.app.applicationWindow.fireEvent('addview', { viewIdx: yc.ui.viewids.editviewround });
 				} else {
 					Ti.API.debug('Received back More or Less than 1 specific round');

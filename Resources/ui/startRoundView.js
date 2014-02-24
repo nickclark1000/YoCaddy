@@ -83,14 +83,15 @@
 		view.viewid = yc.ui.viewids.startround;
 		
 		var header = new yc.ui.headerView({
-			title: 'Start Round',
+			title: 'Round Details',
 			leftbutton: {
 				show: true,
 				callback: function() { 
+					view.fireEvent('clearscreen', {});
 					yc.app.applicationWindow.fireEvent('androidback', { sourceView: yc.ui.viewids.startround }); 
 				}
 			},
-			rightbutton: {
+			rightbutton: [{
 				show: true,
 				callback: function() { 
 					courseNameText.blur();
@@ -109,7 +110,9 @@
 							showTrace: showTrace.isChecked()
 						});
 						
-						Ti.API.info('Start Round:' + JSON.stringify(round));
+						Ti.API.info('Start Round Details:' + JSON.stringify(round));
+						
+						view.fireEvent('clearscreen', {});
 						yc.app.currentRound = yc.db.rounds.saveRound(round);
 						yc.app.applicationWindow.fireEvent('addview', { viewIdx: yc.ui.viewids.mapround });
 						//yc.app.applicationWindow.fireEvent('androidback', { sourceView: yc.ui.viewids.startround });
@@ -123,7 +126,7 @@
 					}				
 				},
 				image: '/images/button_accept.png'
-			}
+			}]
 		});
 		view.add(header);
 		
@@ -138,13 +141,11 @@
 		///////////////////////////////////////  End of Common Window Section //////////////////////////////////////
 		
 		var startSection = Ti.UI.createLabel(yc.combine($$.sectionTitle, {
-			text: 'Round Details',
-			top: 10, left: 5
+			text: 'Round Details'
 		}));
 		
 		var infoSection = Ti.UI.createLabel(yc.combine($$.sectionTitle, {
-			text: 'Information',
-			top: 5, left: 5
+			text: 'Information'
 		}));				
 		
 		var startLabel = Ti.UI.createLabel(yc.combine($$.infoText, {
@@ -158,7 +159,7 @@
 		
 		var courseFindButton = Ti.UI.createButton(yc.combine($$.modalButton, {
 			title: 'Select a Course / Clear Selection',
-			top: 10, width: '95%',
+			top: 5, width: '95%',
 			image: '/images/button_search.png',			
 			font: {
 				fontFamily: yc.style.fonts.buttonFont
@@ -185,13 +186,13 @@
 		var CheckBox = require('/common/checkBoxView');
 		
 		var saveTrace = new CheckBox({
-			top: 10, width: '95%', height: 40,
+			top: 5, width: '95%', height: 40,
 			text: 'Save Walking Trace',
 			checked: 1
 		});
 		
 		var showTrace = new CheckBox({
-			top: 10, bottom: 10, width: '95%', height: 40,
+			top: 5, bottom: 5, width: '95%', height: 40,
 			text: 'Show Walking Trace',
 			checked: 1
 		});		
@@ -205,6 +206,18 @@
 		content.add(showTrace.getView());
 		content.add(infoSection);
 		content.add(startLabel);
+		
+		// Need to be able to clear all the items for hte round
+		view.addEventListener('clearscreen', function(e){
+			courseNameText.setValue('');
+			courseDescText.setValue('');
+			
+			courseNameText.setValue('');
+			courseNameText.setEditable(true);
+			currentCourseFSID = 'undefined';
+			currentCourseLat = 0;
+			currentCourseLon = 0;			
+		});
 		
 		////////////////////////////////////// Private Functions //////////////////////////////////////////////
 		

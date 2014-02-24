@@ -113,8 +113,54 @@ Database.prototype.saveRound = function(/*Round Object*/ _r) {
 		success = undefined;
 	} finally {
 		db.close();
-		Ti.API.debug('round inserted:' + JSON.stringify(success));
 		return success;
+	}	
+};
+
+/**
+ * getRound is called to get one specific round by id 
+ * are valid in relation to the where clause
+ * @param {Integer} where - round id
+ * @return {Rounds} round
+ */
+Database.prototype.getRound = function(where) {
+	var str, resultSet;
+	var success;
+	var db = Ti.Database.open(this.dbname);
+	var Round = require('/models/RoundModel');	
+	
+	str = 'SELECT * FROM Rounds WHERE id=?';
+	Ti.API.debug('GetRound:' + str + '('+where+')');
+		
+	try {
+	 	resultSet = db.execute(str, where);		// Execute the Create statements
+	 	
+	 	// Create array of Rounds
+	 	if (resultSet.isValidRow()) {
+	 		
+	 		success = new Round({
+	 			id: resultSet.fieldByName('id'),
+				course: resultSet.fieldByName('course'),
+				desc: resultSet.fieldByName('desc'),
+				lon: resultSet.fieldByName('lon'),
+				lat: resultSet.fieldByName('lat'),
+				fsid: resultSet.fieldByName('fsid'),
+				date: resultSet.fieldByName('date'),
+				trace: resultSet.fieldByName('trace'),
+				score: resultSet.fieldByName('score'),	
+				par: resultSet.fieldByName('par'),	
+				createdPlatform: resultSet.fieldByName('createdPlatform'),
+				createdId: resultSet.fieldByName('createdId'),
+				fairwayHit: resultSet.fieldByName('fairwayHit'),
+				greenHit: resultSet.fieldByName('greenHit') 			
+	 		});
+	 	}	 
+	} catch (err) {		
+		Ti.API.error('Datbase Error: ' + JSON.stringify(err));
+	} finally {
+	 	//Close the DB
+	 	db.close();	
+	 	return success;	 	
 	}	
 };
 
@@ -224,7 +270,7 @@ Database.prototype.saveRoundScores = function(rId, rScores) {
 		db.execute('BEGIN IMMEDIATE TRANSACTION');
 		
 		for (var s=0; s < rScores.length; s++) {
-			Ti.API.debug('round : ' + JSON.stringify(rScores[s]));
+			Ti.API.debug('Insert Score: ' + JSON.stringify(rScores[s]));
 			var par = (rScores[s].par == '-') ? 0 : rScores[s].par;
  			var score = (rScores[s].score == '-') ? 0 : rScores[s].score;
  			str = 'INSERT INTO Scores (roundId, holeNumber, par, score, fairway, gir) VALUES (?,?,?,?,?,?)';

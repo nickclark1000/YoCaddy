@@ -43,9 +43,10 @@
 		////////////////////////////// Menu Header //////////////////////////////
 		
 		var menuHead = Ti.UI.createView({
-			width: Ti.UI.FILL, height: 50,
-			backgroundColor: yc.style.colors.lowlightColor,
-			backgroundImage: '/images/MenuItemBg.png'
+			width: Ti.UI.FILL, height: 51,
+			backgroundColor: yc.style.colors.highlightColor,
+			backgroundSelectedColor: yc.style.colors.mainColor,
+			backgroundImage: '/images/buttonBackground.png',
 		});
 		
 		var logo = Ti.UI.createImageView({
@@ -112,7 +113,9 @@
 			image: '/images/button_save_dark.png',
 			text: 'View Saved Rounds',
 			callback: function() { 
-				yc.app.applicationWindow.fireEvent('addview', { viewIdx: yc.ui.viewids.listrounds });
+				yc.app.applicationWindow.fireEvent('addview', { 
+					viewIdx: (yc.app.editviewRound) ? yc.ui.viewids.editviewround : yc.ui.viewids.listrounds 
+				});
 			}
 		});
 		menuHolder.add(listroundsItem.getView());		
@@ -162,12 +165,16 @@
 		// Check if there is a live round and update menu selections
 		view.addEventListener('checkCurrentRound', function(e){
 			if (yc.app.currentRound === undefined) {
-				Ti.API.debug('undefined');
 				addroundItem.changeText('Start New Round');
-			} else {
-				Ti.API.debug('Round');
+			} else if (yc.app.currentRound) {
 				addroundItem.changeText('Continue Current Round');
 			}
+			
+			if (yc.app.editviewRound === undefined) {
+				listroundsItem.changeText('View Saved Rounds');
+			} else if (yc.app.editviewRound) {
+				listroundsItem.changeText('Continue Editing Round');
+			}			
 		});			
 		
 		return view;

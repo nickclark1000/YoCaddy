@@ -3,37 +3,14 @@
  * @param {Object} _args {props: Main View properties, RoundId}
  */
 
-var ParSelector = function() {
-	var parIdx = [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1];
-	var parValues = [3,4,5];
-	
-};
-
-var ScoreSelector = function() {
-	var scoreIdx = [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1];
-	var scoreValues = [1,2,3,4,5,6,7,8,9,10];
-		
-};
-
-var FairwaySelector = function() {
-	var fhIdx = [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1];
-	var fhValues = ['No', 'Yes'];
-	
-};
-
-var GirSelector = function() {
-	var girIdx = [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1];
-	var girValues = ['No', 'Yes'];
-	
-};
-
 var ScoreTable = function(_args) {
 	var scores = yc.db.rounds.getRoundScores(_args.roundId);
 	var scoreRows = [];
 	
 	///// specific styles for this module
 	var titleRowStyle = {
-		width: '20%', height: 50,
+		width: (yc.checkTablet()) ? '20%' : '19%', 
+		height: 40,
 		textAlign: Ti.UI.TEXT_ALIGNMENT_CENTER,
 		verticalAlign: Ti.UI.TEXT_VERTICAL_CENTER,
 		color: yc.style.colors.black,
@@ -44,7 +21,8 @@ var ScoreTable = function(_args) {
 	};
 	
 	var scoreRowStyle = {
-		width: '20%', height: 50,
+		width: (yc.checkTablet()) ? '20%' : '19%', 
+		height: 40,
 		textAlign: Ti.UI.TEXT_ALIGNMENT_CENTER,
 		verticalAlign: Ti.UI.TEXT_VERTICAL_CENTER,
 		color: yc.style.colors.greyTextColor,
@@ -54,62 +32,23 @@ var ScoreTable = function(_args) {
 		}				
 	};
 	
-	var labelStyle = {
-		width: '95%', bottom: 5,
-		color: yc.style.colors.black,
-		font: {
-			fontSize: yc.style.fontsize.normaltext,
-			fontFamily: yc.style.fonts.optionFont
-		}	
-	};
-	
-	
 	// Create the main view
 	var view = Ti.UI.createScrollView(yc.combine(_args.props, {
 		layout: 'vertical'
 	}));
 	
-	/// Create the header view
-	var roundInfoView = Ti.UI.createView({
-		top: 10, left: 0,
-		width: '95%', height: Ti.UI.SIZE,
-		layout: 'vertical'
-	});
-	view.add(roundInfoView);
-	
-	roundInfoView.add(Ti.UI.createLabel(yc.combine(labelStyle, {text: 'Course Name:'})));
-	var courseText = Ti.UI.createTextField(yc.combine($$.textfield,{
-		text: yc.app.editviewRound.course
-	}));
-	roundInfoView.add(courseText);
-	
-	roundInfoView.add(Ti.UI.createLabel(yc.combine(labelStyle, {text: 'Course Description:'})));
-	var courseDescText = Ti.UI.createTextField(yc.combine($$.textfield,{
-		text: yc.app.editviewRound.desc,
-		height: 80, 
-		autocapitalization: Ti.UI.TEXT_AUTOCAPITALIZATION_SENTENCES,
-		verticalAlign: Ti.UI.TEXT_VERTICAL_ALIGNMENT_TOP,
-		maxLength: 200,
-		horizontalWrap: true,
-		enableReturnKey: true,
-		suppressReturn:false,
-		textAlign: 'left'
-	}));
-	roundInfoView.add(courseDescText);
-	
-	
-		
 	////// Create the Header Table
 	////// Table header has the Column headings as text
+	view.add(new yc.ui.vSpacer(10));
 	var titleRow = Ti.UI.createView({
 		width: '98%', height: 50,
 		layout: 'horizontal'		
 	});
 	view.add(titleRow);
-	view.add(new yc.ui.separator());
+	view.add(new yc.ui.separator('98%'));
 
 	titleRow.add(Ti.UI.createLabel(yc.combine(titleRowStyle, {
-		text: 'Hole #'
+		text: 'Hole'
 	})));
 	
 	titleRow.add(Ti.UI.createLabel(yc.combine(titleRowStyle, {
@@ -121,13 +60,19 @@ var ScoreTable = function(_args) {
 	})));
 	
 	titleRow.add(Ti.UI.createLabel(yc.combine(titleRowStyle, {
-		text: 'Fairway'
+		text: (yc.checkTablet()) ? 'Fairway' : 'FH'
 	})));
 
 	titleRow.add(Ti.UI.createLabel(yc.combine(titleRowStyle, {
-		text: 'GIR'
+		text: (yc.checkTablet()) ? 'Greens' : 'GIR'
 	})));
 	
+	var FairwaySelector = require('/common/fairwaySelector');
+	var GirSelector = require('/common/girSelector');
+	var ParSelector = require('/common/parSelector');
+	var ScoreSelector = require('/common/scoreSelector');
+		
+	// Populate the Hole by hole scorecard	
 	for (var i=0; i < 18; i++) {
 		var hole = (i+1).toString();
 		var zebra = (Math.ceil(i % 2) > 0) ? yc.style.colors.zebraColor : 'transparent';
@@ -142,35 +87,54 @@ var ScoreTable = function(_args) {
 			text: hole
 		})));
 		
-		scoreRows[i].add(Ti.UI.createTextField(yc.combine(scoreRowStyle, {
-			value: '5'
-		})));
+		var par, score, fairwayHit, greenHit;
+		if (scores[i]) {
+			par = scores[i].par;
+			score = scores[i].score; 
+			fairwayHit = scores[i].fairway; 
+			greenHit = scores[i].gir;		
+		} else {
+			par = undefined;
+			score = undefined; 
+			fairwayHit = undefined; 
+			greenHit = undefined;	
+		}
+			
+		scoreRows[i].add(new ParSelector(par, {width: '20%'}).getView());
+		scoreRows[i].add(new ScoreSelector(score, {width: '20%'}).getView());
+		scoreRows[i].add(new FairwaySelector(fairwayHit, {width: '19%'}).getView());
+		scoreRows[i].add(new GirSelector(greenHit, {width: '20%'}).getView());
 		
-		scoreRows[i].add(Ti.UI.createTextField(yc.combine(scoreRowStyle, {
-			value: '5'
-		})));
-		
-		scoreRows[i].add(Ti.UI.createTextField(yc.combine(scoreRowStyle, {
-			value: 'No'
-		})));
-	
-		scoreRows[i].add(Ti.UI.createTextField(yc.combine(scoreRowStyle, {
-			value: 'YES'
-		})));
-		
-		view.add(scoreRows[i]);		
+		view.add(scoreRows[i]);	
 	}
-	
-	////// End of Table Header
-	
-	return view;
-};
 
-/**
- * getRoundScores will return the list of rounds scores from the table 
- */
-ScoreTable.prototype.getRoundScores = function() {
+	view.add(yc.ui.vSpacer(5));
 	
+	/**
+	 * 
+	 */
+	this.getView = function() {
+		return view;
+	};
+	
+	/**
+	 * 
+	 */
+	this.getScores = function() {
+		var scoreinfo = [];
+		
+		for (var i=0; i < 18; i++) {
+			scoreinfo.push({
+				hole: scoreRows[i].children[0].getText(),
+				par: scoreRows[i].children[1].getTitle(),
+				score: scoreRows[i].children[2].getTitle(),
+				fairway: scoreRows[i].children[3].getTitle(),
+				gir: scoreRows[i].children[4].getTitle()
+			});
+		}
+		
+		return scoreinfo;
+	};	
 };
 
 module.exports = ScoreTable;

@@ -3,7 +3,6 @@
  * - Bootstrap the application with any data we need
  * - Check for dependencies like device type, platform version or network connection
  * - Require and open our top-level UI component
- *
  */
 
 // yoCaddy Application Namespace

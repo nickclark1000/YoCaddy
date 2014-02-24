@@ -33,18 +33,22 @@ function headerView(_args) {
 	
 	header.add(hlabel);
 	
-	if (rightbutton.callback && leftbutton.show === true) {
-		var hrbutton = Ti.UI.createButton({
-			right: margin,
-			width: 30, height: 30,
-			backgroundColor: 'transparent',
-			backgroundSelectedColor: yc.style.colors.highlightColor,
-			backgroundImage: _args.rightbutton.image,
-			borderRadius: 5
-		});
+	for(var i=0; i<rightbutton.length; i++) {
+		if (rightbutton[i].callback && rightbutton[i].show === true) {
+			var hrbutton = Ti.UI.createButton({
+				right: margin,
+				width: 30, height: 30,
+				backgroundColor: 'transparent',
+				backgroundSelectedColor: yc.style.colors.highlightColor,
+				backgroundImage: rightbutton[i].image,
+				borderRadius: 5
+			});
+			
+			hrbutton.addEventListener('click', rightbutton[i].callback);
+			header.add(hrbutton);
+		}
 		
-		hrbutton.addEventListener('click', _args.rightbutton.callback);
-		header.add(hrbutton);
+		margin += 30;
 	}
 
 	return header;

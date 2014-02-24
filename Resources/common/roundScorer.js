@@ -35,8 +35,8 @@ var RoundScorer = function(_round, _args) {
 
 	// Event Listener for button clicks on this View
 	var buttonClicked = function(e) {
-		var arrIdx = currRoundHole - 1;
-		
+		var arrIdx = currRoundHole - 1;	
+			
 		switch(e.source) {
 			case parButton:
 				if (parIdx[arrIdx] === 2) { parIdx[arrIdx]=0; }
@@ -86,22 +86,26 @@ var RoundScorer = function(_round, _args) {
 	
 	// Par View
 	var parView = Ti.UI.createView({
-		width: '24%', height: Ti.UI.FILL
+		width: '24%', height: Ti.UI.FILL,
+		touchEnabled: false
 	});
 	
 	// Score View
 	var scoreView = Ti.UI.createView({
-		width: '24%', height: Ti.UI.FILL
+		width: '24%', height: Ti.UI.FILL,
+		touchEnabled: false
 	});	
 	
 	// Fairway hit View
 	var fhView = Ti.UI.createView({
-		width: '24%', height: Ti.UI.FILL
+		width: '24%', height: Ti.UI.FILL,
+		touchEnabled: false
 	});
 
 	// Green in Regulation View
 	var girView = Ti.UI.createView({
-		width: '24%', height: Ti.UI.FILL
+		width: '24%', height: Ti.UI.FILL,
+		touchEnabled: false
 	});
 			
 	mainView.add(parView);
@@ -116,7 +120,8 @@ var RoundScorer = function(_round, _args) {
 		font: {
 			fontSize: yc.style.fontsize.tinytext,
 			fontFamily: yc.style.fonts.infoFont
-		}
+		},
+		touchEnabled: false
 	});
 	
 	var parButton = Ti.UI.createButton({
@@ -127,7 +132,8 @@ var RoundScorer = function(_round, _args) {
 		font: {
 			fontSize: yc.style.fontsize.xlargetext,
 			fontFamily: yc.style.fonts.buttonFont
-		}		
+		},
+		bubbleParent: false
 	});
 	
 	parView.add(parLabel);
@@ -140,7 +146,8 @@ var RoundScorer = function(_round, _args) {
 		font: {
 			fontSize: yc.style.fontsize.tinytext,
 			fontFamily: yc.style.fonts.infoFont
-		}
+		},
+		touchEnabled: false
 	});
 	
 	var scoreButton = Ti.UI.createButton({
@@ -151,7 +158,8 @@ var RoundScorer = function(_round, _args) {
 		font: {
 			fontSize: yc.style.fontsize.xlargetext,
 			fontFamily: yc.style.fonts.buttonFont
-		}		
+		},
+		bubbleParent: false
 	});	
 	
 	scoreView.add(scoreLabel);
@@ -164,7 +172,8 @@ var RoundScorer = function(_round, _args) {
 		font: {
 			fontSize: yc.style.fontsize.tinytext,
 			fontFamily: yc.style.fonts.infoFont
-		}
+		},
+		touchEnabled: false
 	});
 	
 	var fhButton = Ti.UI.createButton({
@@ -175,7 +184,8 @@ var RoundScorer = function(_round, _args) {
 		font: {
 			fontSize: yc.style.fontsize.xlargetext,
 			fontFamily: yc.style.fonts.buttonFont
-		}		
+		},
+		bubbleParent: false
 	});		
 	
 	fhView.add(fhLabel);
@@ -188,7 +198,8 @@ var RoundScorer = function(_round, _args) {
 		font: {
 			fontSize: yc.style.fontsize.tinytext,
 			fontFamily: yc.style.fonts.infoFont
-		}
+		},
+		touchEnabled: false
 	});
 	
 	var girButton = Ti.UI.createButton({
@@ -199,7 +210,8 @@ var RoundScorer = function(_round, _args) {
 		font: {
 			fontSize: yc.style.fontsize.xlargetext,
 			fontFamily: yc.style.fonts.buttonFont
-		}		
+		},
+		bubbleParent: false	
 	});		
 	
 	girView.add(girLabel);
@@ -319,7 +331,10 @@ var RoundScorer = function(_round, _args) {
 	 * getScores returns the full roundinfo array 
 	 */
 	this.getScores = function() {
-		holeUp();
+		for(var i = currRoundHole; i < 19; i++) { 
+			holeUp();
+		}	
+		
 		return roundinfo;
 	};
 	
