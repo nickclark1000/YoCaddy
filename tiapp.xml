@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ti:app xmlns:ti="http://ti.appcelerator.org">
-    <id>com.Klueless.YoCaddy</id>
+    <id>com.Klueless.YoCaddyMobile</id>
     <name>YoCaddy Mobile</name>
     <version>2.0.1</version>
     <publisher>Klueless Development</publisher>
@@ -11,7 +11,7 @@
     <fullscreen>false</fullscreen>
     <navbar-hidden>true</navbar-hidden>
     <analytics>true</analytics>
-    <guid>b3449ad0-ec1b-4ee1-93aa-486b37f7a4f7</guid>
+    <guid>c43d1f3b-ef6b-4b21-ae57-0bdef9541f13</guid>
     <property name="ti.ui.defaultunit" type="string">dp</property>
     <ios>
         <plist>
@@ -39,9 +39,7 @@
         </plist>
     </ios>
     <android xmlns:android="http://schemas.android.com/apk/res/android">
-        <manifest
-        	android:versionCode="202"
-        	android:versionName="2.0.2">
+        <manifest android:versionCode="202" android:versionName="2.0.2">
             <uses-permission android:name="android.permission.INTERNET"/>
             <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
             <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
@@ -51,17 +49,14 @@
             <uses-permission android:name="com.klueless.yocaddy.permission.MAPS_RECEIVE"/>
             <permission
                 android:name="com.klueless.yocaddy.permission.MAPS_RECEIVE" android:protectionLevel="signature"/>
-            <application
-		        android:debuggable="false"
-		        android:vmSafeMode="true"       
-		        android:allowClearUserData="true"
-		        android:hardwareAccelerated="true">
-            	
+            <application android:allowClearUserData="true"
+                android:debuggable="true"
+                android:hardwareAccelerated="true" android:vmSafeMode="true">
                 <!-- Replace "PASTE YOUR GOOGLE MAPS API KEY HERE" with the Google API key you obtained -->
                 <meta-data
-                    android:name="com.google.android.maps.v2.API_KEY" android:value="AIzaSyA4h4GSJjUILHDHGKXbAI-kXjHg-W2d7B0"/>
+                    android:name="com.google.android.maps.v2.API_KEY" android:value="AIzaSyCS1sLbNk1jOGtlym4u6IRRFjxZKGz-_2Q"/>
             </application>
-        </manifest>    	
+        </manifest>
     </android>
     <mobileweb>
         <precache/>
