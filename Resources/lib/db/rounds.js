@@ -125,7 +125,7 @@ Database.prototype.saveRound = function(/*Round Object*/ _r) {
  */
 Database.prototype.getRound = function(where) {
 	var str, resultSet;
-	var success;
+	var success = undefined;
 	var db = Ti.Database.open(this.dbname);
 	var Round = require('/models/RoundModel');	
 	

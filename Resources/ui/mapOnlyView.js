@@ -25,7 +25,7 @@
 		map = new yoMap({
 			userlocation: true,
 			zoomcontrols: true,
-			props: $$.bodyNoScrollView
+			props: $$.bodyNoScrollMarginView
 		});
 		view.add(map);	
 		

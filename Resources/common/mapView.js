@@ -10,17 +10,21 @@
 ///
 
 var mapView = function(_args) {
-	var view, messageLabel;
+	var holder, view, messageLabel;
 	var playAvailable;
+	var round = yc.db.rounds.getRound(_args.roundId);
 	
-	var tiMapView = require('ti.map');
 	
+	var holder = Ti.UI.createView(_args.props);
+	
+	////////////////// Create and Add the map to the View
+	var tiMapView = require('ti.map');	
 	playAvailable = tiMapView.isGooglePlayServicesAvailable();		// Confirm that Google Play Services are available			
-
 	switch (playAvailable) {
 	    case tiMapView.SUCCESS:
 	    	Ti.API.debug('Google Play services are available; creating MapView');
-	        view = tiMapView.createView(yc.combine(_args.props, {
+	        view = tiMapView.createView(yc.combine({},{
+	        	width: Ti.UI.FILL, height: Ti.UI.FILL,
 			    userLocation: false,
 			    enableZoomControls: false,
 			    mapType: tiMapView.SATELLITE_TYPE,
@@ -69,6 +73,7 @@ var mapView = function(_args) {
 	        break;
 	}	
 	
+	// Update the mapview with an error if no Google PLay services are available
 	if (messageLabel) {
 		view = 	Ti.UI.createView(yc.combine($$.bodyScrollView, {
 			backgroundColor: 'transparent'
@@ -77,9 +82,25 @@ var mapView = function(_args) {
 		view.valid = false;
 	} else {
 		view.valid = true;
-	}
+	}	
+	holder.add(view);
+	
+	///////////////////////////////// Scoring View /////////////////////////////
+	var RoundScorer = require('/common/roundScorer');
+	
+	if (round) {
+		var scorer = new RoundScorer({
+			id: round.id,
+			hole: 1
+		}, {
+			top: 5, left: 5, right: 5,
+			height: 50
+		});
 		
-	return view;
+		holder.add(scorer.getView());	
+	}
+	
+	return holder;
 };
 
 module.exports = mapView;

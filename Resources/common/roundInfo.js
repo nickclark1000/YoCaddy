@@ -18,7 +18,7 @@ var RoundInfo = function(_args) {
 	var LabelText = require('/common/labelTextField');
 	
 	roundInfoView.add(Ti.UI.createLabel(yc.combine($$.sectionTitle, {
-		text: 'Course Information:'
+		text: 'Course Information'
 	})));
 
 	var course = new LabelText({
@@ -68,7 +68,7 @@ var RoundInfo = function(_args) {
 	
 	/// Course Description	
 	roundInfoView.add(Ti.UI.createLabel(yc.combine($$.sectionTitle, {
-		text: 'Round Description:'
+		text: 'Round Details'
 	})));
 	var courseDescText = Ti.UI.createTextField(yc.combine($$.textfield,{
 		value: round.desc,
@@ -87,7 +87,7 @@ var RoundInfo = function(_args) {
 	
 	// Score Overview Information
 	roundInfoView.add(Ti.UI.createLabel(yc.combine($$.sectionTitle, {
-		text: 'Score Overview:'
+		text: 'Score Overview'
 	})));
 	
 	var par = new LabelText({

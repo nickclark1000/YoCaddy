@@ -11,7 +11,7 @@
 		view.viewid = yc.ui.viewids.mapround;
 		
 		var headerString;
-		var headerLength = (yc.checkTablet()) ? 50 : 17;
+		var headerLength = (yc.checkTablet()) ? 50 : 15;
 		
 		if (yc.app.editviewRound === undefined) {
 			headerString = 'Invalid Round';

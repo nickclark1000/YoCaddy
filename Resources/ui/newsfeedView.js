@@ -12,7 +12,7 @@
 		var header;
 		if (!yc.checkTablet()){
 			header = new yc.ui.headerView({
-				title: 'yoCaddy Mobile',
+				title: 'Home',
 				leftbutton: {
 					show: true,
 					callback: function(){ yc.app.applicationWindow.fireEvent('showmenu',  {}); },
@@ -21,7 +21,7 @@
 			});
 		} else {
 			header = new yc.ui.headerView({
-				title: 'yoCaddy Home'
+				title: 'Mobile Home'
 			});			
 		}
 

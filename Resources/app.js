@@ -46,8 +46,8 @@ Ti.include(
 	yc.db.rounds = new Database(yc.dbname);
 			
 	// Create and start the main application
-	yc.app.loadingScreen = yc.ui.createActivityStatus('Loading Screen...');
 	yc.app.applicationWindow = yc.ui.createApplicationWindow();
 	yc.app.currentRound = undefined;
+	yc.app.editviewRound = undefined;
 	yc.app.applicationWindow.open();
 })();

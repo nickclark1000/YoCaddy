@@ -44,7 +44,7 @@
 		
 		var menuHead = Ti.UI.createView({
 			width: Ti.UI.FILL, height: 51,
-			backgroundColor: yc.style.colors.highlightColor,
+			backgroundColor: yc.style.colors.lowlightColor,
 			backgroundSelectedColor: yc.style.colors.mainColor,
 			backgroundImage: '/images/buttonBackground.png',
 		});

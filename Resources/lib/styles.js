@@ -39,7 +39,7 @@
 		largetext:18,
 		xlargetext:20,
 		sectiontext: 22,
-		titletext: 26
+		titletext: 30
 	};
 	
 	var longerSide, shorterSide;
@@ -114,6 +114,12 @@
 			backgroundImage: '/images/backgrounds/modalBodyBg.png',
 			top: 50, bottom: 0,
 			left: 0, right: 0		
+		},		
+		
+		bodyNoScrollMarginView: {
+			backgroundImage: '/images/backgrounds/modalBodyBg.png',
+			top: 50, bottom: 0,
+			left: 5, right: 5		
 		},		
 
 		bodyContent: {

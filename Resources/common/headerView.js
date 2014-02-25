@@ -15,7 +15,7 @@ function headerView(_args) {
 		
 		var hbutton = Ti.UI.createButton({
 			left: margin,
-			width: 30, height: 30,
+			width: 35, height: 35,
 			backgroundImage: _args.leftbutton.image,
 			backgroundColor: 'transparent',
 			backgroundSelectedColor: yc.style.colors.highlightColor,
@@ -25,7 +25,7 @@ function headerView(_args) {
 		hbutton.addEventListener('click', _args.leftbutton.callback);
 		
 		header.add(hbutton);
-		margin += 35;
+		margin += 50;
 	}		
 	
 	var hlabel = Ti.UI.createLabel(yc.combine($$.hlabel, {
@@ -40,7 +40,7 @@ function headerView(_args) {
 		if (rightbutton[i].callback && rightbutton[i].show === true) {
 			var hrbutton = Ti.UI.createButton({
 				right: margin,
-				width: 30, height: 30,
+				width: 35, height: 35,
 				backgroundColor: 'transparent',
 				backgroundSelectedColor: yc.style.colors.highlightColor,
 				backgroundImage: rightbutton[i].image,
@@ -51,7 +51,7 @@ function headerView(_args) {
 			header.add(hrbutton);
 		}
 		
-		margin += 35;
+		margin += 40;
 	}
 
 	return header;
