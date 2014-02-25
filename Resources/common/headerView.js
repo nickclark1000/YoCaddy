@@ -25,7 +25,7 @@ function headerView(_args) {
 		hbutton.addEventListener('click', _args.leftbutton.callback);
 		
 		header.add(hbutton);
-		margin += 50;
+		margin += 40;
 	}		
 	
 	var hlabel = Ti.UI.createLabel(yc.combine($$.hlabel, {

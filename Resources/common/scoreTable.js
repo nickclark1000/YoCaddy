@@ -9,7 +9,7 @@ var ScoreTable = function(_args) {
 	
 	///// specific styles for this module
 	var titleRowStyle = {
-		width: (yc.checkTablet()) ? '20%' : '19%', 
+		width: (yc.checkTablet()) ? '20%' : '20%', 
 		height: 40,
 		textAlign: Ti.UI.TEXT_ALIGNMENT_CENTER,
 		verticalAlign: Ti.UI.TEXT_VERTICAL_CENTER,
@@ -21,7 +21,7 @@ var ScoreTable = function(_args) {
 	};
 	
 	var scoreRowStyle = {
-		width: (yc.checkTablet()) ? '20%' : '19%', 
+		width: (yc.checkTablet()) ? '20%' : '20%', 
 		height: 40,
 		textAlign: Ti.UI.TEXT_ALIGNMENT_CENTER,
 		verticalAlign: Ti.UI.TEXT_VERTICAL_CENTER,
@@ -60,11 +60,11 @@ var ScoreTable = function(_args) {
 	})));
 	
 	titleRow.add(Ti.UI.createLabel(yc.combine(titleRowStyle, {
-		text: (yc.checkTablet()) ? 'Fairway' : 'FH'
+		text: (yc.checkTablet()) ? 'Fairway' : 'F.H'
 	})));
 
 	titleRow.add(Ti.UI.createLabel(yc.combine(titleRowStyle, {
-		text: (yc.checkTablet()) ? 'Greens' : 'GIR'
+		text: (yc.checkTablet()) ? 'Greens' : 'G.I.R'
 	})));
 	
 	var FairwaySelector = require('/common/fairwaySelector');
