@@ -188,7 +188,7 @@
 		    // Use action bar search view
 		    searchView = Ti.UI.Android.createSearchView({
 		    	color: yc.style.colors.greyTextColor,
-		    	backgroundColor: yc.style.colors.white,
+		    	backgroundColor: 'transparent',
 		    	font: {
 		    		fontFamily: yc.style.fonts.optionFont
 		    	},
@@ -206,8 +206,8 @@
 		var roundsTableView = Ti.UI.createTableView(yc.combine({ top: 5, bottom: 5, left: 5, right: 5 },{		
 			separatorColor: yc.style.colors.zebraColor,
 			filterAttribute: 'filterCourse',
-			search: searchView,
-			searchAsChild: searchAsChild
+			//search: searchView,
+			//searchAsChild: searchAsChild
 		}));
 		
 		roundsTableView.addEventListener('click', function(e){

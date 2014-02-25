@@ -37,9 +37,9 @@
 		smalltext: 12,
 		normaltext: 16,
 		largetext:18,
-		xlargetext:22,
-		sectiontext: 24,
-		titletext: 30
+		xlargetext:20,
+		sectiontext: 22,
+		titletext: 26
 	};
 	
 	var longerSide, shorterSide;
@@ -93,8 +93,8 @@
 		hlabel: {
 			color: yc.style.colors.white,
 			font: {
-				fontSize: yc.style.fontsize.sectiontext,
-				fontFamily: yc.style.fonts.headerFont
+				fontSize: yc.style.fontsize.titletext,
+				fontFamily: yc.style.fonts.sectionFont
 			}			
 		},		
 		
@@ -168,8 +168,8 @@
 			color: '#5A5A5A',
 			touchEnabled: false,
 			font: {
-				fontSize: 16,
-				fontFamily: yc.style.fonts.optionFont
+				fontSize: yc.style.fontsize.largetext,
+				fontFamily: yc.style.fonts.sectionFont
 			}			
 		},
 		

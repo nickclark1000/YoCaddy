@@ -12,7 +12,7 @@
 		var header;
 		if (!yc.checkTablet()){
 			header = new yc.ui.headerView({
-				title: 'yoCaddy Home',
+				title: 'yoCaddy Mobile',
 				leftbutton: {
 					show: true,
 					callback: function(){ yc.app.applicationWindow.fireEvent('showmenu',  {}); },

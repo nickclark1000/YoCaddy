@@ -11,7 +11,7 @@
 		view.viewid = yc.ui.viewids.mapround;
 		
 		var headerString;
-		var headerLength = (yc.checkTablet()) ? 50 : 20;
+		var headerLength = (yc.checkTablet()) ? 50 : 17;
 		
 		if (yc.app.editviewRound === undefined) {
 			headerString = 'Invalid Round';
@@ -39,7 +39,13 @@
 					yc.app.applicationWindow.fireEvent('androidback', {});
 				}
 			},
-			rightbutton: {
+			rightbutton: [{
+				show: true,
+				image: '/images/button_share.png',
+				callback: function() {
+					// do nothing for now
+				}				
+			},{
 				show: true,
 				image: '/images/button_save.png',
 				callback: function() {
@@ -57,7 +63,7 @@
 					
 					yc.app.applicationWindow.remove(busy);
 				}	
-			}
+			}]
 		});
 		view.add(header);
 		
@@ -104,13 +110,6 @@
 			title: 'Details'
 		}));
 		viewHeadings.add(detailHeading);
-		detailHeading.addEventListener('click', function(e){
-			content.setCurrentPage(0);
-			selectedHeading.animate({
-				left: 0,
-				duration: 100
-			}, function(){});
-		});
 
 		var scoreHeading = Ti.UI.createButton(yc.combine(buttonStyle,{
 			left: '33%', width: '34%',
@@ -118,27 +117,13 @@
 			title: 'Scorecard'
 		}));
 		viewHeadings.add(scoreHeading);
-		scoreHeading.addEventListener('click', function(e){
-			content.setCurrentPage(1);
-			selectedHeading.animate({
-				left: '33%',
-				duration: 100
-			}, function(){});			
-		});
-				
+	
 		var mapHeading = Ti.UI.createButton(yc.combine(buttonStyle,{
 			left: '67%', width: '33%',
 			height: Ti.UI.FILL,
 			title: 'Map'
 		}));
 		viewHeadings.add(mapHeading);
-		mapHeading.addEventListener('click', function(e){
-			content.setCurrentPage(2);
-			selectedHeading.animate({
-				left: '67%',
-				duration: 100
-			}, function(){});			
-		});
 								
 		// ROund Info Button								
 		var RoundInfo = require('/common/roundInfo');
@@ -161,6 +146,37 @@
 			props: {},
 			roundId: yc.app.editviewRound.id
 		});	
+
+		// Event handlers used to change scroll pages
+		detailHeading.addEventListener('click', function(e){
+			yc.app.editviewRound.par = scores.getTotalPar();
+			yc.app.editviewRound.score = scores.getTotalScore();
+			yc.app.editviewRound.fairwayHit = scores.getFairwayPercent();
+			yc.app.editviewRound.greenHit = scores.getGreenPercent();
+			
+			detail.updateRound(yc.app.editviewRound);
+			content.setCurrentPage(0);
+			selectedHeading.animate({
+				left: 0,
+				duration: 100
+			}, function(){});
+		});
+				
+		scoreHeading.addEventListener('click', function(e){
+			content.setCurrentPage(1);
+			selectedHeading.animate({
+				left: '33%',
+				duration: 100
+			}, function(){});			
+		});
+					
+		mapHeading.addEventListener('click', function(e){
+			content.setCurrentPage(2);
+			selectedHeading.animate({
+				left: '67%',
+				duration: 100
+			}, function(){});			
+		});		
 		
 		content.addView(detail.getView());	
 		content.addView(scores.getView());
@@ -170,8 +186,8 @@
 		// the UI controller will fire this event to each view, if it requires action that is available.
 		view.addEventListener('closing', function(e){
 			var confirm = new yc.ui.alert(
-				'Save Round?',
-				'Would you like to save round data before closing?  This will overwrite Round, Score and Trace information.',
+				'Close Round',
+				'Would you like to save round data before closing?',
 				['Save & Close', 'Close']
 			);
 			

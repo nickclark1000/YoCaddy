@@ -39,41 +39,7 @@
 				show: true,
 				image: '/images/button_cancel.png',
 				callback: function() {
-					var confirm = new yc.ui.alert(
-						'End round',
-						'Are you sure you would like to end your round? Ending the round will save your scores.',
-						['Yes', 'No']
-					);
 					
-					confirm.addEventListener('click', function(e){
-						yc.app.alertShown = false;
-						yc.app.applicationWindow.remove(confirm);
-						if (e.source.title === 'Yes') {
-							var toSave = scorer.getScores();
-							Ti.API.debug(JSON.stringify(toSave));
-							
-							var busy = yc.ui.createActivityStatus('Saving Scores...');
-							var scoresSaved, gameUpdated;
-							
-							yc.app.applicationWindow.add(busy);
-							
-							// Do some saving and calculation stuff
-							scoresSaved = yc.db.rounds.saveRoundScores(yc.app.currentRound.id, toSave);
-							yc.app.currentRound.par = scorer.getTotalPar();
-							yc.app.currentRound.score = scorer.getTotalScore();
-							yc.app.currentRound.fairwayHit = scorer.getFairwayPercent();
-							yc.app.currentRound.greenHit = scorer.getGIRPercent();
-							yc.db.rounds.saveRound(yc.app.currentRound);
-							
-							yc.app.applicationWindow.remove(busy);
-							yc.app.currentRound = undefined;
-							yc.app.applicationWindow.fireEvent('androidback', {});
-						}
-	
-					});
-					
-					yc.app.alertShown = true;
-					yc.app.applicationWindow.add(confirm);
 				}
 			}]
 		});
@@ -106,7 +72,53 @@
 		view.add(scorer.getView());	
 		///////////////////////////////// Round Scoring View /////////////////////////////////		
 			
+		view.addEventListener('closing', function(e){
+			confirmSave();
+			yc.app.applicationWindow.fireEvent('appback', { sourceView: yc.ui.viewids.mapround });
+		});			
+			
 		return view;
+		
+		/**
+		 * 
+		 */
+		function confirmSave(){
+			var confirm = new yc.ui.alert(
+				'End round',
+				'Are you sure you would like to end your round? Ending the round will save your scores.',
+				['Yes', 'No']
+			);
+			
+			confirm.addEventListener('click', function(e){
+				yc.app.alertShown = false;
+				yc.app.applicationWindow.remove(confirm);
+				if (e.source.title === 'Yes') {
+					var toSave = scorer.getScores();
+					Ti.API.debug(JSON.stringify(toSave));
+					
+					var busy = yc.ui.createActivityStatus('Saving Scores...');
+					var scoresSaved, gameUpdated;
+					
+					yc.app.applicationWindow.add(busy);
+					
+					// Do some saving and calculation stuff
+					scoresSaved = yc.db.rounds.saveRoundScores(yc.app.currentRound.id, toSave);
+					yc.app.currentRound.par = scorer.getTotalPar();
+					yc.app.currentRound.score = scorer.getTotalScore();
+					yc.app.currentRound.fairwayHit = scorer.getFairwayPercent();
+					yc.app.currentRound.greenHit = scorer.getGIRPercent();
+					yc.db.rounds.saveRound(yc.app.currentRound);
+					
+					yc.app.applicationWindow.remove(busy);
+					yc.app.currentRound = undefined;
+					yc.app.applicationWindow.fireEvent('androidback', {});
+				}
+
+			});
+			
+			yc.app.alertShown = true;
+			yc.app.applicationWindow.add(confirm);			
+		}		
 	};
 	
 })();

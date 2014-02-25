@@ -87,6 +87,8 @@
 			leftbutton: {
 				show: true,
 				callback: function() { 
+					courseNameText.blur();
+					courseDescText.blur();					
 					yc.app.applicationWindow.fireEvent('androidback', { sourceView: yc.ui.viewids.startround }); 
 				}
 			},
@@ -141,16 +143,7 @@
 		
 		var startSection = Ti.UI.createLabel(yc.combine($$.sectionTitle, {
 			text: 'Round Details'
-		}));
-		
-		var infoSection = Ti.UI.createLabel(yc.combine($$.sectionTitle, {
-			text: 'Information'
-		}));				
-		
-		var startLabel = Ti.UI.createLabel(yc.combine($$.infoText, {
-			text: 'There are two ways to begin a round:\n1) Enter a course name and description.\n2) Select a nearby course and enter a description.\n\nStarting a round will initiate the GPS functionality of your device.  To stop the GPS, the round must be paused or ended.',
-			top: 5, width: '95%'
-		}));		
+		}));	
 		
 		var courseNameText = Ti.UI.createTextField(yc.combine($$.textfield, {
 			hintText: '[Course or Round Name]'
@@ -203,8 +196,6 @@
 		content.add(dateText);
 		content.add(saveTrace.getView());
 		content.add(showTrace.getView());
-		content.add(infoSection);
-		content.add(startLabel);
 		
 		// Need to be able to clear all the items for hte round
 		view.addEventListener('clearscreen', function(e){

@@ -78,7 +78,7 @@ var ScoreTable = function(_args) {
 		var zebra = (Math.ceil(i % 2) > 0) ? yc.style.colors.zebraColor : 'transparent';
 		
 		scoreRows[i] = Ti.UI.createView({
-			width: '98%', height: 50,
+			width: '98%', height: Ti.UI.SIZE,
 			layout: 'horizontal',
 			backgroundColor: zebra				
 		});
@@ -135,6 +135,82 @@ var ScoreTable = function(_args) {
 		
 		return scoreinfo;
 	};	
+	
+	/**
+	 * 
+	 */
+	this.getTotalPar = function() {
+		var totalPar = 0;
+		var parValue;
+		
+		for (var i = 0; i < 18; i++) {
+			parValue = scoreRows[i].children[1].getTitle();
+			totalPar += (parValue === '-') ? 0 : parseInt(parValue);
+		}
+		
+		return totalPar;
+	};
+	
+	/**
+	 * 
+	 */
+	this.getTotalScore = function() {
+		var totalScore = 0;
+		var scoreValue;
+		
+		for (var i = 0; i < 18; i++) {
+			scoreValue = scoreRows[i].children[2].getTitle();
+			totalScore += (scoreValue === '-') ? 0 : parseInt(scoreValue);
+		}
+		
+		return totalScore;
+	};	
+	
+	/**
+	 * 
+	 */
+	this.getFairwayPercent = function() {
+		var totalFairways = 0;
+		var fairwaysHit = 0;
+		var fairwayValue;
+		
+		for (var i = 0; i < 18; i++) {
+			fairwayValue = scoreRows[i].children[3].getTitle();
+			
+			if (fairwayValue === 'Yes' || fairwayValue === 'No') {
+				totalFairways++;
+			}
+			
+			if (fairwayValue === 'Yes') {
+				fairwaysHit++;
+			}
+		}
+		
+		return (fairwaysHit/totalFairways).toFixed(2);
+	};	
+
+	/**
+	 * 
+	 */
+	this.getGreenPercent = function() {
+		var totalFairways = 0;
+		var fairwaysHit = 0;
+		var fairwayValue;
+		
+		for (var i = 0; i < 18; i++) {
+			fairwayValue = scoreRows[i].children[4].getTitle();
+			
+			if (fairwayValue === 'Yes' || fairwayValue === 'No') {
+				totalFairways++;
+			}
+			
+			if (fairwayValue === 'Yes') {
+				fairwaysHit++;
+			}
+		}
+		
+		return (fairwaysHit/totalFairways).toFixed(2);
+	};			
 };
 
 module.exports = ScoreTable;

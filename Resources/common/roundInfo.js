@@ -15,29 +15,56 @@ var RoundInfo = function(_args) {
 	var courseName = round.course;
 	var courseDate = round.date;
 	
+	var LabelText = require('/common/labelTextField');
+	
 	roundInfoView.add(Ti.UI.createLabel(yc.combine($$.sectionTitle, {
 		text: 'Course Information:'
 	})));
-	var courseText = Ti.UI.createLabel(yc.combine($$.labelfield,{
-		text: 'Course Name: ' + courseName
-	}));
-	roundInfoView.add(courseText);
 
-	roundInfoView.add(Ti.UI.createLabel(yc.combine($$.labelfield,{
-		text: 'Date Played: '+ courseDate
-	})));
-	
-	roundInfoView.add(Ti.UI.createLabel(yc.combine($$.labelfield,{
-		text: 'Foursquare ID: '+ courseFSId
-	})));
+	var course = new LabelText({
+		width: '95%',
+		text: 'Course:',
+		value: round.course,
+		labelFont: yc.style.fonts.infoFont,
+		textFont: yc.style.fonts.optionFont
+	});
+	roundInfoView.add(course);
 
-	roundInfoView.add(Ti.UI.createLabel(yc.combine($$.labelfield,{
-		text: 'Longitude: '+ courseLon
-	})));
+	var date = new LabelText({
+		width: '95%',
+		text: 'Date:',
+		value: round.date,
+		labelFont: yc.style.fonts.infoFont,
+		textFont: yc.style.fonts.optionFont
+	});
+	roundInfoView.add(date);
 	
-	roundInfoView.add(Ti.UI.createLabel(yc.combine($$.labelfield,{
-		text: 'Latitude: '+ courseLat
-	})));
+	var fsid = new LabelText({
+		width: '95%',
+		text: 'FS Id:',
+		value: courseFSId,
+		labelFont: yc.style.fonts.infoFont,
+		textFont: yc.style.fonts.optionFont
+	});
+	roundInfoView.add(fsid);
+	
+	var lon = new LabelText({
+		width: '95%',
+		text: 'Lon:',
+		value: courseLon,
+		labelFont: yc.style.fonts.infoFont,
+		textFont: yc.style.fonts.optionFont
+	});
+	roundInfoView.add(lon);
+	
+	var lat = new LabelText({
+		width: '95%',
+		text: 'Lat:',
+		value: courseLat,
+		labelFont: yc.style.fonts.infoFont,
+		textFont: yc.style.fonts.optionFont
+	});
+	roundInfoView.add(lat);			
 	
 	/// Course Description	
 	roundInfoView.add(Ti.UI.createLabel(yc.combine($$.sectionTitle, {
@@ -62,6 +89,52 @@ var RoundInfo = function(_args) {
 	roundInfoView.add(Ti.UI.createLabel(yc.combine($$.sectionTitle, {
 		text: 'Score Overview:'
 	})));
+	
+	var par = new LabelText({
+		width: '95%',
+		text: 'Par:',
+		value: round.par,
+		labelFont: yc.style.fonts.infoFont,
+		textFont: yc.style.fonts.optionFont
+	});
+	roundInfoView.add(par);	
+
+	var score = new LabelText({
+		width: '95%',
+		text: 'Score:',
+		value: round.score,
+		labelFont: yc.style.fonts.infoFont,
+		textFont: yc.style.fonts.optionFont
+	});
+	roundInfoView.add(score);
+	
+	var fairway = new LabelText({
+		width: '95%',
+		text: 'Fairways:',
+		value: (round.fairwayHit === -1) ? 'N/A' : (round.fairwayHit*100)+'%',
+		labelFont: yc.style.fonts.infoFont,
+		textFont: yc.style.fonts.optionFont
+	});
+	roundInfoView.add(fairway);	
+	
+	var green = new LabelText({
+		width: '95%',
+		text: 'Greens:',
+		value: (round.greenHit === -1) ? 'N/A' : (round.greenHit*100)+'%',
+		labelFont: yc.style.fonts.infoFont,
+		textFont: yc.style.fonts.optionFont
+	});
+	roundInfoView.add(green);				
+	
+	this.updateRound = function(_r){
+		round = _r;
+		
+		// Update with provided round
+		par.fireEvent('update', { text: round.par });
+		score.fireEvent('update', { text: round.score });
+		fairway.fireEvent('update', { text: (round.farwayHit === -1) ? 'N/A' : (round.fairwayHit*100)+'%' });
+		green.fireEvent('update', { text: (round.greenHit === -1) ? 'N/A' : (round.greenHit*100)+'%' });
+	};
 		
 	/**
 	 * 
