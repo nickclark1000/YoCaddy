@@ -3,8 +3,9 @@
  * - Bootstrap the application with any data we need
  * - Check for dependencies like device type, platform version or network connection
  * - Require and open our top-level UI component
- * yocaddy.keystore
- * y0c4ddy20!4
+ * Keystore: distribution/yocaddy.keystore
+ * Password: y0c4ddy20!4
+ * Alias: yocaddymobile
  */
 
 // yoCaddy Application Namespace
