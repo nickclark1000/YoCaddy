@@ -4,8 +4,13 @@
  */
 
 var ScoreTable = function(_args) {
+	var roundid = _args.roundId;
 	var scores = yc.db.rounds.getRoundScores(_args.roundId);
 	var scoreRows = [];
+	var parViews = [];
+	var scoreViews = [];
+	var fairwayViews = [];
+	var greenViews = [];
 	
 	///// specific styles for this module
 	var titleRowStyle = {
@@ -73,6 +78,7 @@ var ScoreTable = function(_args) {
 	var ScoreSelector = require('/common/scoreSelector');
 		
 	// Populate the Hole by hole scorecard	
+	var par, score, fairwayHit, greenHit;
 	for (var i=0; i < 18; i++) {
 		var hole = (i+1).toString();
 		var zebra = (Math.ceil(i % 2) > 0) ? yc.style.colors.zebraColor : 'transparent';
@@ -87,7 +93,6 @@ var ScoreTable = function(_args) {
 			text: hole
 		})));
 		
-		var par, score, fairwayHit, greenHit;
 		if (scores[i]) {
 			par = scores[i].par;
 			score = scores[i].score; 
@@ -99,37 +104,49 @@ var ScoreTable = function(_args) {
 			fairwayHit = undefined; 
 			greenHit = undefined;	
 		}
+		
+		parViews[i] = new ParSelector(par, {width: '20%'});
+		scoreViews[i] = new ScoreSelector(score, {width: '20%'});
+		fairwayViews[i] = new FairwaySelector(fairwayHit, {width: '19%'});
+		greenViews[i] = new GirSelector(greenHit, {width: '20%'});
 			
-		scoreRows[i].add(new ParSelector(par, {width: '20%'}).getView());
-		scoreRows[i].add(new ScoreSelector(score, {width: '20%'}).getView());
-		scoreRows[i].add(new FairwaySelector(fairwayHit, {width: '19%'}).getView());
-		scoreRows[i].add(new GirSelector(greenHit, {width: '20%'}).getView());
+		scoreRows[i].add(parViews[i]);
+		scoreRows[i].add(scoreViews[i]);
+		scoreRows[i].add(fairwayViews[i]);
+		scoreRows[i].add(greenViews[i]);
 		
 		view.add(scoreRows[i]);	
 	}
+	par = null;
+	score = null;
+	fairwayHit = null;
+	greenHit = null;
 
 	view.add(yc.ui.vSpacer(5));
 	
 	/**
-	 * 
+	 * GetView - returns the view
+	 * Required because we call custom functions
 	 */
 	this.getView = function() {
 		return view;
 	};
 	
 	/**
-	 * 
+	 * GetScores - returns the full table of scores
+	 * @return {Array} of Score objects
 	 */
 	this.getScores = function() {
 		var scoreinfo = [];
 		
 		for (var i=0; i < 18; i++) {
 			scoreinfo.push({
-				hole: scoreRows[i].children[0].getText(),
-				par: scoreRows[i].children[1].getTitle(),
-				score: scoreRows[i].children[2].getTitle(),
-				fairway: scoreRows[i].children[3].getTitle(),
-				gir: scoreRows[i].children[4].getTitle()
+				roundId: roundid,
+				hole: i+1,
+				par: parViews[i].getTitle(),
+				score: scoreViews[i].getTitle(),
+				fairway: fairwayViews[i].getTitle(),
+				gir: greenViews[i].getTitle()
 			});
 		}
 		
@@ -137,14 +154,15 @@ var ScoreTable = function(_args) {
 	};	
 	
 	/**
-	 * 
+	 * GetTotalPar - provides the total par value
+	 * @return {Integer} Par
 	 */
 	this.getTotalPar = function() {
 		var totalPar = 0;
 		var parValue;
 		
 		for (var i = 0; i < 18; i++) {
-			parValue = scoreRows[i].children[1].getTitle();
+			parValue = parViews[i].getTitle();
 			totalPar += (parValue === '-') ? 0 : parseInt(parValue);
 		}
 		
@@ -152,14 +170,15 @@ var ScoreTable = function(_args) {
 	};
 	
 	/**
-	 * 
+	 * GetTotalScore - provides the total score
+	 * @return {Integer} Score
 	 */
 	this.getTotalScore = function() {
 		var totalScore = 0;
 		var scoreValue;
 		
 		for (var i = 0; i < 18; i++) {
-			scoreValue = scoreRows[i].children[2].getTitle();
+			scoreValue = scoreViews[i].getTitle();
 			totalScore += (scoreValue === '-') ? 0 : parseInt(scoreValue);
 		}
 		
@@ -167,7 +186,8 @@ var ScoreTable = function(_args) {
 	};	
 	
 	/**
-	 * 
+	 * GetFairwayPercent - provides the percentage of fairways hit (as decimal)
+	 * @return {Real} Fairways hit Percent
 	 */
 	this.getFairwayPercent = function() {
 		var totalFairways = 0;
@@ -175,7 +195,7 @@ var ScoreTable = function(_args) {
 		var fairwayValue;
 		
 		for (var i = 0; i < 18; i++) {
-			fairwayValue = scoreRows[i].children[3].getTitle();
+			fairwayValue = fairwayViews[i].getTitle();
 			
 			if (fairwayValue === 'Yes' || fairwayValue === 'No') {
 				totalFairways++;
@@ -190,7 +210,8 @@ var ScoreTable = function(_args) {
 	};	
 
 	/**
-	 * 
+	 * GetGreenPercent - provides the percentage of greens returned (as decimal)
+	 * @return {Real} Greens Hit Percent
 	 */
 	this.getGreenPercent = function() {
 		var totalFairways = 0;
@@ -198,7 +219,7 @@ var ScoreTable = function(_args) {
 		var fairwayValue;
 		
 		for (var i = 0; i < 18; i++) {
-			fairwayValue = scoreRows[i].children[4].getTitle();
+			fairwayValue = greenViews[i].getTitle();
 			
 			if (fairwayValue === 'Yes' || fairwayValue === 'No') {
 				totalFairways++;
@@ -210,7 +231,15 @@ var ScoreTable = function(_args) {
 		}
 		
 		return (fairwaysHit/totalFairways).toFixed(2);
-	};			
+	};	
+	
+	/**
+	 * Save - Writes the table values back to the database
+	 */
+	this.save = function() {
+		var update = this.getScores();
+		yc.db.rounds.saveRoundScores(update);
+	};	
 };
 
 module.exports = ScoreTable;

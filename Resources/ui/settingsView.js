@@ -107,13 +107,14 @@
 			var confirm = new yc.ui.alert(
 				'Save Settings?',
 				'Would you like to save settings before closing?',
-				['Save & Close', 'Close']
+				['Save & Close', 'Close', 'Cancel']
 			);
 			
 			// Add a listener for any event on the Alert window
 			confirm.addEventListener('click', function(e){
 				yc.app.alertShown = false;
 				yc.app.applicationWindow.remove(confirm);
+				
 				if (e.source.title === 'Save & Close') {						
 					var busy = yc.ui.createActivityStatus('Saving Settings...');
 					yc.app.applicationWindow.add(busy);
@@ -121,12 +122,13 @@
 					saveSettings();
 	
 					// Exit regardless of what is pressed
-					yc.app.applicationWindow.remove(busy);																		
+					yc.app.applicationWindow.remove(busy);	
+					yc.app.applicationWindow.fireEvent('appback', {});																	
+				} else if (e.source.title === 'Close'){
+					yc.app.applicationWindow.fireEvent('appback', {});
 				} else {
 					// Do nothing
-				}		
-				
-				yc.app.applicationWindow.fireEvent('appback', {});
+				}								
 			});
 			
 			yc.app.alertShown = true;
@@ -137,6 +139,7 @@
 		 * 
 		 */
 		function saveSettings() {
+			Ti.API.debug('Saving Settings');
 			
 			// Save AppSettings Array
 			for(var i=0, j=appSettings.length; i<j; i++) {

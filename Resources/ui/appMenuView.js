@@ -133,7 +133,7 @@
 		var maponlyItem = new item({
 			touchEnabled: false,
 			image: '/images/button_map_dark.png',
-			text: 'Basic Map Tool',
+			text: 'Google Map',
 			callback: function() { 
 				yc.app.applicationWindow.fireEvent('addview', { viewIdx: yc.ui.viewids.maponly }); 
 			}

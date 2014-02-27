@@ -20,9 +20,7 @@ var FairwaySelector = function(startVal, style) {
 		fhButton.setTitle(fhValues[fhIdx]);			
 	});	
 	
-	this.getView = function() {
-		return fhButton;
-	};	
+	return fhButton;	
 };
 
 module.exports = FairwaySelector;

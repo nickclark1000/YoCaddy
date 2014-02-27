@@ -157,7 +157,7 @@
 						fontFamily: yc.style.fonts.infoFont
 					},			
 					top: 2,			
-					text: (roundList[i].fairwayHit === -1) ? 'FH: NA' : 'FH: ' + roundList[i].fairwayHit*100 + '%',
+					text: (roundList[i].fairwayHit === -1 || roundList[i].fairwayHit === 'NaN') ? 'FH: NA' : 'FH: ' + roundList[i].fairwayHit*100 + '%',
 					touchEnabled: false
 				});
 				var greenLabel = Ti.UI.createLabel({ 
@@ -167,7 +167,7 @@
 						fontFamily: yc.style.fonts.infoFont
 					},						
 					bottom: 2, 
-					text: (roundList[i].greenHit === -1) ?  'GIR: NA' : 'GIR: ' + roundList[i].greenHit*100 + '%',
+					text: (roundList[i].greenHit === -1 || roundList[i].greenHit === 'NaN') ?  'GIR: NA' : 'GIR: ' + roundList[i].greenHit*100 + '%',
 					touchEnabled: false
 				});
 				

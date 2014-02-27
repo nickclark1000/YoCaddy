@@ -11,7 +11,7 @@
 		view.viewid = yc.ui.viewids.maponly;
 		
 		var header = new yc.ui.headerView({
-			title: 'Basic Map Tool',
+			title: 'Google Map',
 			leftbutton: {
 				show: true,
 				callback: function() { yc.app.applicationWindow.fireEvent('appback', {}); }
@@ -27,7 +27,7 @@
 			zoomcontrols: true,
 			props: $$.bodyNoScrollMarginView
 		});
-		view.add(map);	
+		view.add(map.getView());	
 		
 		view.addEventListener('closing', function(e){
 			yc.app.applicationWindow.fireEvent('appback', { sourceView: yc.ui.viewids.about });

@@ -19,9 +19,7 @@ var ParSelector = function(startValue, style) {
 		parButton.setTitle(parValues[parIdx].toString());		
 	});	
 
-	this.getView = function() {
-		return parButton;
-	};	
+	return parButton;
 };
 
 module.exports = ParSelector;

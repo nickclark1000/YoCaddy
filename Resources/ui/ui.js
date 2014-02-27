@@ -88,11 +88,14 @@
 		}
 		stack.add(viewArray[stack.currentView]);
 		
-		stack.addEventListener('appback', function(e){
+		stack.addEventListener('confirmback', function(e){
+			Ti.API.debug('stack confirmback fired: '+JSON.stringify(viewArray[stack.currentView]));
 			viewArray[stack.currentView].fireEvent('closing', {});
 		});
 		
 		// Hide all views except the new current
+		// e.viewIdx === undefined, we pop a view off the stack (out of view)
+		// otherwise we pop the viewIdx on the stack into vewi
 		stack.addEventListener('changeIndex', function(e) {
 			var nextViewId = e.viewIdx || undefined;
 			Ti.API.debug(JSON.stringify(stackIds) + ' current: ' + stack.currentView + ' next: ' + nextViewId);	

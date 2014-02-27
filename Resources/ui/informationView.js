@@ -15,7 +15,7 @@
 			leftbutton: {
 				show: true,
 				callback: function() {
-					yc.app.applicationWindow.fireEvent('appback', { sourceView: yc.ui.viewids.about });
+					yc.app.applicationWindow.fireEvent('androidback', {});
 				}
 			}
 		});
@@ -84,7 +84,7 @@
 		content.add(listRoundText);	
 		
 		view.addEventListener('closing', function(e){
-			yc.app.applicationWindow.fireEvent('appback', { sourceView: yc.ui.viewids.about });
+			yc.app.applicationWindow.fireEvent('appback', {});
 		});
 		
 		return view;	

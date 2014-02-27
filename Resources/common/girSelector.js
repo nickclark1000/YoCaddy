@@ -23,9 +23,7 @@ var GirSelector = function(startVal, style) {
 		girButton.setTitle(girValues[girIdx]);			
 	});	
 	
-	this.getView = function() {
-		return girButton;
-	};
+	return girButton;
 };
 
 module.exports = GirSelector;

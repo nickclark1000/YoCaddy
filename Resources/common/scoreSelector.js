@@ -20,9 +20,7 @@ var ScoreSelector = function(startValue, style) {
 		scoreButton.setTitle(scoreValues[scoreIdx].toString());			
 	});
 
-	this.getView = function() {
-		return scoreButton;
-	};		
+	return scoreButton;
 };
 
 module.exports = ScoreSelector;

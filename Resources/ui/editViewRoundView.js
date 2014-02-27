@@ -8,6 +8,7 @@
 		
 		// Create the layout view elements
 		var view = Ti.UI.createView($$.stretch);
+		var lastPage;
 		view.viewid = yc.ui.viewids.mapround;
 		
 		var headerString;
@@ -45,24 +46,6 @@
 				callback: function() {
 					// do nothing for now
 				}				
-			},{
-				show: true,
-				image: '/images/button_save.png',
-				callback: function() {
-					var toSave = scores.getScores();
-					var busy = yc.ui.createActivityStatus('Saving Round...');
-					var scoresSaved, gameUpdated;
-					
-					yc.app.applicationWindow.add(busy);
-					
-					// Do some saving and calculation stuff
-					scoresSaved = yc.db.rounds.saveRoundScores(yc.app.editviewRound.id, toSave);
-					
-					// Update from new scoring
-					yc.db.rounds.saveRound(yc.app.editviewRound);
-					
-					yc.app.applicationWindow.remove(busy);
-				}	
 			}]
 		});
 		view.add(header);
@@ -149,12 +132,6 @@
 
 		// Event handlers used to change scroll pages
 		detailHeading.addEventListener('click', function(e){
-			yc.app.editviewRound.par = scores.getTotalPar();
-			yc.app.editviewRound.score = scores.getTotalScore();
-			yc.app.editviewRound.fairwayHit = scores.getFairwayPercent();
-			yc.app.editviewRound.greenHit = scores.getGreenPercent();
-			
-			detail.updateRound(yc.app.editviewRound);
 			content.setCurrentPage(0);
 			selectedHeading.animate({
 				left: 0,
@@ -180,7 +157,32 @@
 		
 		content.addView(detail.getView());	
 		content.addView(scores.getView());
-		content.addView(map);	
+		content.addView(map.getView());	
+		lastPage = 0;
+		
+		content.addEventListener('scrollend', function(e){
+			Ti.API.debug('Scroll: '+ JSON.stringify(e.currentPage));
+			
+			switch (lastPage) {
+				case 0: 		// Details				
+					break;
+				case 1:			// Scorecard
+					scores.save();				
+					break;
+				case 2:			// Map
+					break;
+			}
+			
+			// Regardless we need to update the Details
+			yc.app.editviewRound.par = scores.getTotalPar();
+			yc.app.editviewRound.score = scores.getTotalScore();
+			yc.app.editviewRound.fairwayHit = scores.getFairwayPercent();
+			yc.app.editviewRound.greenHit = scores.getGreenPercent();			
+			detail.updateRound(yc.app.editviewRound);
+			
+			lastPage = e.currentPage;		
+		});
+		
 		
 		// Event listener for when teh back button is pressed.  Before removing the view
 		// the UI controller will fire this event to each view, if it requires action that is available.
@@ -188,7 +190,7 @@
 			var confirm = new yc.ui.alert(
 				'Close Round',
 				'Would you like to save round data before closing?',
-				['Save & Close', 'Close']
+				['Save & Close', 'Close', 'Cancel']
 			);
 			
 			// Add a listener for any event on the Alert window
@@ -208,14 +210,14 @@
 					// Exit regardless of what is pressed
 					yc.app.applicationWindow.remove(busy);																		
 					yc.app.editviewRound = undefined;	
+					yc.app.applicationWindow.fireEvent('appback', {});
 				} else if (e.source.title == 'Close') {						
 					// Exit regardless of what is pressed
-					yc.app.editviewRound = undefined;							
+					yc.app.editviewRound = undefined;	
+					yc.app.applicationWindow.fireEvent('appback', {});							
 				} else {
 					// Do nothing
 				}
-				
-				yc.app.applicationWindow.fireEvent('appback', {});		
 			});
 			
 			yc.app.alertShown = true;

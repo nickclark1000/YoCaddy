@@ -6,11 +6,13 @@
 	// create the main application window
 	yc.ui.createApplicationWindow = function(_args) {
 		
+		// Create the main window object
 		var win = Ti.UI.createWindow(yc.combine($$.Window,{
 			exitOnClose: true,
 			orientationModes:[Ti.UI.PORTRAIT]
 		}));
 		
+		// Create and set the application Menu
 		var origLeft = (yc.style.platform.width * -1) + 10;
 		var menu = yc.ui.createAppMenuView({
 			shadowWidth: '20%',
@@ -20,23 +22,29 @@
 				left: origLeft
 			}	
 		});
+		
+		// Create the stack that Views will be placed onto
 		var viewStack = yc.ui.createStackView({
 			viewIdx: yc.ui.viewids.newsfeed,
 			props: $$.stretch
-		});
-						
+		});						
 		win.add(viewStack);	
 		win.add(menu);	
 		
+		// Event Listener handling ADDVIEW events
+		// Fired by Menus and Other views to add a view to the stack
 		win.addEventListener('addview', function(e){		
 			menu.fireEvent('checkCurrentRound', e);
 			viewStack.fireEvent('changeIndex', e);
 		});
 		
+		// Event Listener for handling the Android Back Button
 		win.addEventListener('androidback', function(e){
-			viewStack.fireEvent('appback', {});
+			menu.fireEvent('checkCurrentRound', e);
+			viewStack.fireEvent('confirmback', {});			
 		});
 		
+		// Event Listener for handling the application back button
 		win.addEventListener('appback', function(e){
 			menu.fireEvent('checkCurrentRound', e);
 			if (yc.app.menushown) {
@@ -45,9 +53,10 @@
 				// Do nothing
 			} else {
 				viewStack.fireEvent('changeIndex', {});
-			}			
+			}						
 		});
 		
+		// Event Listener for Sliding the menu into view
 		win.addEventListener('showmenu', function(e){			
 			if (!yc.app.menushown) {
 				menu.animate({
@@ -61,6 +70,7 @@
 			}
 		});
 		
+		// Event Listener for sliding the menu out of view
 		win.addEventListener('hidemenu', function(e){
 			if (yc.app.menushown) {
 				

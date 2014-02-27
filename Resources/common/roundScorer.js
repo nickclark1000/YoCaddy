@@ -283,6 +283,7 @@ var RoundScorer = function(_round, _args) {
 		var arrIdx = currRoundHole-1;
 
 		roundinfo[arrIdx] = {
+			roundId: currRoundId,
 			hole: currRoundHole,
 			par: (parIdx[arrIdx] === -1) ? '-' : parValues[parIdx[arrIdx]],
 			score: (scoreIdx[arrIdx] === -1) ? '-' : scoreValues[scoreIdx[arrIdx]],
@@ -304,6 +305,7 @@ var RoundScorer = function(_round, _args) {
 		var arrIdx = currRoundHole-1;
 
 		roundinfo[arrIdx] = {
+			roundId: currRoundId,
 			hole: currRoundHole,
 			par: (parIdx[arrIdx] === -1) ? '-' : parValues[parIdx[arrIdx]],
 			score: (scoreIdx[arrIdx] === -1) ? '-' : scoreValues[scoreIdx[arrIdx]],
@@ -397,6 +399,20 @@ var RoundScorer = function(_round, _args) {
 		}		
 		return (total/validHoles).toFixed(2);			
 	};
+	
+	this.save = function() {
+		var update = this.getScores();
+		yc.db.rounds.saveRoundScores(update);
+	};
+	
+	/**
+	 * 
+	 */
+	this.update = function(){
+		roundinfo = yc.db.rounds.getRoundScores(currRoundId);
+		setScores();
+	};
+	
 	// Set the scores for the first time
 	setScores();
 };

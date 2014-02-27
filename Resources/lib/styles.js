@@ -33,8 +33,8 @@
 	};
 	
 	yc.style.fontsize = {
-		tinytext: 10,
-		smalltext: 12,
+		tinytext: 12,
+		smalltext: 14,
 		normaltext: 16,
 		largetext:18,
 		xlargetext:20,

@@ -13,14 +13,14 @@ var mapView = function(_args) {
 	var holder, view, messageLabel;
 	var playAvailable;
 	var round = yc.db.rounds.getRound(_args.roundId);
-	
+	Ti.API.debug(JSON.stringify(round));
 	
 	var holder = Ti.UI.createView(_args.props);
 	
 	////////////////// Create and Add the map to the View
 	var tiMapView = require('ti.map');	
 	playAvailable = tiMapView.isGooglePlayServicesAvailable();		// Confirm that Google Play Services are available			
-	switch (playAvailable) {
+	switch (playAvailable && round) {
 	    case tiMapView.SUCCESS:
 	    	Ti.API.debug('Google Play services are available; creating MapView');
 	        view = tiMapView.createView(yc.combine({},{
@@ -28,7 +28,7 @@ var mapView = function(_args) {
 			    userLocation: false,
 			    enableZoomControls: false,
 			    mapType: tiMapView.SATELLITE_TYPE,
-			    animate: true			 
+			    animate: false			 
 		    }));
 		    
 		    if (_args.zoomcontrols) {
@@ -85,22 +85,10 @@ var mapView = function(_args) {
 	}	
 	holder.add(view);
 	
-	///////////////////////////////// Scoring View /////////////////////////////
-	var RoundScorer = require('/common/roundScorer');
-	
-	if (round) {
-		var scorer = new RoundScorer({
-			id: round.id,
-			hole: 1
-		}, {
-			top: 5, left: 5, right: 5,
-			height: 50
-		});
-		
-		holder.add(scorer.getView());	
-	}
-	
-	return holder;
+	// Return the View
+	this.getView = function() {
+		return holder;
+	};
 };
 
 module.exports = mapView;

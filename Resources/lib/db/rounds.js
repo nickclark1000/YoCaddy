@@ -248,33 +248,32 @@ Database.prototype.deleteRound = function(id) {
  * @param {Integer} rId - round id
  * @param {Array} rScores - round scores
  */
-Database.prototype.saveRoundScores = function(rId, rScores) {
+Database.prototype.saveRoundScores = function(rScores) {
 	var str;
 	var success = false;
 	
-	Ti.API.debug('rId:'+rId + ' rScores:'+JSON.stringify(rScores));
-	
-	if (!rId || !rScores) {
+	if (!rScores || rScores.length < 18) {
 		return success;
 	}
 	
+	Ti.API.debug('rScores:'+JSON.stringify(rScores));
 	var db = Ti.Database.open(this.dbname);
 	
 	try {
 		// First delete all current round scores
 		// Lazy but faster than updating all scores
 		str = 'DELETE FROM Scores WHERE roundId=?';
-		db.execute(str,rId);
+		db.execute(str,rScores[0].roundId);
 		
 		// Create the transaction to install all the scores
 		db.execute('BEGIN IMMEDIATE TRANSACTION');
 		
 		for (var s=0; s < rScores.length; s++) {
 			Ti.API.debug('Insert Score: ' + JSON.stringify(rScores[s]));
-			var par = (rScores[s].par == '-') ? 0 : rScores[s].par;
- 			var score = (rScores[s].score == '-') ? 0 : rScores[s].score;
+			var par = (rScores[s].par === '-') ? 0 : rScores[s].par;
+ 			var score = (rScores[s].score === '-') ? 0 : rScores[s].score;
  			str = 'INSERT INTO Scores (roundId, holeNumber, par, score, fairway, gir) VALUES (?,?,?,?,?,?)';
-			db.execute(str, rId, rScores[s].hole, par, score, rScores[s].fairway, rScores[s].gir);
+			db.execute(str, rScores[s].roundId, rScores[s].hole, par, score, rScores[s].fairway, rScores[s].gir);
 		}
 		
 		db.execute('COMMIT TRANSACTION');

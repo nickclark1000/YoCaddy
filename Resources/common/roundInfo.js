@@ -9,7 +9,7 @@ var RoundInfo = function(_args) {
 	}));
 	
 	/// Course Name and Foursquare information
-	var courseFSId = (round.fsid === 'undefined') ? 'N/A' : round.fsid;
+	var courseFSId = (round.fsid === '') ? 'N/A' : round.fsid;
 	var courseLon = (round.lon != 0) ? round.lon : 'N/A';
 	var courseLat = (round.lat != 0) ? round.lat : 'N/A';
 	var courseName = round.course;
@@ -23,7 +23,7 @@ var RoundInfo = function(_args) {
 
 	var course = new LabelText({
 		width: '95%',
-		text: 'Course:',
+		text: 'Course Name:',
 		value: round.course,
 		labelFont: yc.style.fonts.infoFont,
 		textFont: yc.style.fonts.optionFont
@@ -32,7 +32,7 @@ var RoundInfo = function(_args) {
 
 	var date = new LabelText({
 		width: '95%',
-		text: 'Date:',
+		text: 'Date Played:',
 		value: round.date,
 		labelFont: yc.style.fonts.infoFont,
 		textFont: yc.style.fonts.optionFont
@@ -41,7 +41,7 @@ var RoundInfo = function(_args) {
 	
 	var fsid = new LabelText({
 		width: '95%',
-		text: 'FS Id:',
+		text: 'Foursquare Id:',
 		value: courseFSId,
 		labelFont: yc.style.fonts.infoFont,
 		textFont: yc.style.fonts.optionFont
@@ -50,7 +50,7 @@ var RoundInfo = function(_args) {
 	
 	var lon = new LabelText({
 		width: '95%',
-		text: 'Lon:',
+		text: 'Longitude:',
 		value: courseLon,
 		labelFont: yc.style.fonts.infoFont,
 		textFont: yc.style.fonts.optionFont
@@ -59,12 +59,48 @@ var RoundInfo = function(_args) {
 	
 	var lat = new LabelText({
 		width: '95%',
-		text: 'Lat:',
+		text: 'Latitude:',
 		value: courseLat,
 		labelFont: yc.style.fonts.infoFont,
 		textFont: yc.style.fonts.optionFont
 	});
-	roundInfoView.add(lat);			
+	roundInfoView.add(lat);				
+	
+	var par = new LabelText({
+		width: '95%',
+		text: 'Total Par:',
+		value: round.par,
+		labelFont: yc.style.fonts.infoFont,
+		textFont: yc.style.fonts.optionFont
+	});
+	roundInfoView.add(par);	
+
+	var score = new LabelText({
+		width: '95%',
+		text: 'Score:',
+		value: round.score,
+		labelFont: yc.style.fonts.infoFont,
+		textFont: yc.style.fonts.optionFont
+	});
+	roundInfoView.add(score);
+	
+	var fairway = new LabelText({
+		width: '95%',
+		text: 'Fairways:',
+		value: (round.fairwayHit === -1 || round.fairwayHit === 'NaN') ? 'N/A' : (round.fairwayHit*100)+'%',
+		labelFont: yc.style.fonts.infoFont,
+		textFont: yc.style.fonts.optionFont
+	});
+	roundInfoView.add(fairway);	
+	
+	var green = new LabelText({
+		width: '95%',
+		text: 'Greens:',
+		value: (round.greenHit === -1 || round.greenHit === 'NaN') ? 'N/A' : (round.greenHit*100)+'%',
+		labelFont: yc.style.fonts.infoFont,
+		textFont: yc.style.fonts.optionFont
+	});
+	roundInfoView.add(green);				
 	
 	/// Course Description	
 	roundInfoView.add(Ti.UI.createLabel(yc.combine($$.sectionTitle, {
@@ -85,47 +121,6 @@ var RoundInfo = function(_args) {
 	}));
 	roundInfoView.add(courseDescText);
 	
-	// Score Overview Information
-	roundInfoView.add(Ti.UI.createLabel(yc.combine($$.sectionTitle, {
-		text: 'Score Overview'
-	})));
-	
-	var par = new LabelText({
-		width: '95%',
-		text: 'Par:',
-		value: round.par,
-		labelFont: yc.style.fonts.infoFont,
-		textFont: yc.style.fonts.optionFont
-	});
-	roundInfoView.add(par);	
-
-	var score = new LabelText({
-		width: '95%',
-		text: 'Score:',
-		value: round.score,
-		labelFont: yc.style.fonts.infoFont,
-		textFont: yc.style.fonts.optionFont
-	});
-	roundInfoView.add(score);
-	
-	var fairway = new LabelText({
-		width: '95%',
-		text: 'Fairways:',
-		value: (round.fairwayHit === -1) ? 'N/A' : (round.fairwayHit*100)+'%',
-		labelFont: yc.style.fonts.infoFont,
-		textFont: yc.style.fonts.optionFont
-	});
-	roundInfoView.add(fairway);	
-	
-	var green = new LabelText({
-		width: '95%',
-		text: 'Greens:',
-		value: (round.greenHit === -1) ? 'N/A' : (round.greenHit*100)+'%',
-		labelFont: yc.style.fonts.infoFont,
-		textFont: yc.style.fonts.optionFont
-	});
-	roundInfoView.add(green);				
-	
 	this.updateRound = function(_r){
 		round = _r;
 		
@@ -134,7 +129,7 @@ var RoundInfo = function(_args) {
 		score.fireEvent('update', { text: round.score });
 		fairway.fireEvent('update', { text: (round.farwayHit === -1) ? 'N/A' : (round.fairwayHit*100)+'%' });
 		green.fireEvent('update', { text: (round.greenHit === -1) ? 'N/A' : (round.greenHit*100)+'%' });
-	};
+	};	
 		
 	/**
 	 * 
@@ -150,6 +145,13 @@ var RoundInfo = function(_args) {
 		round.desc = courseDescText.getValue();
 		return round;
 	};	
+	
+	/**
+	 * 
+	 */
+	this.save = function() {
+		yc.db.rounds.saveRound(round);
+	};
 };
 
 module.exports = RoundInfo;

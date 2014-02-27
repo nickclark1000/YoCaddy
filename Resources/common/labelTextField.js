@@ -11,6 +11,7 @@ var LabelTextField = function(_args) {
 	var labelstyle = {
 		left: 0, width: '30%', height: Ti.UI.SIZE,
 		color: yc.style.colors.greyTextColor,
+		textAlign: Ti.UI.TEXT_ALIGNMENT_RIGHT,
 		font: {
 			fontSize: yc.style.fontsize.normaltext,
 			fontFamily: _args.labelFont
