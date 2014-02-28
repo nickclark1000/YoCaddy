@@ -283,18 +283,10 @@
 // Include all major UI components
 // Minor componetns are added by commonJS
 Ti.include(
-	'/ui/startRoundView.js',
-	'/ui/roundMapView.js',
-	'/ui/editViewRoundView.js',
-	'/ui/listRoundsView.js',
-	'/ui/mapOnlyView.js',
-	'/ui/informationView.js',
-	'/ui/settingsView.js',
-	'/ui/newsfeedView.js',
 	'/ui/appMenuView.js',
-	'/ui/socialMediaView.js'
+	'/ui/newsfeedView.js'	
 );
-
+	
 // Check to load tablet or Handheld applicationWindow ui file
 if(yc.checkTablet()) {
 	Ti.API.debug('Loading Tablet Layout');

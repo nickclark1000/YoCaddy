@@ -9,6 +9,7 @@
 		///////////////////////////////////////  Start of Common Window Section ////////////////////////////////////////
 		var view = Ti.UI.createView($$.stretch);
 		view.viewid = yc.ui.viewids.settings;
+		var settingsChanged = [];
 		
 		var header = new yc.ui.headerView({
 			title: 'Settings',
@@ -104,10 +105,21 @@
 		 * 
 		 */				
 		function confirmSave() {
+			var buttons = [];
+			var text = '';
+			
+			if (settingsChanged == true) {
+				buttons = ['Save & Close', 'Dismiss & Close', 'Cancel'];
+				text = 'Some settings have changed, would you like to save or discard before closing?'; 
+			} else {
+				buttons = ['Close', 'Cancel'];
+				text = 'Are you sure you would like to close the Settings?';
+			}
+			
 			var confirm = new yc.ui.alert(
-				'Save Settings?',
-				'Would you like to save settings before closing?',
-				['Save & Close', 'Close', 'Cancel']
+				'Close Settings',
+				text,
+				buttons
 			);
 			
 			// Add a listener for any event on the Alert window
@@ -124,7 +136,7 @@
 					// Exit regardless of what is pressed
 					yc.app.applicationWindow.remove(busy);	
 					yc.app.applicationWindow.fireEvent('appback', {});																	
-				} else if (e.source.title === 'Close'){
+				} else if (e.source.title === 'Close' || e.source.title === 'Dismiss & Close'){
 					yc.app.applicationWindow.fireEvent('appback', {});
 				} else {
 					// Do nothing
@@ -149,9 +161,27 @@
 			// Save syncSettings Array
 			for(var i=0, j=syncSettings.length; i<j; i++) {
 				Ti.App.Properties.setInt(yc.settings.sync.propnames[i].name, syncSettings[i].getSelectedIndex());
-			}						
+			}		
+			
+			for (var i=0; i<settingsChanged.length; i++) {
+				settingsChanged[i].setBackgroundColor('transparent');	
+			}
+			settingsChanged = [];							
 		}
 		
+		/**
+		 * 
+		 */
+		view.addEventListener('click', function(e){
+			if(e.source.custApiName === 'OptionView') {
+				settingsChanged.push(e.source);
+				e.source.setBackgroundColor('#FFD4FF');
+			}
+		});
+		
+		/**
+		 * 
+		 */
 		view.addEventListener('closing', function(e){
 			confirmSave();
 		});		

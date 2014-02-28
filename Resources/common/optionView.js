@@ -21,7 +21,8 @@ var OptionView = function(_args) {
 		width: '95%', height: _args.height,
 		options: oOptions,
 		selected: oSelected
-	});
+	});
+	optionView.custApiName = 'OptionView';
 	// Private Name
 	var optionName = Ti.UI.createLabel({
 		touchEnabled: false,
@@ -37,7 +38,7 @@ var OptionView = function(_args) {
 	// Private Value
 	var optionValue = Ti.UI.createLabel({
 		touchEnabled: false,
-		right: '0dp',
+		right: '2dp',
 		width: '40%', height: '75%',
 		borderWidth: '1dp',
 		borderRadius: 5,

@@ -14,6 +14,7 @@ var appMainMenuView = function(_args) {
 	
 	var view = Ti.UI.createView({
 		width: Ti.UI.FILL, height: 45,
+		bubbleParent: false
 	});
 	
 	var button = Ti.UI.createButton($$.menubutton);

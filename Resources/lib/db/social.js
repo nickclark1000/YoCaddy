@@ -28,18 +28,87 @@ var SocialDatabase = function(_name){
 		 					+ ' email TEXT,'
 		 					+ ' login TEXT,'
 		 					+ ' password TEXT,'
-		 					+ ' token TEXT,'
+		 					+ ' token TEXT'
 		 					+ ')';	 					
 		 					
 		 	// Execute the Create statements
-		 	db.execute(createSocialTable);	
-		 	Ti.API.debug('Creating Table Social: '+createRoundsTable);	 
+		 	Ti.API.debug('Creating Table Social: '+createSocialTable);	 
+		 	db.execute(createSocialTable);			 	
 		} catch (err) {		
 			Ti.API.error('Datbase Error: ' + JSON.stringify(err));
 		} finally {
 		 	//Close the DB
 		 	db.close();		 	
 		}
+	}		
+};
+
+/**
+ * SaveAccount
+ * @param {Object} social object
+ */
+SocialDatabase.prototype.saveAccount = function(social){
+	var str;
+	var success = social;
+	var db = Ti.Database.open(this.dbname);	
+	
+	try {
+
+		// Delete the current entry
+		str = 'DELETE FROM Social WHERE account=?';
+		db.execute(str, social.account);
+
+		// Insert
+		Ti.API.debug('Inserting Social Link: '+ JSON.stringify(social));
+		str = 'INSERT INTO Social (account, email, login, password, token)'
+		+ ' VALUES (?, ?, ?, ?, ?)';	
+		
+		db.execute(str, social.account, social.email || null, social.login || null, social.password || null, social.token || null);
+		success.id = db.lastInsertRowId;
+		
+		Ti.API.debug(str);	
+	} catch (err) {
+		Ti.API.error('Datbase Error: ' + JSON.stringify(err));
+		success = undefined;
+	} finally {
+		db.close();
+		return success;
+	}	
+};
+
+/**
+ * GetAccount 
+ * @param {Object} toGet
+ */
+SocialDatabase.prototype.getAccount = function(where) {
+	var str, resultSet;
+	var success = {};
+	var db = Ti.Database.open(this.dbname);
+	
+	str = 'SELECT * FROM Social WHERE account=?';
+	Ti.API.debug('Get Social: ' + str + ' ('+where+')');
+		
+	try {
+	 	resultSet = db.execute(str, where);		// Execute the Create statements
+	 	
+	 	// Create array of Rounds
+	 	if (resultSet.isValidRow()) {
+	 		
+	 		success = {
+	 			id: resultSet.fieldByName('id'),
+				account: resultSet.fieldByName('account'),
+				email: resultSet.fieldByName('email'),
+				login: resultSet.fieldByName('login'),
+				password: resultSet.fieldByName('password'),
+				token: resultSet.fieldByName('token') 			
+	 		};
+	 	}	 
+	} catch (err) {		
+		Ti.API.error('Datbase Error: ' + JSON.stringify(err));
+	} finally {
+	 	//Close the DB
+	 	db.close();	
+	 	return success;	 	
 	}		
 };
 

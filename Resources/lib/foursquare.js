@@ -20,58 +20,12 @@ function FourSquare(_token) {
 	var win, webView;
 	var webcallback;
 	
-	this.createFSButton = function(cb) {
-		webcallback = cb;
-		
-		var fsview = Ti.UI.createView({
-			width: 300, height: 40,
-			borderRadius: 10
-		});
-		
-		var imageButton = Ti.UI.createButton({
-			width: Ti.UI.FILL, height: Ti.UI.FILL,
-			backgroundColor: '#0072b1',
-			backgroundSelectedColor: '#ff7900',
-			backgroundImage: '/images/buttonBackground.png'
-		});
-		imageButton.addEventListener('click', showAuthorizeUI);
-		
-		var imageView = Ti.UI.createImageView({
-			touchEnabled: false,
-			right: 5, height: 60,
-			image: '/images/social/Foursquare-One-icon.png'
-		});
-		
-		var imageLabel = Ti.UI.createLabel({
-				touchEnabled: false,
-				left: 10,
-				text: 'Connect to Foursquare',
-				color: 'white',
-				font: {
-					fontFamily: 'Helvetica',
-					fontSize: 20
-				}
-			});
-		
-		fsview.add(imageButton);
-		fsview.add(imageView);
-		fsview.add(imageLabel);
-		return fsview;
-	};
-	
-	/**
-	 *  
-	 */
-	var updateToket = function(_tok) {
-		token = _tok || undefined;
-	};
-	
 	/**
 	 * Authenticate - used to authenticate the user with FourSquare 
 	 * @param {Object} _args
 	 * @return {Object} token
 	 */
-	var showAuthorizeUI = function() {
+	function showAuthorizeUI() {
 		// Create and show the window
 		// Add WebView to the window
 		Ti.API.debug('Foursquare - open OAuth window');
@@ -125,7 +79,7 @@ function FourSquare(_token) {
 	/**
 	 * Destroy the window after removing the appropriate handlers
 	 */
-	var destroyAuthorizeUI = function() {
+	function destroyAuthorizeUI() {
 		Ti.API.debug('Foursquare - destroy OAuth window');
 		
 		if (win == null) {
@@ -142,63 +96,110 @@ function FourSquare(_token) {
 	};
 	
 	/**
+	 * UpdateToken - used to update the current token
+	 * @param {String} _tok
+	 */
+	this.updateToken = function(_tok) {
+		token = _tok || undefined;
+	};
+		
+	/**
 	 *  FindNearbyCourses - used to return a list of nearby courses based on the user current location
 	 * @param {Object} longitude
 	 * @param {Object} latitude
 	 * @return {Object} courses
 	 */
-	this.findNearbyCourses = function(longitude, latitude, callback) {
-		if (this.token) {		// Use the user token if one was submitted
-			
-		} else {				// Use the default login
-			
-			/**
-			 * Building the string:
-			 * https://api.foursquare.com/v2/venues/search?ll=40.7,-74&client_id=CLIENT_ID&client_secret=CLIENT_SECRET&v=YYYYMMDD 
-			 */			
-			var venueUrl = this.config.apiUrl + 'v2/venues/search?ll=' 
-				+ latitude +','+ longitude 
-				+ '&client_id=' + this.config.clientId
-				+ '&client_secret=' + this.config.clientSecret
-				+ '&query=golf'
-				+ '&categoryId=4bf58dd8d48988d1e6941735'			// golfcourses = 4bf58dd8d48988d1e6941735
-				+ '&radius=8000&limit=15'
-				+ '&v=' + yc.getCurrentDate('yyyymmdd');
-			
-			Titanium.API.debug(venueUrl);
-			var https = Titanium.Network.createHTTPClient({
-				onload: function(res) {
-					var responseData = JSON.parse(this.responseText);
-					var courseList = [];
-					
-					for(var i = 0; i < responseData.response.venues.length; i++) {
-						courseList.push({
-							fsid: responseData.response.venues[i].id,
-							name: responseData.response.venues[i].name,
-							lon: responseData.response.venues[i].location.lng,
-							lat: responseData.response.venues[i].location.lat							
-						});
-					}
-					
-					Titanium.API.debug(JSON.stringify(courseList));
-					callback(courseList);
-				},
-				onerror: function(res) {
-					// If we don't get a response, no biggy
-					Ti.UI.createAlertDialog({
-						title: 'No Courses Found',
-						message: 'No golf courses were found nearby.  Ensure your GPS is turned on and attempt to search again.',
-						ok: 'Ok'
-					}).show();					
-				},
-				timeout: 5000,
-				validatesSecureCertificate: true
-			});
-			
-			https.open('GET', venueUrl);
-			https.send();
-		}
+	this.findNearbyCourses = function(longitude, latitude, cb) {
+		/**
+		 * Building the string:
+		 * https://api.foursquare.com/v2/venues/search?ll=40.7,-74&client_id=CLIENT_ID&client_secret=CLIENT_SECRET&v=YYYYMMDD 
+		 */			
+		var venueUrl = this.config.apiUrl + 'v2/venues/search?ll=' 
+			+ latitude +','+ longitude 
+			+ '&client_id=' + this.config.clientId
+			+ '&client_secret=' + this.config.clientSecret
+			+ '&query=golf'
+			+ '&categoryId=4bf58dd8d48988d1e6941735'			// golfcourses = 4bf58dd8d48988d1e6941735
+			+ '&radius=8000&limit=15'
+			+ '&v=' + yc.getCurrentDate('yyyymmdd');
+		
+		Titanium.API.debug(venueUrl);
+		var https = Titanium.Network.createHTTPClient({
+			onload: function(res) {
+				var responseData = JSON.parse(this.responseText);
+				var courseList = [];
+				
+				for(var i = 0; i < responseData.response.venues.length; i++) {
+					courseList.push({
+						fsid: responseData.response.venues[i].id,
+						name: responseData.response.venues[i].name,
+						lon: responseData.response.venues[i].location.lng,
+						lat: responseData.response.venues[i].location.lat							
+					});
+				}
+				
+				Titanium.API.debug(JSON.stringify(courseList));
+				cb(courseList);
+			},
+			onerror: function(res) {
+				// If we don't get a response, no biggy
+				Ti.UI.createAlertDialog({
+					title: 'No Courses Found',
+					message: 'No golf courses were found nearby.  Ensure your GPS is turned on and attempt to search again.',
+					ok: 'Ok'
+				}).show();					
+			},
+			timeout: 5000,
+			validatesSecureCertificate: true
+		});
+		
+		https.open('GET', venueUrl);
+		https.send();
 	};
+	
+	/**
+	 * CreateFSButton - returns the button for the FS Module
+	 * @param {Function} cb - callback for successful or failure 
+	 */
+	this.createFSButton = function(props, cb) {
+		webcallback = cb;
+		
+		var fsview = Ti.UI.createView({
+			width: props.width || '80%', 
+			height: props.height || 40,
+			borderRadius: 10
+		});
+		
+		var imageButton = Ti.UI.createButton({
+			width: Ti.UI.FILL, height: Ti.UI.FILL,
+			backgroundColor: props.backgroundColor || '#0072b1',
+			backgroundSelectedColor: props.backgroundSelectedColor || '#d1d4d3',
+			backgroundImage: '/images/buttonBackground.png'
+		});
+		imageButton.addEventListener('click', showAuthorizeUI);
+		
+		var imageView = Ti.UI.createImageView({
+			touchEnabled: false,
+			right: 5, height: 60,
+			image: '/images/social/Foursquare-One-icon.png'
+		});
+		
+		var imageLabel = Ti.UI.createLabel({
+				touchEnabled: false,
+				left: 10,
+				text: (token === undefined) ? 'Connect to Foursquare' : 'Connected to Foursquare',
+				color: 'white',
+				font: {
+					fontFamily: props.fontFamily,
+					fontSize: 18
+				}
+			});
+		
+		fsview.add(imageButton);
+		fsview.add(imageView);
+		fsview.add(imageLabel);
+		return fsview;
+	};	
 };
 
 module.exports = FourSquare;

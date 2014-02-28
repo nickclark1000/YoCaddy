@@ -6,7 +6,7 @@
 	// create the main application window
 	yc.ui.createSocialMediaView = function(_args) {
 		var FourSquare = require('/lib/foursquare');
-		var Facebook = require('/lib/facebook');
+		var Facebook = require('/lib/facebooklib');
 		
 		var view = Ti.UI.createView(yc.combine($$.stretch, {}));
 		view.viewid = yc.ui.viewids.social;
@@ -30,14 +30,13 @@
 		body.add(content);
 		view.add(body);
 		
-		/////////////////// End of basic window layout
+		////// Foursquare Link Section
 		
 		var fsSection = Ti.UI.createLabel(yc.combine($$.sectionTitle, {
-			text: 'Foursquare'
+			text: 'Link Foursquare'
 		}));
 		
-		var fsText = 'To connect YoCaddy Mobile to Foursquare you must have a valid Foursquare account.  To login or create an account'
-				+ ' click the Connect button below.  You must login to http://www.fourquare.com and disconnect the application through the Foursquare Connected Apps page.';
+		var fsText = 'Allow YoCaddy to check you in and share your rounds with your Foursqare friends.  Todo - view Foursquare friend comments on courses you are planning to play, or have already played.';
 		var fsInfo = Ti.UI.createLabel(yc.combine($$.infoText, {
 			text: fsText, width: '95%'
 		}));
@@ -45,14 +44,70 @@
 		content.add(fsSection);
 		content.add(fsInfo);
 		
-		//// Foursquare login
+		var FSAccount = yc.db.social.getAccount('foursquare');
 		
-		var FS = new FourSquare();
-		var FSButton = FS.createFSButton(function(e) {
+		var FS = new FourSquare(FSAccount.token);
+		var FSButton = FS.createFSButton({
+			width: 300, 
+			height: 40,
+			backgroundColor: yc.style.colors.highlightColor,
+			backgroundSelectedColor: yc.style.colors.mainColor,
+			fontFamily: yc.os({
+				android: 'Montserrat-Bold',
+				iphone: 'Montserrat Bold'
+			})	
+		}, function(e) {
 			Ti.API.debug(JSON.stringify(e));
+			
+			if (e.success && e.action ==='login') {
+				yc.db.social.saveAccount({
+					account: 'foursquare',
+					token: e.access_token
+				});
+			}
 		});
 		content.add(yc.ui.vSpacer(20));
 		content.add(FSButton);
+		content.add(yc.ui.vSpacer(20));
+		
+		///// Facebook Link Section
+
+		var fbSection = Ti.UI.createLabel(yc.combine($$.sectionTitle, {
+			text: 'Link Facebook'
+		}));
+		
+		var fbText = 'Share information about courses, scores and even shot specific images to your Facebook wall and friends by linking YoCaddy with your Facebook profile.';
+		var fbInfo = Ti.UI.createLabel(yc.combine($$.infoText, {
+			text: fbText, width: '95%'
+		}));
+		
+		content.add(fbSection);
+		content.add(fbInfo);
+		
+		var FBAccount = yc.db.social.getAccount('foursquare');
+		
+		var FB = new Facebook(FBAccount.token);
+		var FBButton = FB.createFBButton({
+			width: 300, 
+			height: 40,
+			backgroundColor: yc.style.colors.highlightColor,
+			backgroundSelectedColor: yc.style.colors.mainColor,
+			fontFamily: yc.os({
+				android: 'Montserrat-Bold',
+				iphone: 'Montserrat Bold'
+			})	
+		}, function(e) {
+			if (e.success && e.action ==='login') {
+				yc.db.social.saveAccount({
+					account: 'facebook',
+					token: e.access_token
+				});
+			}
+		});
+		
+		content.add(yc.ui.vSpacer(20));
+		content.add(FBButton);
+		content.add(yc.ui.vSpacer(20));		
 
 		/**
 		 * Back callback 

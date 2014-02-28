@@ -52,4 +52,15 @@ Ti.include(
 	yc.app.currentRound = undefined;
 	yc.app.editviewRound = undefined;
 	yc.app.applicationWindow.open();
+	
+	Ti.include(
+		'/ui/startRoundView.js',
+		'/ui/roundMapView.js',
+		'/ui/editViewRoundView.js',
+		'/ui/listRoundsView.js',
+		'/ui/mapOnlyView.js',
+		'/ui/informationView.js',
+		'/ui/settingsView.js',
+		'/ui/socialMediaView.js'	
+	);	
 })();

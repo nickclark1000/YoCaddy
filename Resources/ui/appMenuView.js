@@ -91,6 +91,7 @@
 			image: '/images/button_social_dark.png',
 			text: 'Link to Social Media',
 			callback: function() {
+				yc.app.applicationWindow.fireEvent('hidemenu', {});
 				yc.app.applicationWindow.fireEvent('addview', { viewIdx: yc.ui.viewids.social });
 			}
 		});
@@ -102,6 +103,7 @@
 			image: '/images/button_newround_dark.png',
 			text: 'Start New Round',
 			callback: function() { 
+				yc.app.applicationWindow.fireEvent('hidemenu', {});
 				yc.app.applicationWindow.fireEvent('addview', { 
 					viewIdx: (yc.app.currentRound) ? yc.ui.viewids.mapround : yc.ui.viewids.startround 
 				});
@@ -115,6 +117,7 @@
 			image: '/images/button_save_dark.png',
 			text: 'View Saved Rounds',
 			callback: function() { 
+				yc.app.applicationWindow.fireEvent('hidemenu', {});
 				yc.app.applicationWindow.fireEvent('addview', { 
 					viewIdx: (yc.app.editviewRound) ? yc.ui.viewids.editviewround : yc.ui.viewids.listrounds 
 				});
@@ -127,7 +130,10 @@
 	 		touchEnabled: false,
 			image: '/images/button_web_dark.png',
 			text: 'View Web Rounds',
-			callback: function() { Ti.API.debug('Web Rounds'); }
+			callback: function() { 
+				yc.app.applicationWindow.fireEvent('hidemenu', {});
+				Ti.API.debug('Web Rounds'); 
+			}
 		});
 	 	menuHolder.add(webroundsItem.getView());		
 	 	menuHolder.add(new yc.ui.separator());
@@ -137,6 +143,7 @@
 			image: '/images/button_map_dark.png',
 			text: 'Google Map',
 			callback: function() { 
+				yc.app.applicationWindow.fireEvent('hidemenu', {});
 				yc.app.applicationWindow.fireEvent('addview', { viewIdx: yc.ui.viewids.maponly }); 
 			}
 		});
@@ -148,6 +155,7 @@
 			image: '/images/button_settings_dark.png',
 			text: 'Settings',
 			callback: function() { 
+				yc.app.applicationWindow.fireEvent('hidemenu', {});
 				yc.app.applicationWindow.fireEvent('addview', { viewIdx: yc.ui.viewids.settings }); 
 			}
 		});
@@ -159,6 +167,7 @@
 			image: '/images/button_about_dark.png',
 			text: 'About & Help',
 			callback: function() { 
+				yc.app.applicationWindow.fireEvent('hidemenu', {});
 				yc.app.applicationWindow.fireEvent('addview', { viewIdx: yc.ui.viewids.about }); 
 			}
 		});		 
