@@ -15,7 +15,8 @@
 		editviewround: 7,
 		settings: 8,
 		maponly: 9,
-		about: 10
+		about: 10,
+		social: 11
 	};
 	
 	// Create a default separator
@@ -187,7 +188,10 @@
 							break;
 						case yc.ui.viewids.about:
 							viewArray[nextViewId] = yc.ui.createInformationView();
-							break;					
+							break;		
+						case yc.ui.viewids.social:
+							viewArray[nextViewId] = yc.ui.createSocialMediaView();
+							break;											
 					}
 					
 					stack.add(viewArray[nextViewId]);	
@@ -287,7 +291,8 @@ Ti.include(
 	'/ui/informationView.js',
 	'/ui/settingsView.js',
 	'/ui/newsfeedView.js',
-	'/ui/appMenuView.js'
+	'/ui/appMenuView.js',
+	'/ui/socialMediaView.js'
 );
 
 // Check to load tablet or Handheld applicationWindow ui file

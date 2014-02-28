@@ -222,7 +222,7 @@
 			
 			yc.app.alertShown = true;
 			yc.app.applicationWindow.add(confirm);
-		});	
+		});												
 					
 		return view;
 	};

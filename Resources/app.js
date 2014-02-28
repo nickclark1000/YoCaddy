@@ -42,8 +42,10 @@ Ti.include(
 	Ti.API.info(Ti.Platform.displayCaps.dpi);
 			
 	// Create and check the database
-	var Database = require('/lib/db/rounds'); 
+	var Database = require('/lib/db/rounds');
+	var SocialDb = require('/lib/db/social'); 
 	yc.db.rounds = new Database(yc.dbname);
+	yc.db.social = new SocialDb(yc.dbname);
 			
 	// Create and start the main application
 	yc.app.applicationWindow = yc.ui.createApplicationWindow();

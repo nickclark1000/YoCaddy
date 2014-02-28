@@ -90,7 +90,9 @@
 	 		touchEnabled: false,
 			image: '/images/button_social_dark.png',
 			text: 'Link to Social Media',
-			callback: function() { Ti.API.debug('Profile'); }
+			callback: function() {
+				yc.app.applicationWindow.fireEvent('addview', { viewIdx: yc.ui.viewids.social });
+			}
 		});
 		menuHolder.add(socialItem.getView());		
 	 	menuHolder.add(new yc.ui.separator());	 	

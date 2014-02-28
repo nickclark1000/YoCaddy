@@ -44,7 +44,7 @@
 		view.viewid = yc.ui.viewids.listrounds;
 		
 		var header = new yc.ui.headerView({
-			title: 'Round History',
+			title: 'Saved Rounds',
 			leftbutton: {
 				show: true,
 				callback: function() { yc.app.applicationWindow.fireEvent('appback', {}); }
