@@ -54,6 +54,7 @@
 		}));
 		content.add(appLabel);
 		content.add(settingLabel);
+		content.add(new yc.ui.vSpacer(5));
 		
 		/// Loop through yc.settings.app.propnames
 		/// Create all the check boxes dynamically
@@ -66,10 +67,11 @@
 				selected: yc.settings.app.selected[i],
 				options: yc.settings.app.propvalues[i],
 				parent: view,
-				top: '0dp', height: '40dp'				
+				top: 0, height: 30				
 			}));
 			
 			content.add(appSettings[i].getView());
+			content.add(new yc.ui.vSpacer(5));
 		}
 			
 		var syncSection = Ti.UI.createLabel(yc.combine($$.sectionTitle, {
@@ -83,6 +85,7 @@
 			text: 'Changing synchronization settings could increase wireless usage.  On limited wireless plans only sync over wifi.'
 		}));
 		content.add(syncLabel);
+		content.add(new yc.ui.vSpacer(5));
 		
 		/// Loop through yc.settings.sync.propnames
 		/// Create all the check boxes dynamically
@@ -95,10 +98,11 @@
 				selected: yc.settings.sync.selected[i],
 				options: yc.settings.sync.propvalues[i],
 				parent: view,
-				top: '0dp', height: '40dp'				
+				top: 0, height: 30				
 			}));
 			
 			content.add(syncSettings[i].getView());
+			content.add(new yc.ui.vSpacer(5));
 		}						
 				
 		/**
@@ -108,7 +112,7 @@
 			var buttons = [];
 			var text = '';
 			
-			if (settingsChanged == true) {
+			if (settingsChanged.length > 0) {
 				buttons = ['Save & Close', 'Dismiss & Close', 'Cancel'];
 				text = 'Some settings have changed, would you like to save or discard before closing?'; 
 			} else {
@@ -183,7 +187,10 @@
 		 * 
 		 */
 		view.addEventListener('closing', function(e){
-			confirmSave();
+			if (settingsChanged.length > 0)
+				confirmSave();
+			else
+				yc.app.applicationWindow.fireEvent('appback', {});	
 		});		
 				
 		return view;

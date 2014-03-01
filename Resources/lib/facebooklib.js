@@ -4,12 +4,13 @@
  */
 
 var Facebook = function(_tok) {
-	var token = _tok || undefined;
 	var webcallback;
 	var fb = require('facebook');
  	fb.appid = '1390847327851939';
-	fb.permissions = ['publish_stream'];
+	fb.permissions = ['publish_stream', 'offline_access'];
  	fb.forceDialogAuth = true;
+ 	
+ 	var token = (_tok === fb.getAccessToken()) ? fb.getAccessToken() : undefined;
  	
  	/**
  	 * AuthorizeCallback - used for FB Authorize 'login' callback
@@ -43,6 +44,38 @@ var Facebook = function(_tok) {
 	    webcallback(result);		
  	};
  	
+ 	/**
+ 	 * 
+ 	 */
+ 	var logoutCallback = function(e) {
+ 		var result = {};
+ 		
+ 		Ti.API.debug(JSON.stringify(e));
+ 		
+	    if (e.source.loggedIn === false) {
+	    	token = e.source.accessToken;
+	        result = {
+	        	success: true,
+	        	action: 'logout',
+	        	access_token: e.source.accessToken
+	        };	     
+	    } else if (e.error) {
+	        result = {
+	        	success: false,
+	        	action: 'logout',
+	        	access_token: undefined
+	        };	
+	    } else if (e.cancelled) {
+	        result = {
+	        	success: true,
+	        	action: 'cancelled',
+	        	access_token: undefined
+	        };	
+	    }	 
+	    
+	    webcallback(result);		
+ 	}; 	
+ 	
 	/**
 	 * CreateFBButton - returns the button for the FB Module
 	 * @param {Object} props
@@ -63,31 +96,45 @@ var Facebook = function(_tok) {
 			backgroundSelectedColor: props.backgroundSelectedColor || '#d1d4d3',
 			backgroundImage: '/images/buttonBackground.png'
 		});
-		imageButton.addEventListener('click', function(e){
-			fb.addEventListener('login', authorizeCallback);
-			fb.authorize();
-		});
 		
 		var imageView = Ti.UI.createImageView({
 			touchEnabled: false,
-			right: 5, height: 50,
+			right: 10, height: 50,
 			image: '/images/social/icon_facebook.png'
 		});
 		
 		var imageLabel = Ti.UI.createLabel({
-				touchEnabled: false,
-				left: 10,
-				text: (token === undefined) ? 'Connect to Facebook' : 'Connected to Facebook',
-				color: 'white',
-				font: {
-					fontFamily: props.fontFamily,
-					fontSize: 18
-				}
-			});
+			touchEnabled: false,
+			left: 10,
+			text: (token) ? 'Disconnect Facebook' : 'Connect to Facebook',
+			color: 'white',
+			font: {
+				fontFamily: props.fontFamily,
+				fontSize: 18
+			}
+		});
+		
+		imageButton.addEventListener('click', function(e){
+			fb.addEventListener('login', authorizeCallback);
+			fb.addEventListener('logout', logoutCallback);
+		
+			if (fb.loggedIn) {
+				Ti.API.debug('logging out');
+				fb.logout();
+			} else {
+				Ti.API.debug('logging in');
+				fb.authorize();
+			}
+		});		
 		
 		fbview.add(imageButton);
 		fbview.add(imageView);
 		fbview.add(imageLabel);
+		
+		fbview.addEventListener('setText', function(e){
+			imageLabel.setText(e.text);
+		});
+		
 		return fbview;
 	};	 	
 };

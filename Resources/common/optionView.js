@@ -39,7 +39,7 @@ var OptionView = function(_args) {
 	var optionValue = Ti.UI.createLabel({
 		touchEnabled: false,
 		right: '2dp',
-		width: '40%', height: '75%',
+		width: '40%', height: Ti.UI.FILL,
 		borderWidth: '1dp',
 		borderRadius: 5,
 		color: '#000',

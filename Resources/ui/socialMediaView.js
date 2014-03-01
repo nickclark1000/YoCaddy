@@ -12,7 +12,7 @@
 		view.viewid = yc.ui.viewids.social;
 		
 		var header = new yc.ui.headerView({
-			title:  'Social Accounts',
+			title:  'Social Media',
 			leftbutton: {
 				show: true,
 				callback: function() {
@@ -31,7 +31,6 @@
 		view.add(body);
 		
 		////// Foursquare Link Section
-		
 		var fsSection = Ti.UI.createLabel(yc.combine($$.sectionTitle, {
 			text: 'Link Foursquare'
 		}));
@@ -44,8 +43,7 @@
 		content.add(fsSection);
 		content.add(fsInfo);
 		
-		var FSAccount = yc.db.social.getAccount('foursquare');
-		
+		var FSAccount = yc.db.social.getAccount('foursquare');		
 		var FS = new FourSquare(FSAccount.token);
 		var FSButton = FS.createFSButton({
 			width: 300, 
@@ -64,14 +62,20 @@
 					account: 'foursquare',
 					token: e.access_token
 				});
-			}
+				FSButton.fireEvent('setText', {text: 'Disconnect Foursquare'});
+			} else if (e.success && e.action ==='logout') {
+				yc.db.social.deleteAccount({
+					account: 'foursquare',
+					token: e.access_token
+				});	
+				FSButton.fireEvent('setText', {text: 'Connect to Foursquare'});			
+			}			
 		});
 		content.add(yc.ui.vSpacer(20));
 		content.add(FSButton);
 		content.add(yc.ui.vSpacer(20));
 		
 		///// Facebook Link Section
-
 		var fbSection = Ti.UI.createLabel(yc.combine($$.sectionTitle, {
 			text: 'Link Facebook'
 		}));
@@ -84,8 +88,7 @@
 		content.add(fbSection);
 		content.add(fbInfo);
 		
-		var FBAccount = yc.db.social.getAccount('foursquare');
-		
+		var FBAccount = yc.db.social.getAccount('facebook');		
 		var FB = new Facebook(FBAccount.token);
 		var FBButton = FB.createFBButton({
 			width: 300, 
@@ -102,12 +105,33 @@
 					account: 'facebook',
 					token: e.access_token
 				});
+				FBButton.fireEvent('setText', {text: 'Disconnect Facebook'});
+			} else if (e.success && e.action ==='logout') {
+				yc.db.social.deleteAccount({
+					account: 'facebook',
+					token: e.access_token
+				});	
+				FBButton.fireEvent('setText', {text: 'Connect to Facebook'});			
 			}
 		});
 		
 		content.add(yc.ui.vSpacer(20));
 		content.add(FBButton);
 		content.add(yc.ui.vSpacer(20));		
+
+		////// TWitter Link Section
+		var twSection = Ti.UI.createLabel(yc.combine($$.sectionTitle, {
+			text: 'Link Twitter'
+		}));
+		
+		var twText = 'Twitter linking is coming soon.';
+		var twInfo = Ti.UI.createLabel(yc.combine($$.infoText, {
+			text: fsText, width: '95%'
+		}));
+		
+		content.add(twSection);
+		content.add(twInfo);
+		
 
 		/**
 		 * Back callback 

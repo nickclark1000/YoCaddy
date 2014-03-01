@@ -82,7 +82,7 @@ SocialDatabase.prototype.saveAccount = function(social){
  */
 SocialDatabase.prototype.getAccount = function(where) {
 	var str, resultSet;
-	var success = {};
+	var success = undefined;
 	var db = Ti.Database.open(this.dbname);
 	
 	str = 'SELECT * FROM Social WHERE account=?';
@@ -90,6 +90,8 @@ SocialDatabase.prototype.getAccount = function(where) {
 		
 	try {
 	 	resultSet = db.execute(str, where);		// Execute the Create statements
+	 	
+	 	Ti.API.debug('length: ' + resultSet.length);
 	 	
 	 	// Create array of Rounds
 	 	if (resultSet.isValidRow()) {
@@ -110,6 +112,30 @@ SocialDatabase.prototype.getAccount = function(where) {
 	 	db.close();	
 	 	return success;	 	
 	}		
+};
+
+/**
+ * DeleteAccount by name
+ * @param {Object} social
+ */
+SocialDatabase.prototype.deleteAccount = function(where) {
+	var str, resultSet;
+	var success = false;
+	var db = Ti.Database.open(this.dbname);
+	
+	str = 'DELETE FROM Social WHERE account=?';
+	Ti.API.debug('Delete Social: ' + str + ' ('+where.account+')');
+		
+	try {
+	 	resultSet = db.execute(str, where.account);		// Execute the Create statements
+	 	success = true; 
+	} catch (err) {		
+		Ti.API.error('Datbase Error: ' + JSON.stringify(err));
+	} finally {
+	 	//Close the DB
+	 	db.close();	
+	 	return success;	 	
+	}	
 };
 
 module.exports = SocialDatabase;

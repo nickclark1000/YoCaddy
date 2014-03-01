@@ -29,14 +29,15 @@ function FourSquare(_token) {
 		// Create and show the window
 		// Add WebView to the window
 		Ti.API.debug('Foursquare - open OAuth window');
-		win = Ti.UI.createWindow({
-			navBarHidden: true			
+		win = Ti.UI.createWindow({			
+			navBarHidden: true,
+			backgroundColor: 'transparent'			
 		});
 		win.open();
 		
 		webView = Ti.UI.createWebView({
-			height: '90%',
-			width: '90%',
+			top: 15, bottom: 15,
+			left: 15, right: 15,			
 			url: fsLoginUrl,
 			autoDetect: [Ti.UI.AUTODETECT_NONE],
 			borderWidth: 2,
@@ -74,6 +75,24 @@ function FourSquare(_token) {
 		});
 		
 		win.add(webView);
+		
+		var closeButton = Ti.UI.createButton({
+			backgroundColor: 'white',
+			backgroundImage: '/images/social/close-icon.png',
+			borderRadius: 25,
+			width: 25, height: 25,
+			center: {x: 20, y: 20}
+		});
+		
+		closeButton.addEventListener('click', function(e){
+			var result = {
+					success: true,
+					action: 'cancel'
+				};
+			destroyAuthorizeUI();
+		});
+		
+		win.add(closeButton);
 	};
 	
 	/**
@@ -94,6 +113,19 @@ function FourSquare(_token) {
 			Ti.API.debug('Foursquare - cannot destroy the UI.');
 		}		
 	};
+	
+	/**
+	 * 
+	 */
+	function logout(){
+		var result = {
+			success: true,
+			action: 'logout',
+			access_token: undefined
+		};
+		token = undefined;
+		webcallback(result);
+	}
 	
 	/**
 	 * UpdateToken - used to update the current token
@@ -176,7 +208,14 @@ function FourSquare(_token) {
 			backgroundSelectedColor: props.backgroundSelectedColor || '#d1d4d3',
 			backgroundImage: '/images/buttonBackground.png'
 		});
-		imageButton.addEventListener('click', showAuthorizeUI);
+		imageButton.addEventListener('click', function(e){
+			if (token) { 
+				Ti.API.debug('logging out');
+				logout();
+			} else {
+				showAuthorizeUI();
+			}
+		});
 		
 		var imageView = Ti.UI.createImageView({
 			touchEnabled: false,
@@ -187,7 +226,7 @@ function FourSquare(_token) {
 		var imageLabel = Ti.UI.createLabel({
 				touchEnabled: false,
 				left: 10,
-				text: (token === undefined) ? 'Connect to Foursquare' : 'Connected to Foursquare',
+				text: (token === undefined) ? 'Connect to Foursquare' : 'Disconnect Foursquare',
 				color: 'white',
 				font: {
 					fontFamily: props.fontFamily,
@@ -198,6 +237,11 @@ function FourSquare(_token) {
 		fsview.add(imageButton);
 		fsview.add(imageView);
 		fsview.add(imageLabel);
+		
+		fsview.addEventListener('setText', function(e){
+			imageLabel.setText(e.text);
+		});
+				
 		return fsview;
 	};	
 };

@@ -78,6 +78,14 @@
 	 */
 	yc.ui.createStartRoundView = function(_args) {
 		// Create the layout view elements
+		var Facebook = require('/lib/facebooklib');
+		var Foursquare = require('/lib/foursquare');
+		var FBAccount = yc.db.social.getAccount('facebook');
+		var FSAccount = yc.db.social.getAccount('foursquare');
+		
+		var fb = new Facebook(FBAccount.token);
+		var fs = new Foursquare(FSAccount.token);		
+		
 		var currentCourseLon = 0, currentCourseLat = 0, currentCourseFSID = '';
 		var view = Ti.UI.createView($$.stretch);
 		view.viewid = yc.ui.viewids.startround;
@@ -112,6 +120,15 @@
 						});
 						
 						Ti.API.info('Start Round Details:' + JSON.stringify(round));
+						
+						// Social media Stuff
+						if (FSAccount && shareFoursquare.isChecked()) {
+							Ti.API.debug('Check-In to Foursquare');
+						}
+						
+						if (FBAccount && shareFacebook.isChecked()) {
+							Ti.API.debug('Share on facebook');
+						}
 						
 						view.fireEvent('clearscreen', {});
 						yc.app.currentRound = yc.db.rounds.saveRound(round);
@@ -178,13 +195,13 @@
 		var CheckBox = require('/common/checkBoxView');
 		
 		var saveTrace = new CheckBox({
-			top: 5, width: '95%', height: 40,
+			top: 5, width: '95%', height: 30,
 			text: 'Save Walking Trace',
 			checked: 1
 		});
 		
 		var showTrace = new CheckBox({
-			top: 5, bottom: 5, width: '95%', height: 40,
+			top: 5, bottom: 5, width: '95%', height: 30,
 			text: 'Show Walking Trace',
 			checked: 1
 		});		
@@ -196,6 +213,42 @@
 		content.add(dateText);
 		content.add(saveTrace.getView());
 		content.add(showTrace.getView());
+		
+		var socialSection = Ti.UI.createLabel(yc.combine($$.sectionTitle, {
+			text: 'Post to Social Media'
+		}));
+		
+		var noSocialSettings = Ti.UI.createLabel(yc.combine($$.infoText, {
+			text: 'You have not linked any social media accounts to yoCaddy.'
+		}));
+		
+		var shareFoursquare = undefined;
+		var shareFacebook = undefined;
+		
+		content.add(socialSection);
+		if (FBAccount === undefined && FSAccount === undefined) {
+			content.add(noSocialSettings);
+		} else {			
+			if (FSAccount) {
+				shareFoursquare = new CheckBox({
+					top: 5, width: '95%', height: 30,
+					text: 'Foursquare Check-In',
+					checked: 1
+				});		
+				content.add(shareFoursquare.getView());			
+			}
+
+			if (FBAccount) {
+				shareFacebook = new CheckBox({
+					top: 5, width: '95%', height: 30,
+					text: 'Facebook Wall Post',
+					checked: 1
+				});		
+				content.add(shareFacebook.getView());			
+			}			
+		}
+		
+		content.add(new yc.ui.vSpacer(10));
 		
 		// Need to be able to clear all the items for hte round
 		view.addEventListener('clearscreen', function(e){
