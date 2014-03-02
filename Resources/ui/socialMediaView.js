@@ -8,6 +8,10 @@
 		var FourSquare = require('/lib/foursquare');
 		var Facebook = require('/lib/facebooklib');
 		
+		var accountTokens = yc.db.social.getAccountTokens();		
+		var FS = new FourSquare(accountTokens.foursquare);		
+		var FB = new Facebook(accountTokens.facebook);
+						
 		var view = Ti.UI.createView(yc.combine($$.stretch, {}));
 		view.viewid = yc.ui.viewids.social;
 		
@@ -43,8 +47,6 @@
 		content.add(fsSection);
 		content.add(fsInfo);
 		
-		var FSAccount = yc.db.social.getAccount('foursquare');		
-		var FS = new FourSquare(FSAccount.token);
 		var FSButton = FS.createFSButton({
 			width: 300, 
 			height: 40,
@@ -88,8 +90,6 @@
 		content.add(fbSection);
 		content.add(fbInfo);
 		
-		var FBAccount = yc.db.social.getAccount('facebook');		
-		var FB = new Facebook(FBAccount.token);
 		var FBButton = FB.createFBButton({
 			width: 300, 
 			height: 40,

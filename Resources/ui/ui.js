@@ -75,7 +75,7 @@
 		
 		// Create and add the Header (ViewId = 0)
 		viewArray[yc.ui.viewids.appheader] = new yc.ui.headerView({
-			title: ''
+			title: '   Loading Screen ...'
 		});
 		stack.add(viewArray[yc.ui.viewids.appheader]);
 		stackIds.push(yc.ui.viewids.appheader);

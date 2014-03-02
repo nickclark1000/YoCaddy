@@ -146,14 +146,18 @@ function FourSquare(_token) {
 		 * Building the string:
 		 * https://api.foursquare.com/v2/venues/search?ll=40.7,-74&client_id=CLIENT_ID&client_secret=CLIENT_SECRET&v=YYYYMMDD 
 		 */			
-		var venueUrl = this.config.apiUrl + 'v2/venues/search?ll=' 
+		var venueUrl = config.apiUrl + 'v2/venues/search?ll=' 
 			+ latitude +','+ longitude 
-			+ '&client_id=' + this.config.clientId
-			+ '&client_secret=' + this.config.clientSecret
+			+ '&client_id=' + config.clientId
+			+ '&client_secret=' + config.clientSecret
 			+ '&query=golf'
 			+ '&categoryId=4bf58dd8d48988d1e6941735'			// golfcourses = 4bf58dd8d48988d1e6941735
 			+ '&radius=8000&limit=15'
 			+ '&v=' + yc.getCurrentDate('yyyymmdd');
+			
+		if (token) {
+			venueUrl += '&access_token'+token;
+		}
 		
 		Titanium.API.debug(venueUrl);
 		var https = Titanium.Network.createHTTPClient({

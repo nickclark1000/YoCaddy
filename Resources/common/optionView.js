@@ -26,7 +26,8 @@ var OptionView = function(_args) {
 	// Private Name
 	var optionName = Ti.UI.createLabel({
 		touchEnabled: false,
-		left: '5dp', width: '60%',
+		top: 1, bottom: 1,
+		left: 5, width: '60%',
 		text:  oDesc,
 		color: '#000',
 		font: {
@@ -38,9 +39,10 @@ var OptionView = function(_args) {
 	// Private Value
 	var optionValue = Ti.UI.createLabel({
 		touchEnabled: false,
-		right: '2dp',
+		top: 1, bottom: 1,
+		right: 2,
 		width: '40%', height: Ti.UI.FILL,
-		borderWidth: '1dp',
+		borderWidth: 1,
 		borderRadius: 5,
 		color: '#000',
 		text:  oOptions[oSelected].text,

@@ -79,12 +79,11 @@
 	yc.ui.createStartRoundView = function(_args) {
 		// Create the layout view elements
 		var Facebook = require('/lib/facebooklib');
-		var Foursquare = require('/lib/foursquare');
-		var FBAccount = yc.db.social.getAccount('facebook');
-		var FSAccount = yc.db.social.getAccount('foursquare');
+		var FourSquare = require('/lib/foursquare');
 		
-		var fb = new Facebook(FBAccount.token);
-		var fs = new Foursquare(FSAccount.token);		
+		var accountTokens = yc.db.social.getAccountTokens();		
+		var FS = new FourSquare(accountTokens.foursquare);		
+		var FB = new Facebook(accountTokens.facebook);	
 		
 		var currentCourseLon = 0, currentCourseLat = 0, currentCourseFSID = '';
 		var view = Ti.UI.createView($$.stretch);
@@ -122,12 +121,19 @@
 						Ti.API.info('Start Round Details:' + JSON.stringify(round));
 						
 						// Social media Stuff
-						if (FSAccount && shareFoursquare.isChecked()) {
+						if (accountTokens.foursquare && shareFoursquare.isChecked() && currentCourseFSID.length > 0) {
 							Ti.API.debug('Check-In to Foursquare');
 						}
 						
-						if (FBAccount && shareFacebook.isChecked()) {
+						if (accountTokens.facebook && shareFacebook.isChecked()) {
 							Ti.API.debug('Share on facebook');
+							var data = {
+							    name : 'Name',
+							    message : 'Message',
+							    caption : 'Caption',
+							    description : 'Description' 
+							};
+							fb.dialog(data);						
 						}
 						
 						view.fireEvent('clearscreen', {});
@@ -226,10 +232,10 @@
 		var shareFacebook = undefined;
 		
 		content.add(socialSection);
-		if (FBAccount === undefined && FSAccount === undefined) {
+		if (accountTokens.facebook === undefined && accountTokens.foursquare === undefined) {
 			content.add(noSocialSettings);
 		} else {			
-			if (FSAccount) {
+			if (accountTokens.foursquare) {
 				shareFoursquare = new CheckBox({
 					top: 5, width: '95%', height: 30,
 					text: 'Foursquare Check-In',
@@ -238,7 +244,7 @@
 				content.add(shareFoursquare.getView());			
 			}
 
-			if (FBAccount) {
+			if (accountTokens.facebook) {
 				shareFacebook = new CheckBox({
 					top: 5, width: '95%', height: 30,
 					text: 'Facebook Wall Post',
@@ -257,7 +263,7 @@
 			
 			courseNameText.setValue('');
 			courseNameText.setEditable(true);
-			currentCourseFSID = 'undefined';
+			currentCourseFSID = '';
 			currentCourseLat = 0;
 			currentCourseLon = 0;			
 		});
@@ -282,7 +288,7 @@
 					// Blank out the course name 
 					courseNameText.setValue('');
 					courseNameText.setEditable(true);
-					currentCourseFSID = 'undefined';
+					currentCourseFSID = '';
 					currentCourseLat = 0;
 					currentCourseLon = 0;
 				} else {
@@ -290,7 +296,7 @@
 					
 					courseNameText.setValue(courses[e.index].name);
 					courseNameText.setEditable(false);
-					currentCourseFSID = courses[e.index].fsid;
+					currentCourseFSID = courses[e.index].fsid;					
 					currentCourseLat = courses[e.index].lat;
 					currentCourseLon = courses[e.index].lon;
 				}

@@ -40,8 +40,10 @@
 		
 		// Event Listener for handling the Android Back Button
 		win.addEventListener('androidback', function(e){
-			menu.fireEvent('checkCurrentRound', e);
-			viewStack.fireEvent('confirmback', {});			
+			if (!yc.app.alertShown) {
+				menu.fireEvent('checkCurrentRound', e);
+				viewStack.fireEvent('confirmback', {});			
+			}
 		});
 		
 		// Event Listener for handling the application back button
@@ -61,7 +63,7 @@
 			if (!yc.app.menushown) {
 				menu.animate({
 					left: 0,
-					duration: 200
+					duration: 100
 				}, function() {
 					// do nothing at this point
 				});
@@ -76,7 +78,7 @@
 				
 				menu.animate({
 					left: origLeft,
-					duration: 200
+					duration: 100
 				}, function() {
 					// do nothing at this point
 				});

@@ -7,7 +7,7 @@ var Facebook = function(_tok) {
 	var webcallback;
 	var fb = require('facebook');
  	fb.appid = '1390847327851939';
-	fb.permissions = ['publish_stream', 'offline_access'];
+	fb.permissions = ['basic_info', 'publish_stream', 'offline_access'];
  	fb.forceDialogAuth = true;
  	
  	var token = (_tok === fb.getAccessToken()) ? fb.getAccessToken() : undefined;
@@ -136,7 +136,18 @@ var Facebook = function(_tok) {
 		});
 		
 		return fbview;
-	};	 	
+	};	 
+	
+	/**
+	 * 
+	 */
+	this.dialog = function(data) {
+		fb.dialog("status", data, function(e) {
+		    if(e.success && e.result) {
+				Ti.API.debug('Facebook Dialog: '+JSON.stringify(e));
+		    }
+		});			
+	};
 };
 
 module.exports = Facebook;

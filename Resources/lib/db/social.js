@@ -82,7 +82,7 @@ SocialDatabase.prototype.saveAccount = function(social){
  */
 SocialDatabase.prototype.getAccount = function(where) {
 	var str, resultSet;
-	var success = undefined;
+	var success = {};
 	var db = Ti.Database.open(this.dbname);
 	
 	str = 'SELECT * FROM Social WHERE account=?';
@@ -111,6 +111,31 @@ SocialDatabase.prototype.getAccount = function(where) {
 	 	//Close the DB
 	 	db.close();	
 	 	return success;	 	
+	}		
+};
+
+SocialDatabase.prototype.getAccountTokens = function() {
+	var str, resultSet;
+	var results = {};
+	var db = Ti.Database.open(this.dbname);
+	
+	str = 'SELECT account, token FROM Social';
+	Ti.API.debug('Get Social: ' + str);
+		
+	try {
+	 	resultSet = db.execute(str);		// Execute the Create statements
+		
+		var i=0;
+		while (resultSet.isValidRow()) {
+		    results[resultSet.fieldByName('account')] = resultSet.fieldByName('token');		
+		    resultSet.next();
+		}; 
+	} catch (err) {		
+		Ti.API.error('Datbase Error: ' + JSON.stringify(err));
+	} finally {
+	 	//Close the DB
+	 	db.close();	
+	 	return results;	 	
 	}		
 };
 

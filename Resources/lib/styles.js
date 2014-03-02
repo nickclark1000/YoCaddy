@@ -174,7 +174,7 @@
 			color: '#5A5A5A',
 			touchEnabled: false,
 			font: {
-				fontSize: yc.style.fontsize.largetext,
+				fontSize: yc.style.fontsize.xlargetext,
 				fontFamily: yc.style.fonts.sectionFont
 			}			
 		},
