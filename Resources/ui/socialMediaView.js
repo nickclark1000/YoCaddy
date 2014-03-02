@@ -82,7 +82,7 @@
 			text: 'Link Facebook'
 		}));
 		
-		var fbText = 'Share information about courses, scores and even shot specific images to your Facebook wall and friends by linking YoCaddy with your Facebook profile.  Note - if you have Foursquare configured to post to Facebook, this will duplicate postings.';
+		var fbText = 'Share information about courses, scores and even shot specific images to your Facebook wall and friends by linking YoCaddy with your Facebook profile.  Note - if you have Foursquare configured to post to Facebook, this link is not required.';
 		var fbInfo = Ti.UI.createLabel(yc.combine($$.infoText, {
 			text: fbText, width: '95%'
 		}));
@@ -124,7 +124,7 @@
 			text: 'Link Twitter'
 		}));
 		
-		var twText = 'Twitter linking is coming soon.';
+		var twText = 'Twitter linking is coming soon.  Note - if Foursquare is configured to post Tweets this link is not required.';
 		var twInfo = Ti.UI.createLabel(yc.combine($$.infoText, {
 			text: fsText, width: '95%'
 		}));
