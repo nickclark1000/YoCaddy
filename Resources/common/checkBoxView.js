@@ -78,6 +78,17 @@ var checkBox = function(_args) {
 		return checked;	
 	};
 	
+	this.setChecked = function(isChecked) {
+		checked = isChecked;
+
+		if (checked === 1) {
+			viewTitle = '\u2713';
+		} else {
+			viewTitle = '';
+		}
+		checkboxButton.setTitle(viewTitle);
+	};
+	
 	this.getView = function() {
 		return checkbox;
 	};	

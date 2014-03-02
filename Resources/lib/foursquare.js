@@ -148,21 +148,24 @@ function FourSquare(_token) {
 		 */			
 		var venueUrl = config.apiUrl + 'v2/venues/search?ll=' 
 			+ latitude +','+ longitude 
-			+ '&client_id=' + config.clientId
-			+ '&client_secret=' + config.clientSecret
 			+ '&query=golf'
 			+ '&categoryId=4bf58dd8d48988d1e6941735'			// golfcourses = 4bf58dd8d48988d1e6941735
 			+ '&radius=8000&limit=15'
 			+ '&v=' + yc.getCurrentDate('yyyymmdd');
-			
+		
+		// Update URL with oAUTH or Client Secret (anonymous)	
 		if (token) {
-			venueUrl += '&access_token'+token;
+			venueUrl += '&oauth_token='+token;
+		} else {
+			venueUrl += '&client_id=' + config.clientId
+				+ '&client_secret=' + config.clientSecret;
 		}
 		
 		Titanium.API.debug(venueUrl);
 		var https = Titanium.Network.createHTTPClient({
 			onload: function(res) {
 				var responseData = JSON.parse(this.responseText);
+				Ti.API.debug(JSON.stringify(responseData));
 				var courseList = [];
 				
 				for(var i = 0; i < responseData.response.venues.length; i++) {
@@ -170,7 +173,8 @@ function FourSquare(_token) {
 						fsid: responseData.response.venues[i].id,
 						name: responseData.response.venues[i].name,
 						lon: responseData.response.venues[i].location.lng,
-						lat: responseData.response.venues[i].location.lat							
+						lat: responseData.response.venues[i].location.lat,
+						country: responseData.response.venues[i].location.country							
 					});
 				}
 				
@@ -191,6 +195,55 @@ function FourSquare(_token) {
 		
 		https.open('GET', venueUrl);
 		https.send();
+	};
+	
+	/**
+	 * 
+	 */
+	this.checkIn = function(fsid, lon, lat) {
+		// Update URL with oAUTH or Client Secret (anonymous)	
+		if (!token) {
+			Ti.API.debug('Foursquare - No valid Access Token');
+			return false; 
+		}
+		
+		/**
+		 * Building the string:
+		 * https://api.foursquare.com/v2/venues/search?ll=40.7,-74&client_id=CLIENT_ID&client_secret=CLIENT_SECRET&v=YYYYMMDD 
+		 */			
+		var venueUrl = config.apiUrl + 'v2/checkins/add' 
+			+ '?venueId='+fsid
+			+ '&broadcast=public,twitter,facebook'
+			+ '&ll='+ lat + ',' + lon
+			+ '&oauth_token='+token
+			+ '&v=' + yc.getCurrentDate('yyyymmdd');
+
+		
+		Ti.API.debug(venueUrl);
+		
+		try {
+			var https = Titanium.Network.createHTTPClient({
+				onload: function(res) {
+					var responseData = JSON.parse(this.responseText);
+					Ti.API.debug(JSON.stringify(responseData));
+					return true;
+				},
+				onerror: function(res) {
+					Ti.API.debug('Unable to Checkin: ' + JSON.stringify(res));
+					return false;				
+				},
+				timeout: 5000,
+				validatesSecureCertificate: true
+			});
+			
+			https.open('POST', venueUrl);
+			https.send();
+		} catch (err) {
+			Ti.API.error('HTTPS Error: ' + JSON.stringify(err));
+		} finally {
+			
+		}
+			
 	};
 	
 	/**

@@ -139,14 +139,31 @@ var Facebook = function(_tok) {
 	};	 
 	
 	/**
-	 * 
+	 * Open a facebook dialog
 	 */
 	this.dialog = function(data) {
-		fb.dialog("status", data, function(e) {
+		fb.dialog("feed", data, function(e) {
 		    if(e.success && e.result) {
 				Ti.API.debug('Facebook Dialog: '+JSON.stringify(e));
 		    }
 		});			
+	};
+	
+	/**
+	 * Post to wall
+	 */
+	this.postToWall = function(data) {
+		fb.requestWithGraphPath('/me/feed', data, 'POST', function(e) {
+		    if (e.success) {
+		        Ti.API.debug('Success! From FB:'  + e.result);
+		    } else {
+		        if (e.error) {
+		            Ti.API.debug(e.error);
+		        } else {
+		            Ti.API.debug('Unkown result');
+		        }
+		    }
+		});		
 	};
 };
 

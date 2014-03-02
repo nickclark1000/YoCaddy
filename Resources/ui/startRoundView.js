@@ -123,17 +123,24 @@
 						// Social media Stuff
 						if (accountTokens.foursquare && shareFoursquare.isChecked() && currentCourseFSID.length > 0) {
 							Ti.API.debug('Check-In to Foursquare');
+							
+							FS.checkIn(round.fsid, round.lon, round.lat);
 						}
 						
 						if (accountTokens.facebook && shareFacebook.isChecked()) {
 							Ti.API.debug('Share on facebook');
+							
+							var fbmessage = 'About to start a round @ ' + round.course;
+							fbmessage += (round.desc.length > 0) ? ' ('+round.desc + ').' : '.';
+							
 							var data = {
-							    name : 'Name',
-							    message : 'Message',
-							    caption : 'Caption',
-							    description : 'Description' 
-							};
-							fb.dialog(data);						
+							    message : fbmessage,
+							    link: 'http://www.yocaddy.com/user/kendavidson',
+							    name: 'Round tracked with yoCaddy Mobile',
+							    caption: 'yoCaddy Mobile & Web - Track, Plan and Improve your game.'							    
+							};					
+							
+							FB.postToWall(data);						
 						}
 						
 						view.fireEvent('clearscreen', {});
@@ -221,39 +228,32 @@
 		content.add(showTrace.getView());
 		
 		var socialSection = Ti.UI.createLabel(yc.combine($$.sectionTitle, {
-			text: 'Post to Social Media'
+			text: 'Social Media'
 		}));
 		
-		var noSocialSettings = Ti.UI.createLabel(yc.combine($$.infoText, {
-			text: 'You have not linked any social media accounts to yoCaddy.'
+		var socialInfo = Ti.UI.createLabel(yc.combine($$.infoText, {
+			text: 'Social media will only be updated if you have linked accounts using the Link Social Media Screen.'
 		}));
 		
 		var shareFoursquare = undefined;
 		var shareFacebook = undefined;
 		
 		content.add(socialSection);
-		if (accountTokens.facebook === undefined && accountTokens.foursquare === undefined) {
-			content.add(noSocialSettings);
-		} else {			
-			if (accountTokens.foursquare) {
-				shareFoursquare = new CheckBox({
-					top: 5, width: '95%', height: 30,
-					text: 'Foursquare Check-In',
-					checked: 1
-				});		
-				content.add(shareFoursquare.getView());			
-			}
-
-			if (accountTokens.facebook) {
-				shareFacebook = new CheckBox({
-					top: 5, width: '95%', height: 30,
-					text: 'Facebook Wall Post',
-					checked: 1
-				});		
-				content.add(shareFacebook.getView());			
-			}			
-		}
+		content.add(socialInfo);
 		
+		shareFoursquare = new CheckBox({
+			top: 5, width: '95%', height: 30,
+			text: 'Foursquare Check-In',
+			checked: 1
+		});		
+		content.add(shareFoursquare.getView());			
+		
+		shareFacebook = new CheckBox({
+			top: 5, width: '95%', height: 30,
+			text: 'Facebook Wall Post',
+			checked: 1
+		});		
+		content.add(shareFacebook.getView());			
 		content.add(new yc.ui.vSpacer(10));
 		
 		// Need to be able to clear all the items for hte round
@@ -265,7 +265,20 @@
 			courseNameText.setEditable(true);
 			currentCourseFSID = '';
 			currentCourseLat = 0;
-			currentCourseLon = 0;			
+			currentCourseLon = 0;	
+		
+			if (!saveTrace.isChecked()) 
+				saveTrace.setChecked(1);
+			
+			if (!showTrace.isChecked()) 
+				showTrace.setChecked(1);
+							
+			if (!shareFoursquare.isChecked()) 
+				shareFoursquare.setChecked(1);
+			
+			if (!shareFacebook.isChecked()) 
+				shareFacebook.setChecked(1);
+							
 		});
 		
 		////////////////////////////////////// Private Functions //////////////////////////////////////////////

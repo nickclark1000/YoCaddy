@@ -39,7 +39,7 @@
 			text: 'Link Foursquare'
 		}));
 		
-		var fsText = 'Allow YoCaddy to check you in and share your rounds with your Foursqare friends.  Todo - view Foursquare friend comments on courses you are planning to play, or have already played.';
+		var fsText = 'Allow YoCaddy to check you in and share your rounds with your Foursqare friends.';
 		var fsInfo = Ti.UI.createLabel(yc.combine($$.infoText, {
 			text: fsText, width: '95%'
 		}));
@@ -82,7 +82,7 @@
 			text: 'Link Facebook'
 		}));
 		
-		var fbText = 'Share information about courses, scores and even shot specific images to your Facebook wall and friends by linking YoCaddy with your Facebook profile.';
+		var fbText = 'Share information about courses, scores and even shot specific images to your Facebook wall and friends by linking YoCaddy with your Facebook profile.  Note - if you have Foursquare configured to post to Facebook, this will duplicate postings.';
 		var fbInfo = Ti.UI.createLabel(yc.combine($$.infoText, {
 			text: fbText, width: '95%'
 		}));

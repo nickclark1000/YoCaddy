@@ -201,7 +201,7 @@
 					var toSave = scores.getScores();						
 					var busy = yc.ui.createActivityStatus('Saving Scores...');
 					yc.app.applicationWindow.add(busy);
-					yc.db.rounds.saveRoundScores(yc.app.editviewRound.id, toSave);
+					yc.db.rounds.saveRoundScores(toSave);
 					
 					// Update from new scoring
 					yc.app.editviewRound = detail.getRound();
