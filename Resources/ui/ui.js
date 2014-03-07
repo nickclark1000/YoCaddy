@@ -89,8 +89,9 @@
 		}
 		stack.add(viewArray[stack.currentView]);
 		
+		// Add event listener for confirming back
+		// Each View should have this event available
 		stack.addEventListener('confirmback', function(e){
-			Ti.API.debug('stack confirmback fired: '+JSON.stringify(viewArray[stack.currentView]));
 			viewArray[stack.currentView].fireEvent('closing', {});
 		});
 		
@@ -145,9 +146,9 @@
 				}	
 								
 				// Make all the current children of Stack invisible
-				for (var i=1,j=stack.children.length; i<j; i++) {
-					stack.children[i].setVisible(false);
-				}					
+				//for (var i=1,j=stack.children.length; i<j; i++) {
+				//	stack.children[i].setVisible(false);
+				//}					
 		
 				if (viewArray[nextViewId]) {
 					// View already exists push the old view and make this view the only visible
@@ -194,7 +195,10 @@
 							break;											
 					}
 					
-					stack.add(viewArray[nextViewId]);	
+					stack.add(viewArray[nextViewId]);
+					
+					if (viewArray[stack.currentView])
+						viewArray[stack.currentView].setVisible(false);	
 					
 					// Remove the loading screen
 					if (nextViewId === yc.ui.viewids.editviewround)	{

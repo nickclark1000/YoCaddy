@@ -157,7 +157,8 @@
 		
 		content.addView(detail.getView());	
 		content.addView(scores.getView());
-		content.addView(map.getView());	
+		content.addView(map.getView());
+		map.startMapping();	
 		lastPage = 0;
 		
 		content.addEventListener('scrollend', function(e){
@@ -187,6 +188,7 @@
 		// Event listener for when teh back button is pressed.  Before removing the view
 		// the UI controller will fire this event to each view, if it requires action that is available.
 		view.addEventListener('closing', function(e){
+			Ti.API.debug('entering closing');
 			var confirm = new yc.ui.alert(
 				'Close Round',
 				'Would you like to save round data before closing?',
@@ -194,6 +196,7 @@
 			);
 			
 			// Add a listener for any event on the Alert window
+			Ti.API.debug('About to add listener');
 			confirm.addEventListener('click', function(e){
 				yc.app.alertShown = false;
 				yc.app.applicationWindow.remove(confirm);
@@ -210,16 +213,19 @@
 					// Exit regardless of what is pressed
 					yc.app.applicationWindow.remove(busy);																		
 					yc.app.currentRound = undefined;	
+					map.stopMapping();
 					yc.app.applicationWindow.fireEvent('appback', {});
 				} else if (e.source.title == 'Close') {						
 					// Exit regardless of what is pressed
 					yc.app.currentRound = undefined;	
+					map.stopMapping();
 					yc.app.applicationWindow.fireEvent('appback', {});							
 				} else {
 					// Do nothing
 				}
 			});
 			
+			Ti.API.debug('And done');
 			yc.app.alertShown = true;
 			yc.app.applicationWindow.add(confirm);
 		});	

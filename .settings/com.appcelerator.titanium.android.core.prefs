@@ -1,9 +1,9 @@
-android/ATTR_PROJECT_NAME=YoCaddyDeuce
+android/ATTR_PROJECT_NAME=YoCaddy
 android/abi=armeabi
-android/distribute_path=D\:\\Projects\\Titanium Projects\\Distribution\\yoCaddy
+android/distribute_path=C\:\\Users\\ken.davidson\\Documents\\Titanium_Studio_Workspace\\distribution\\YoCaddyMobile
 android/keystore_alias=yocaddymobile
 android/keystore_password=y0c4ddy20\!4
-android/keystore_path=C\:\\Users\\Kenneth\\Documents\\GitHub\\YoCaddy\\distribution\\yocaddy.keystore
-android/recent_output=D\:\\Projects\\Titanium Projects\\Distribution\\yoCaddy
+android/keystore_path=C\:\\Users\\ken.davidson\\Documents\\Titanium_Studio_Workspace\\YoCaddy\\distribution\\yocaddy.keystore
+android/recent_output=C\:\\Users\\ken.davidson\\Documents\\Titanium_Studio_Workspace\\distribution\\YoCaddyMobile
 android/sdk_version=2.3.3
 eclipse.preferences.version=1

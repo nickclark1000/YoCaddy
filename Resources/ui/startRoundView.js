@@ -89,6 +89,7 @@
 		var view = Ti.UI.createView($$.stretch);
 		view.viewid = yc.ui.viewids.startround;
 		
+		var busy = new yc.ui.createActivityStatus('Finding Nearby Courses ...');
 		var header = new yc.ui.headerView({
 			title: 'Start Round',
 			leftbutton: {
@@ -143,7 +144,6 @@
 							FB.postToWall(data);						
 						}
 						
-						view.fireEvent('clearscreen', {});
 						yc.app.currentRound = yc.db.rounds.saveRound(round);
 						yc.app.applicationWindow.fireEvent('addview', { viewIdx: yc.ui.viewids.mapround });
 						//yc.app.applicationWindow.fireEvent('androidback', { sourceView: yc.ui.viewids.startround });
@@ -232,6 +232,7 @@
 		}));
 		
 		var socialInfo = Ti.UI.createLabel(yc.combine($$.infoText, {
+			width: '95%',
 			text: 'Social media will only be updated if you have linked accounts using the Link Social Media Screen.'
 		}));
 		
@@ -265,19 +266,31 @@
 			courseNameText.setEditable(true);
 			currentCourseFSID = '';
 			currentCourseLat = 0;
-			currentCourseLon = 0;	
+			currentCourseLon = 0;						
 		
-			if (!saveTrace.isChecked()) 
+			// Reset the Tracing check boxes
+			if (!saveTrace.isChecked()) {
 				saveTrace.setChecked(1);
+			}
 			
-			if (!showTrace.isChecked()) 
+			if (!showTrace.isChecked()) {
 				showTrace.setChecked(1);
-							
-			if (!shareFoursquare.isChecked()) 
-				shareFoursquare.setChecked(1);
+			}
 			
-			if (!shareFacebook.isChecked()) 
+			// Reset the Sharing check boxes				
+			accountTokens = yc.db.social.getAccountTokens();	
+			
+			if (accountTokens.foursquare) {
+				shareFoursquare.setChecked(1);
+			} else {
+				shareFoursquare.setChecked(0);
+			}
+			
+			if (accountTokens.facebook) 
 				shareFacebook.setChecked(1);
+			else {
+				shareFacebook.setChecked(0);
+			}
 							
 		});
 		
@@ -289,7 +302,6 @@
 		 * Selecting a round will update the currentRound information 
 		 */
 		var displayCourseList = function(courses) {
-			var busy = new yc.ui.createActivityStatus('Finding Nearby Courses ...');
 			yc.app.applicationWindow.add(busy);									
 			
 			var clv = new courseListView (courses);
@@ -355,10 +367,11 @@
 					geo.getCurrentLocation(currentLocationFound);
 				}
 			} catch (err) {
-				Ti.ui.error('Geolocation Error: Unable to get current position');
+				Ti.API.error('Geolocation Error: Unable to get current position');
 				Ti.UI.createAlertDialog({
 					title: 'Geolocation Error',
-					message: 'A geolocation error was thrown.  Please check GPS status.'
+					message: 'A geolocation error was thrown.  Please check GPS status.',
+					ok: 'Ok'
 				}).show();
 			}	
 		};		
@@ -370,6 +383,7 @@
 			yc.app.applicationWindow.fireEvent('appback', { sourceView: yc.ui.viewids.startround });
 		});
 		
+		view.fireEvent('clearscreen', {});
 		return view;
 	};
 	
