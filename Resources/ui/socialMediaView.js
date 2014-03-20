@@ -126,7 +126,7 @@
 		
 		var twText = 'Twitter linking is coming soon.  Note - if Foursquare is configured to post Tweets this link is not required.';
 		var twInfo = Ti.UI.createLabel(yc.combine($$.infoText, {
-			text: fsText, width: '95%'
+			text: twText, width: '95%'
 		}));
 		
 		content.add(twSection);

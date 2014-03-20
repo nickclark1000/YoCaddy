@@ -68,16 +68,16 @@
 		content.add(mapRoundText);	
 
 		var listRoundSection = Ti.UI.createLabel(yc.combine($$.sectionTitle, {
-			text: 'Viewing Saved Rounds'
+			text: 'View Saved Rounds'
 		}));
 		var editRoundTextVal = 'After selecting View Saved Rounds, you will be updated with the currently saved rounds on your mobile device.'
-				+ ' The rounds list can be updated by clicking the Refresh icon on the application bar.  The roudn search method can be updated'
-				+ ' by selecting clicking the Search icon on the application bar, then selecting the search method (currently not supported on Android).'
-				+ '\n\Editing a round - to edit a round click the round once in the list.'
+				+ ' The rounds list can be updated by clicking the Refresh icon on the application bar.  To filter the list of rounds, click the search icon'
+				+ ' on the application bar.  Enter the text to search for and the type of search you would like to perform.'
+				+ '\n\nEditing a round - to edit a round click the round once in the list.'
 				+ '\n\nDeleting a round - to delete a round and the related score information, press and hold the selected round item, then click the'
-				+ 'Delete button when it is displayed.';
+				+ ' Delete button when it is displayed.';
 		var listRoundText = Ti.UI.createLabel(yc.combine($$.infoText, {
-			text: mapRoundTextVal,
+			text: editRoundTextVal,
 			bottom: 5, width: '95%'
 		}));
 		content.add(listRoundSection);

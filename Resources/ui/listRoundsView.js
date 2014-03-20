@@ -42,6 +42,7 @@
 
 		var view = Ti.UI.createView($$.stretch);
 		view.viewid = yc.ui.viewids.listrounds;
+		var roundsList;
 		
 		var header = new yc.ui.headerView({
 			title: 'Saved Rounds',
@@ -179,35 +180,10 @@
 			}
 			
 			return roundsTableData;
-		};	// End of createRoundRows
-
-		var searchView;
-		var searchAsChild = true;
-		
-		if (Ti.Platform.name == 'android' && Ti.Platform.Android.API_LEVEL >= 11) {
-		    // Use action bar search view
-		    searchView = Ti.UI.Android.createSearchView({
-		    	color: yc.style.colors.greyTextColor,
-		    	backgroundColor: 'transparent',
-		    	font: {
-		    		fontFamily: yc.style.fonts.optionFont
-		    	},
-		        hintText: 'By Course Name',
-		        iconified: true,
-		        iconifiedByDefault: true
-		    });
-		} else {
-		    // Use search bar
-		    searchView = Ti.UI.createSearchBar({
-		        hintText: 'By Course Name'
-		    });
-		}			
+		};	// End of createRoundRows		
 
 		var roundsTableView = Ti.UI.createTableView(yc.combine({ top: 5, bottom: 5, left: 5, right: 5 },{		
-			separatorColor: yc.style.colors.zebraColor,
-			filterAttribute: 'filterCourse',
-			//search: searchView,
-			//searchAsChild: searchAsChild
+			separatorColor: yc.style.colors.zebraColor
 		}));
 		
 		roundsTableView.addEventListener('click', function(e){
@@ -257,22 +233,45 @@
 		
 		body.add(roundsTableView);
 		
-		var roundsList;
-		view.addEventListener('updatelist', function(e) {
-			var busy = new yc.ui.createActivityStatus('Loading Round List ...');
-			yc.app.applicationWindow.add(busy);	
+		//view.fireEvent('updatelist', {});
+		
+		view.addEventListener('closing', function() { 
+			yc.app.applicationWindow.fireEvent('appback', {}); 
+		});
+		
+		view.addEventListener('postlayout', postLayout);
+		
+		var busy = new yc.ui.createActivityStatus('Loading Round List ...');
+		view.add(busy);		
+						
+		return view;
+		
+		/********************************* Functions ********************************************/
+		
+		function postLayout(e) {
+			view.removeEventListener('postlayout', postLayout);
+			updateList(e);
+			view.addEventListener('updatelist', updateList);
+		}
+		
+		function updateList(e) {
+			busy.show();
+			//var busy = new yc.ui.createActivityStatus('Loading Round List ...');
+			//yc.app.applicationWindow.add(busy);	
 			
 			roundsTableView.setData([]);
 			roundList = yc.db.rounds.listRounds();
 			roundsTableView.setData(createRoundData(roundList));
 			
-			yc.app.applicationWindow.remove(busy);
-		});
-
-		view.fireEvent('updatelist', {});
+			busy.hide();
+			//yc.app.applicationWindow.remove(busy);			
+		}
 		
-		// Add the search menu to the list
-		// Eventually this will open a window and let you choose what attribute to use as a search
+		/**
+		 * ShowSearch will display Search box with a choice of search type
+		 * This is a work in progress and will be completed later.
+ 		 * @param {Object} e
+		 */
 		function showSearch(e) {
 			var searchByView = Ti.UI.createView(yc.combine($$.stretch, {
 				backgroundImage: '/images/backgrounds/fullWindowBg.png'
@@ -339,12 +338,7 @@
 			
 			view.add(searchByView);
 		} // End of Seach By Event Listener
-
-		view.addEventListener('closing', function() { 
-			yc.app.applicationWindow.fireEvent('appback', {}); 
-		});
-						
-		return view;
+				
 	};
 	
 })();

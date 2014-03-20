@@ -46,7 +46,8 @@
 	yc.ui.createActivityStatus = function(text) {
 		var statusView = Ti.UI.createView(yc.combine($$.stretch, {
 			backgroundImage: '/images/backgrounds/fullWindowBg.png',
-			zIndex: 99
+			zIndex: 99,
+			visible: false
 		}));
 		
 		var indy = Ti.UI.createLabel({
@@ -55,7 +56,7 @@
 			color: 'white',
 			font: {
 				fontSize: yc.style.fontsize.largetext,
-				fontFamily: yc.style.fonts.buttonFont
+				fontFamily: yc.style.fonts.sectionFont
 			}
 		});
 		
@@ -160,6 +161,9 @@
 					} else if (nextViewId === yc.ui.viewids.startround) {
 						viewArray[nextViewId].fireEvent('clearscreen', {});
 					}
+					
+					if (viewArray[stack.currentView])
+						viewArray[stack.currentView].setVisible(false);	
 				} else {
 					// Display a loading screen
 					if (nextViewId === yc.ui.viewids.editviewround)	{

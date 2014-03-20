@@ -5,7 +5,7 @@
  * - Require and open our top-level UI component
  * Keystore: distribution/yocaddy.keystore
  * Password: y0c4ddy20!4
- * Alias: yocaddy2014
+ * Alias: yocaddymobile
  */
 
 // yoCaddy Application Namespace

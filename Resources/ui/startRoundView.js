@@ -203,54 +203,54 @@
 		var dateText = Ti.UI.createTextField(yc.combine($$.textfield,{
 			editable: false,
 			value: yc.getCurrentDate('yyyy/mm/dd')
-		}));
-		
-		var CheckBox = require('/common/checkBoxView');
-		
-		var saveTrace = new CheckBox({
-			top: 5, width: '95%', height: 30,
-			text: 'Save Walking Trace',
-			checked: 1
-		});
-		
-		var showTrace = new CheckBox({
-			top: 5, bottom: 5, width: '95%', height: 30,
-			text: 'Show Walking Trace',
-			checked: 1
-		});		
+		}));	
 		
 		content.add(startSection);
 		content.add(courseNameText);
 		content.add(courseFindButton);
 		content.add(courseDescText);
 		content.add(dateText);
-		content.add(saveTrace.getView());
-		content.add(showTrace.getView());
 		
-		var socialSection = Ti.UI.createLabel(yc.combine($$.sectionTitle, {
-			text: 'Social Media'
+		var optionsSection = Ti.UI.createLabel(yc.combine($$.sectionTitle, {
+			text: 'Round Options'
 		}));
 		
-		var socialInfo = Ti.UI.createLabel(yc.combine($$.infoText, {
+		var optionsInfo = Ti.UI.createLabel(yc.combine($$.infoText, {
 			width: '95%',
-			text: 'Social media will only be updated if you have linked accounts using the Link Social Media Screen.'
+			text: 'Options can be turned on and off depending on which features are required for starting the round.'
 		}));
 		
+		var CheckBox = require('/common/checkBoxView');
+		
+		var saveTrace = new CheckBox({
+			top: 5, width: '95%', height: 40,
+			text: 'Save Walking Trace',
+			checked: 1
+		});
+		
+		var showTrace = new CheckBox({
+			top: 5, width: '95%', height: 40,
+			text: 'Show Walking Trace',
+			checked: 1
+		});	
+				
 		var shareFoursquare = undefined;
 		var shareFacebook = undefined;
 		
-		content.add(socialSection);
-		content.add(socialInfo);
+		content.add(optionsSection);
+		content.add(optionsInfo);
+		content.add(saveTrace.getView());
+		content.add(showTrace.getView());		
 		
 		shareFoursquare = new CheckBox({
-			top: 5, width: '95%', height: 30,
+			top: 5, width: '95%', height: 40,
 			text: 'Foursquare Check-In',
 			checked: 1
 		});		
 		content.add(shareFoursquare.getView());			
 		
 		shareFacebook = new CheckBox({
-			top: 5, width: '95%', height: 30,
+			top: 5, width: '95%', height: 40,
 			text: 'Facebook Wall Post',
 			checked: 1
 		});		
@@ -282,14 +282,18 @@
 			
 			if (accountTokens.foursquare) {
 				shareFoursquare.setChecked(1);
+				shareFoursquare.setLocked(0);
 			} else {
 				shareFoursquare.setChecked(0);
+				shareFoursquare.setLocked(1);
 			}
 			
-			if (accountTokens.facebook) 
+			if (accountTokens.facebook) { 
 				shareFacebook.setChecked(1);
-			else {
+				shareFacebook.setLocked(0);
+			} else {
 				shareFacebook.setChecked(0);
+				shareFacebook.setLocked(1);
 			}
 							
 		});

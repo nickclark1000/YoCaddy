@@ -20,11 +20,17 @@ var checkBox = function(_args) {
 	var viewFontFamily = yc.style.fonts.optionFont;	
 		
 	// Public functions	
+	var isLocked = _args.locked || 0;
 	var checked = _args.checked;
 	var viewTitle = (checked === 1) ? '\u2713' : '';
 		
 	// Private functions
 	var clicked = function(){
+		
+		if (isLocked === 1) {
+			return;
+		}
+		
 		if (checked === 0) {
 			viewTitle = '\u2713';
 			checked = 1;
@@ -53,9 +59,9 @@ var checkBox = function(_args) {
 	});
 	
 	var checkboxButton = Ti.UI.createButton({
-		right: '0dp',
-		width: '50dp', 
-		height: '100%',
+		right: '5dp',
+		width: '40dp', 
+		height: '95%',
 		title: viewTitle,
 		borderWidth: '1dp',
 		borderRadius: 5,
@@ -87,6 +93,16 @@ var checkBox = function(_args) {
 			viewTitle = '';
 		}
 		checkboxButton.setTitle(viewTitle);
+	};
+	
+	this.setLocked = function(_lock) {
+		isLocked = _lock;
+		
+		if (isLocked === 0) {
+			checkbox.setBackgroundColor('transparent');
+		} else {
+			checkbox.setBackgroundColor('#FFD4FF');
+		}
 	};
 	
 	this.getView = function() {

@@ -9,25 +9,26 @@
 /// Dev Key: AIzaSyA4h4GSJjUILHDHGKXbAI-kXjHg-W2d7B0
 ///
 
-var mapView = function(_args) {
+var mapView = function(_args, cb) {
 	var holder, view, messageLabel;
 	var playAvailable;
 	var saveTrace = _args.saveTrace;
 	var showTrace = _args.showTrace;
 	var roundId = _args.roundId;
 	var deltaLon = 0.002, deltaLat = 0.002;
+	var mapCallback = cb ||  function(e) {};
 	
 	var holder = Ti.UI.createView(_args.props);
 	
 	var gpsP = Ti.Geolocation.PROVIDER_GPS;
 	var gpsD = yc.settings.app.propvalues[yc.settings.app.propids.gpsDistance][yc.settings.app.selected[yc.settings.app.propids.gpsDistance]].value;
-	var autoShotTime = yc.settings.app.propvalues[yc.settings.app.propids.autoshot][yc.settings.app.selected[yc.settings.app.propids.autoshot]].value;
+	//var autoShotTime = yc.settings.app.propvalues[yc.settings.app.propids.autoshot][yc.settings.app.selected[yc.settings.app.propids.autoshot]].value;
 	var GeoLoc = require('lib/geolocation');
 	var Geo = new GeoLoc(gpsP, gpsD);
 	
 	////////////////// Create and Add the map to the View
 	var MapModule = require('ti.map');	
-	playAvailable = MapModule.isGooglePlayServicesAvailable();		// Confirm that Google Play Services are available			
+	playAvailable = MapModule.isGooglePlayServicesAvailable();		// Confirm that Google Play Services are available		
 	switch (playAvailable && roundId) {
 	    case MapModule.SUCCESS:
 	    	Ti.API.debug('Google Play services are available; creating MapView');
@@ -102,8 +103,8 @@ var mapView = function(_args) {
 	 * Function passed into the Geolocation services 
  	 * @param {Object} e
 	 */
-	var lastPoint = undefined;
-	var mapCallback = function k(e) {
+	//var lastPoint = undefined;
+	/**var mapCallback = function(e) {
 		var newAnno;
 		
 		view.setRegion({
@@ -126,7 +127,7 @@ var mapView = function(_args) {
 		}
 		
 		Ti.API.debug(JSON.stringify(lastPoint));
-	};
+	};**/
 	
 	/**
 	 * Start mapping 
